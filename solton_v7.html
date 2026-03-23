@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סולטון הפקות – עוצמה מוזיקלית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#D4AF37;--gold-light:#F0D060;--gold-dark:#A8841A;
+  --black:#080808;--charcoal:#0F0F0F;--charcoal2:#161616;
+  --white:#FAF8F2;--gray:#888;
+  --gold-grad:linear-gradient(135deg,#A8841A 0%,#D4AF37 35%,#F0D060 55%,#D4AF37 75%,#A8841A 100%);
+  --gold-grad-h:linear-gradient(90deg,#A8841A 0%,#D4AF37 25%,#F0D060 50%,#D4AF37 75%,#A8841A 100%);
+  --glass:rgba(12,10,4,0.78);
+  --border:1px solid rgba(212,175,55,0.28);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Heebo',sans-serif;direction:rtl;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Frank Ruhl Libre',serif}
+a{text-decoration:none;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+img{max-width:100%;display:block;-webkit-user-drag:none;user-select:none;pointer-events:none}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+
+.light-rays{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.ray{position:absolute;top:-20%;width:1.5px;height:140%;background:linear-gradient(to bottom,transparent,rgba(212,175,55,.05),transparent);animation:swayR linear infinite}
+.ray:nth-child(1){left:10%;animation-duration:15s}
+.ray:nth-child(2){left:26%;animation-duration:19s;animation-delay:-5s;width:2px}
+.ray:nth-child(3){left:50%;animation-duration:13s;animation-delay:-2s}
+.ray:nth-child(4){left:70%;animation-duration:21s;animation-delay:-8s}
+.ray:nth-child(5){left:85%;animation-duration:12s;animation-delay:-10s}
+@keyframes swayR{0%,100%{opacity:.5;margin-left:0}50%{opacity:1;margin-left:18px}}
+
+/* HEADER */
+#header{position:fixed;top:0;right:0;left:0;z-index:1000;padding:22px 48px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,padding .4s}
+#header.scrolled{background:rgba(8,8,8,0.92);backdrop-filter:blur(14px);padding:14px 48px;border-bottom:var(--border)}
+.logo-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;cursor:pointer;position:relative;text-decoration:none}
+.logo-main{font-family:'Cinzel Decorative',serif;font-weight:900;font-size:26px;letter-spacing:0.1em;background:var(--gold-grad-h);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;filter:drop-shadow(0 0 14px rgba(212,175,55,.22));transition:font-size .4s,filter .3s;line-height:1}
+.logo-sub{font-size:9px;letter-spacing:4px;color:rgba(212,175,55,.65);text-transform:uppercase;font-weight:300}
+.logo-pulse{position:absolute;bottom:-5px;right:0;width:100%;height:1px;background:var(--gold-grad-h);transform:scaleX(0);transform-origin:right;transition:transform .4s}
+.logo-wrap:hover .logo-pulse{transform:scaleX(1)}
+.logo-wrap:hover .logo-main{filter:drop-shadow(0 0 26px rgba(212,175,55,.48))}
+#header.scrolled .logo-main{font-size:20px}
+nav{display:flex;gap:26px;align-items:center}
+nav a{font-family:'Frank Ruhl Libre',serif;font-size:15px;color:rgba(255,255,255,.72);letter-spacing:.6px;transition:color .3s;position:relative}
+nav a::after{content:'';position:absolute;bottom:-4px;right:0;width:0;height:1px;background:var(--gold-grad-h);transition:width .3s}
+nav a:hover{color:var(--gold)}
+nav a:hover::after{width:100%}
+.nav-cta{background:var(--gold-grad);color:var(--black)!important;padding:10px 22px;border-radius:2px;font-weight:700;font-family:'Heebo',sans-serif;transition:box-shadow .3s,transform .2s!important}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{box-shadow:0 8px 32px rgba(212,175,55,.4);transform:translateY(-2px)!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px}
+.hamburger span{width:26px;height:2px;background:var(--gold);border-radius:2px}
+.mobile-nav{display:none;position:fixed;inset:0;background:rgba(5,5,5,.98);backdrop-filter:blur(24px);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-family:'Frank Ruhl Libre',serif;font-size:28px;color:var(--white);transition:color .3s}
+.mobile-nav a:hover{color:var(--gold)}
+.mob-close{position:absolute;top:26px;left:26px;font-size:28px;color:var(--gold);cursor:pointer;background:none;border:none}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:130px 40px 90px}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 40%,rgba(212,175,55,.07) 0%,transparent 65%)}
+.bokeh{position:absolute;border-radius:50%;filter:blur(90px);animation:bFloat ease-in-out infinite;z-index:0;pointer-events:none}
+.bokeh:nth-child(1){width:500px;height:500px;background:rgba(212,175,55,.08);top:0%;right:-8%;animation-duration:16s}
+.bokeh:nth-child(2){width:360px;height:360px;background:rgba(168,132,26,.07);bottom:10%;left:2%;animation-duration:20s;animation-delay:-6s}
+.bokeh:nth-child(3){width:200px;height:200px;background:rgba(240,208,96,.1);top:45%;right:40%;animation-duration:12s;animation-delay:-3s}
+@keyframes bFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-32px) scale(1.08)}}
+.hero-content{position:relative;z-index:2;max-width:960px}
+.hero-badge{display:inline-block;border:var(--border);background:var(--glass);padding:8px 26px;font-size:10px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:34px;border-radius:2px;backdrop-filter:blur(8px)}
+
+/* ANIMATED HERO LOGO */
+.solton-logo-hero{display:inline-block;position:relative;margin-bottom:30px}
+.slh-main{font-family:'Cinzel Decorative',serif;font-weight:900;font-size:clamp(54px,9vw,108px);letter-spacing:0.1em;line-height:1;background:var(--gold-grad-h);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2.8s linear infinite;filter:drop-shadow(0 0 40px rgba(212,175,55,.28));display:block}
+.slh-wave{display:block;width:100%;margin-top:4px;overflow:visible}
+.slh-sub{font-size:clamp(9px,1vw,12px);letter-spacing:5px;color:rgba(212,175,55,.6);text-transform:uppercase;margin-top:10px;display:block;text-align:center;font-weight:300}
+.particles{position:absolute;inset:-40px;pointer-events:none;z-index:1}
+.particle{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--gold);animation:pFloat linear infinite;opacity:0}
+@keyframes pFloat{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:.8}80%{opacity:.3}100%{opacity:0;transform:translateY(-60px) scale(1.5)}}
+
+.hero-title{font-family:'Frank Ruhl Libre',serif;font-size:clamp(34px,5.5vw,72px);font-weight:900;line-height:1.12;margin-bottom:14px}
+.hero-title span{background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3.5s linear infinite}
+.hero-slogan{font-family:'Cinzel',serif;font-size:clamp(10px,1.5vw,14px);letter-spacing:4px;color:var(--gold);margin-bottom:24px;text-transform:uppercase;opacity:.8}
+.hero-sub{font-size:clamp(15px,1.9vw,19px);font-weight:300;color:rgba(255,255,255,.62);line-height:1.78;max-width:680px;margin:0 auto 52px}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-scroll{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(212,175,55,.42);font-size:10px;letter-spacing:3px;z-index:2;animation:scrollB 2.4s ease-in-out infinite}
+@keyframes scrollB{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-9px)}}
+.scroll-line{width:1px;height:42px;background:linear-gradient(to bottom,rgba(212,175,55,.5),transparent)}
+
+/* BUTTONS */
+.btn-gold{background:var(--gold-grad);color:var(--black);padding:16px 42px;font-family:'Frank Ruhl Libre',serif;font-size:18px;font-weight:700;border-radius:2px;border:none;cursor:pointer;transition:box-shadow .3s,transform .2s,filter .2s;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn-gold:hover{box-shadow:0 12px 52px rgba(212,175,55,.6);transform:translateY(-3px);filter:brightness(1.1)}
+.btn-outline{background:transparent;color:var(--gold);padding:16px 42px;font-family:'Frank Ruhl Libre',serif;font-size:18px;font-weight:400;border-radius:2px;border:1px solid rgba(212,175,55,.5);cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.btn-outline:hover{border-color:var(--gold);background:rgba(212,175,55,.09);transform:translateY(-2px)}
+.btn-sm{font-size:14px!important;padding:10px 22px!important}
+
+/* MARQUEE */
+.marquee-section{background:var(--charcoal2);border-top:var(--border);border-bottom:var(--border);padding:18px 0;overflow:hidden;position:relative;z-index:2}
+.marquee-track{display:flex;gap:52px;animation:mScroll 30s linear infinite;white-space:nowrap;width:max-content}
+.marquee-section:hover .marquee-track{animation-play-state:paused}
+@keyframes mScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.m-item{display:flex;align-items:center;gap:16px;font-family:'Frank Ruhl Libre',serif;font-size:16px;font-weight:500;color:var(--gold);letter-spacing:2px}
+.m-dot{width:4px;height:4px;border-radius:50%;background:var(--gold-grad);flex-shrink:0}
+
+/* SECTION */
+.section{position:relative;z-index:1;padding:110px 48px;scroll-margin-top:120px}
+.sec-hdr{text-align:center;margin-bottom:70px}
+.sec-label{font-size:10px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;display:block;opacity:.9}
+.sec-title{font-family:'Frank Ruhl Libre',serif;font-size:clamp(28px,4vw,54px);font-weight:900;line-height:1.18;margin-bottom:16px}
+.sec-title span{background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3.5s linear infinite}
+.sec-divider{width:54px;height:2px;background:var(--gold-grad);margin:16px auto 0;border-radius:2px}
+
+/* STATS */
+#stats{background:var(--charcoal)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1020px;margin:0 auto}
+.stat-card{background:var(--glass);border:var(--border);padding:64px 44px;text-align:center;position:relative;overflow:hidden;transition:background .3s}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,175,55,.06),transparent);opacity:0;transition:opacity .3s}
+.stat-card:hover::before{opacity:1}
+.stat-num{font-family:'Cinzel',serif;font-size:clamp(48px,5.5vw,76px);font-weight:700;background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:16px;display:block;background-size:200% auto;animation:shimmer 4s linear infinite}
+.stat-lbl{font-size:16px;color:rgba(255,255,255,.7);line-height:1.55}
+
+/* DEAL BOX */
+.deal-section{background:var(--charcoal);padding:0 48px 80px}
+.deal-box{background:linear-gradient(135deg,rgba(212,175,55,.13),rgba(168,132,26,.08));border:1px solid var(--gold);border-radius:6px;padding:52px 64px;text-align:center;max-width:840px;margin:0 auto;box-shadow:0 0 80px rgba(212,175,55,.1),inset 0 0 60px rgba(212,175,55,.04);position:relative}
+.deal-box::before{content:'✦';position:absolute;top:18px;right:26px;font-size:18px;color:rgba(212,175,55,.2)}
+.deal-box::after{content:'✦';position:absolute;bottom:18px;left:26px;font-size:18px;color:rgba(212,175,55,.2)}
+.deal-tag{display:inline-block;background:var(--gold-grad);color:var(--black);font-size:11px;font-weight:800;padding:5px 22px;border-radius:2px;margin-bottom:18px;letter-spacing:2.5px}
+.deal-box h3{font-family:'Frank Ruhl Libre',serif;font-size:clamp(22px,3vw,34px);font-weight:900;color:var(--gold);margin-bottom:12px;line-height:1.3}
+.deal-box p{font-size:17px;color:rgba(255,255,255,.66);margin-bottom:30px;line-height:1.65}
+
+/* PACKAGES */
+#packages{background:var(--black)}
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1120px;margin:0 auto}
+.pkg-card{background:var(--glass);border:var(--border);border-radius:6px;padding:50px 38px;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s}
+.pkg-card::before{content:'';position:absolute;top:0;right:0;left:0;height:2px;background:var(--gold-grad)}
+.pkg-card:hover{transform:translateY(-7px);box-shadow:0 24px 70px rgba(212,175,55,.14)}
+.pkg-card.featured{border-color:rgba(212,175,55,.55);background:linear-gradient(160deg,rgba(212,175,55,.1),var(--glass));box-shadow:0 0 50px rgba(212,175,55,.08)}
+.pkg-icon-ring{width:52px;height:52px;border-radius:50%;border:1px solid rgba(212,175,55,.35);background:rgba(212,175,55,.07);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:18px}
+.pkg-crown{font-size:9.5px;letter-spacing:3.5px;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.pkg-name{font-family:'Frank Ruhl Libre',serif;font-size:30px;font-weight:900;margin-bottom:6px}
+.pkg-sub{font-size:14px;color:var(--gray);margin-bottom:28px;line-height:1.5}
+.pkg-price{font-size:17px;font-weight:700;color:rgba(255,255,255,.88);margin:12px 0 24px}
+.pkg-list{list-style:none;margin-bottom:34px;display:flex;flex-direction:column;gap:10px}
+.pkg-list li{font-size:15px;color:rgba(255,255,255,.78);display:flex;align-items:flex-start;gap:10px}
+.pkg-list li::before{content:'✦';color:var(--gold);font-size:9px;margin-top:5px;flex-shrink:0}
+
+/* VENUES */
+#venues{background:var(--charcoal)}
+.tabs-nav{display:flex;justify-content:center;margin:0 auto 48px;border:var(--border);border-radius:4px;overflow:hidden;max-width:740px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:130px;padding:16px 18px;background:var(--glass);border:none;color:rgba(255,255,255,.55);font-family:'Frank Ruhl Libre',serif;font-size:15px;cursor:pointer;transition:all .3s;border-right:var(--border);white-space:nowrap}
+.tab-btn:last-child{border-right:none}
+.tab-btn.active{background:var(--gold-grad);color:var(--black);font-weight:700}
+.tab-btn:hover:not(.active){color:var(--gold);background:rgba(212,175,55,.07)}
+.tab-content{display:none}.tab-content.active{display:block}
+.venues-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;max-width:1120px;margin:0 auto}
+.venue-card{background:var(--glass);border:var(--border);border-radius:4px;padding:28px 22px;text-align:center;transition:all .3s}
+.venue-card:hover{border-color:var(--gold);background:rgba(212,175,55,.07);transform:translateY(-3px)}
+.venue-icon-ring{width:46px;height:46px;border-radius:50%;border:1px solid rgba(212,175,55,.32);background:rgba(212,175,55,.07);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 12px}
+.venue-name{font-family:'Frank Ruhl Libre',serif;font-size:17px;font-weight:700;margin-bottom:4px}
+.venue-desc{font-size:12px;color:var(--gray)}
+
+/* CITIES */
+#cities{background:var(--black)}
+.cities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:13px;max-width:1020px;margin:0 auto}
+.city-item{display:flex;align-items:center;gap:11px;background:var(--glass);border:var(--border);border-radius:4px;padding:20px 22px;transition:all .3s}
+.city-item:hover{border-color:var(--gold);background:rgba(212,175,55,.06);transform:translateX(-3px)}
+.city-pin{font-size:18px;flex-shrink:0}
+.city-name{font-family:'Frank Ruhl Libre',serif;font-size:16px;font-weight:500}
+
+/* ARTISTS */
+#artists{background:var(--charcoal)}
+.artists-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px;max-width:1120px;margin:0 auto}
+.artist-card{background:var(--glass);border:var(--border);border-radius:6px;padding:42px 28px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
+.artist-card::before{content:'';position:absolute;top:0;right:0;left:0;height:2px;background:var(--gold-grad)}
+.artist-card:hover{transform:translateY(-5px);box-shadow:0 18px 56px rgba(212,175,55,.12);border-color:rgba(212,175,55,.38)}
+.artist-sil{width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,.18),rgba(212,175,55,.04));border:1px solid rgba(212,175,55,.35);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:34px}
+.artist-type{font-size:9.5px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:7px}
+.artist-title{font-family:'Frank Ruhl Libre',serif;font-size:17px;font-weight:700;margin-bottom:6px}
+.artist-badge{font-size:13px;color:var(--gray);font-style:italic;margin-bottom:18px}
+.play-btn{background:transparent;border:1px solid rgba(212,175,55,.32);color:var(--gold);padding:8px 18px;border-radius:20px;font-size:13px;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:6px}
+.play-btn:hover{background:rgba(212,175,55,.1);border-color:var(--gold)}
+
+/* MATCHER */
+#matcher{background:var(--charcoal)}
+.matcher-box{max-width:720px;margin:0 auto;background:var(--glass);border:var(--border);border-radius:10px;overflow:hidden;box-shadow:0 24px 90px rgba(0,0,0,.55)}
+.matcher-hdr{background:linear-gradient(135deg,rgba(212,175,55,.14),rgba(212,175,55,.04));border-bottom:var(--border);padding:30px 38px;text-align:center}
+.matcher-hdr h3{font-family:'Frank Ruhl Libre',serif;font-size:24px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.matcher-hdr p{font-size:14px;color:rgba(255,255,255,.52)}
+.matcher-body{padding:38px}
+.m-question{font-family:'Frank Ruhl Libre',serif;font-size:21px;font-weight:700;margin-bottom:24px;text-align:center;line-height:1.35}
+.m-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:26px}
+.m-opt{background:rgba(255,255,255,.03);border:1px solid rgba(212,175,55,.18);border-radius:4px;padding:16px 18px;color:rgba(255,255,255,.75);font-family:'Frank Ruhl Libre',serif;font-size:16px;cursor:pointer;transition:all .25s;text-align:center}
+.m-opt:hover{background:rgba(212,175,55,.11);border-color:var(--gold);color:var(--gold);transform:scale(1.02)}
+.m-opt.sel{background:rgba(212,175,55,.15);border:2px solid var(--gold);color:var(--gold)}
+.m-progress{display:flex;gap:7px;justify-content:center;margin-bottom:24px}
+.p-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.12);transition:background .35s,transform .35s}
+.p-dot.active{background:var(--gold-grad);transform:scale(1.3)}
+.m-step-anim{opacity:0;transform:translateY(12px);transition:opacity .38s ease,transform .38s ease}
+.m-step-anim.in{opacity:1;transform:none}
+
+/* RESULT CARD */
+#mRes{display:none;text-align:center;padding:6px 0}
+.result-card{border:1px solid var(--gold);border-radius:8px;padding:34px 30px;background:linear-gradient(145deg,rgba(212,175,55,.12),rgba(168,132,26,.06),rgba(212,175,55,.08));box-shadow:0 0 50px rgba(212,175,55,.1),inset 0 0 40px rgba(212,175,55,.05);position:relative;overflow:hidden;margin-bottom:22px}
+.result-card::before{content:'✦';position:absolute;top:14px;right:18px;color:rgba(212,175,55,.28);font-size:14px}
+.result-card::after{content:'✦';position:absolute;bottom:14px;left:18px;color:rgba(212,175,55,.28);font-size:14px}
+.result-card-label{font-size:10px;letter-spacing:4px;color:rgba(212,175,55,.65);text-transform:uppercase;margin-bottom:10px}
+.result-card-title{font-family:'Frank Ruhl Libre',serif;font-size:clamp(20px,3vw,28px);font-weight:900;color:var(--gold);line-height:1.25;margin-bottom:18px}
+.result-checks{list-style:none;text-align:right;margin-bottom:18px;display:flex;flex-direction:column;gap:10px}
+.result-checks li{font-size:15px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:10px}
+.result-checks li::before{content:'✔';color:var(--gold);font-size:12px;flex-shrink:0}
+.result-note{font-size:13.5px;color:rgba(255,255,255,.5);line-height:1.6}
+
+/* ACTION BAR */
+.action-bar{display:flex;gap:11px;margin-bottom:10px}
+.action-bar-wa{background:linear-gradient(135deg,#1da851,#25D366);color:#fff;padding:15px 24px;font-size:15.5px;font-weight:700;border:none;border-radius:4px;cursor:pointer;transition:box-shadow .3s,transform .2s;display:flex;align-items:center;gap:9px;flex:1;justify-content:center;text-decoration:none;box-shadow:0 6px 26px rgba(37,211,102,.28)}
+.action-bar-wa:hover{box-shadow:0 10px 42px rgba(37,211,102,.5);transform:translateY(-2px)}
+.action-bar-email{background:transparent;color:var(--gold);padding:15px 24px;font-size:15.5px;font-weight:600;border:1px solid rgba(212,175,55,.5);border-radius:4px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:9px;flex:1;justify-content:center;font-family:'Heebo',sans-serif}
+.action-bar-email:hover{background:rgba(212,175,55,.1);border-color:var(--gold);transform:translateY(-2px)}
+.action-secondary{display:flex;gap:10px;justify-content:center}
+.action-phone{background:transparent;color:rgba(255,255,255,.5);padding:10px 18px;font-size:13px;border:1px solid rgba(255,255,255,.1);border-radius:4px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:7px;font-family:'Heebo',sans-serif;text-decoration:none}
+.action-phone:hover{color:var(--gold);border-color:rgba(212,175,55,.3)}
+.btn-reset{background:transparent;color:rgba(255,255,255,.35);border:none;font-size:13px;cursor:pointer;padding:10px 14px;font-family:'Heebo',sans-serif;transition:color .3s}
+.btn-reset:hover{color:var(--gold)}
+
+/* ROADMAP */
+#roadmap{background:var(--black)}
+.roadmap-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;max-width:1020px;margin:0 auto;position:relative}
+.roadmap-steps::before{content:'';position:absolute;top:36px;right:16%;left:16%;height:1px;background:linear-gradient(to left,transparent,var(--gold),transparent);z-index:0}
+.r-step{text-align:center;position:relative;z-index:1}
+.step-num{width:72px;height:72px;border-radius:50%;background:var(--gold-grad);color:var(--black);font-family:'Cinzel',serif;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 0 35px rgba(212,175,55,.38)}
+.step-title{font-family:'Frank Ruhl Libre',serif;font-size:19px;font-weight:700;margin-bottom:10px}
+.step-desc{font-size:15px;color:rgba(255,255,255,.58);line-height:1.65}
+
+/* ABOUT */
+#about{background:var(--charcoal)}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:84px;align-items:center;max-width:1120px;margin:0 auto}
+.about-frame{width:100%;aspect-ratio:4/5;background:linear-gradient(160deg,rgba(212,175,55,.09),rgba(0,0,0,0));border:var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.about-frame::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(212,175,55,.08),transparent 70%)}
+.about-icon-big{font-size:120px;opacity:.22}
+.about-badge-fl{position:absolute;bottom:30px;right:-20px;background:var(--gold-grad);color:var(--black);padding:16px 24px;border-radius:4px;box-shadow:0 12px 44px rgba(212,175,55,.38)}
+.about-badge-fl .n{font-family:'Cinzel',serif;font-size:28px;font-weight:700;display:block;line-height:1}
+.about-badge-fl .l{font-size:12px;font-weight:500}
+.about-text h2{font-family:'Frank Ruhl Libre',serif;font-size:clamp(26px,3.5vw,46px);font-weight:900;line-height:1.2;margin-bottom:26px}
+.about-text h2 span{background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3.5s linear infinite}
+.about-text p{font-size:17px;color:rgba(255,255,255,.66);line-height:1.82;margin-bottom:18px}
+.about-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.about-tag{background:rgba(212,175,55,.08);border:var(--border);border-radius:2px;padding:8px 16px;font-size:13px;color:var(--gold);letter-spacing:1px}
+
+/* FAQ */
+#faq{background:var(--black)}
+.faq-list{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--glass);border:var(--border);border-radius:4px;overflow:hidden;transition:border-color .3s}
+.faq-item.open{border-color:rgba(212,175,55,.4)}
+.faq-q{width:100%;background:none;border:none;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:right;gap:18px}
+.faq-q-txt{font-family:'Frank Ruhl Libre',serif;font-size:17px;font-weight:700;color:var(--white)}
+.faq-icon{width:28px;height:28px;border-radius:50%;border:1px solid rgba(212,175,55,.32);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;flex-shrink:0;transition:transform .3s,background .3s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:rgba(212,175,55,.14)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-item.open .faq-a{max-height:220px}
+.faq-a-inner{padding:0 28px 22px;font-size:15px;color:rgba(255,255,255,.64);line-height:1.72;border-top:var(--border);padding-top:18px}
+
+/* CONTACT */
+#contact{background:var(--charcoal)}
+.contact-inner{max-width:720px;margin:0 auto;text-align:center}
+.contact-inner>p{font-size:17px;color:rgba(255,255,255,.64);line-height:1.72;margin-bottom:40px}
+.contact-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:44px}
+.contact-card{background:var(--glass);border:var(--border);border-radius:4px;padding:34px 24px;text-align:center;transition:all .3s}
+.contact-card:hover{border-color:var(--gold);background:rgba(212,175,55,.07);transform:translateY(-3px)}
+.cc-icon{margin-bottom:13px;color:var(--gold)}
+.cc-icon svg{width:34px;height:34px;display:block;margin:0 auto}
+.cc-icon-wa{color:#25D366}
+.cc-title{font-family:'Frank Ruhl Libre',serif;font-size:18px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.cc-desc{font-size:14px;color:var(--gray)}
+
+/* FOOTER */
+footer{background:var(--charcoal2);border-top:var(--border);padding:64px 48px 32px;text-align:center;position:relative;z-index:2}
+.footer-logo-text{font-family:'Cinzel Decorative',serif;font-size:30px;font-weight:900;background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3s linear infinite;margin-bottom:8px}
+.footer-slogan{font-size:13px;color:var(--gray);letter-spacing:3px;margin-bottom:38px}
+.footer-links{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-bottom:38px}
+.footer-links a{font-size:15px;color:rgba(255,255,255,.52);transition:color .3s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.18);letter-spacing:1px}
+
+/* FLOAT */
+.float-contact{position:fixed;bottom:28px;right:28px;z-index:1000;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.wa-bubble{position:absolute;bottom:82px;right:0;background:rgba(10,8,2,.92);border:1px solid rgba(212,175,55,.3);backdrop-filter:blur(12px);color:var(--white);padding:10px 14px;border-radius:12px;font-size:12px;max-width:230px;box-shadow:0 10px 40px rgba(0,0,0,.4);opacity:0;transform:translateY(10px);animation:waBubblePop 6s ease-in-out infinite}
+.wa-bubble:after{content:'';position:absolute;bottom:-7px;right:16px;border-width:7px 7px 0 7px;border-style:solid;border-color:rgba(212,175,55,.3) transparent transparent transparent}
+@keyframes waBubblePop{0%,55%{opacity:0;transform:translateY(10px)}60%{opacity:1;transform:translateY(0)}75%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(10px)}}
+.float-btn{border-radius:50px;padding:12px 20px;display:flex;align-items:center;gap:10px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:transform .3s,box-shadow .3s;border:none;text-decoration:none;white-space:nowrap}
+.float-btn svg{width:18px;height:18px;display:block;flex-shrink:0}
+.float-wa-btn{background:#25D366;color:white;box-shadow:0 6px 30px rgba(37,211,102,.36);animation:waPulse 3.5s ease-in-out infinite}
+.float-wa-btn:hover{transform:translateY(-3px) scale(1.03)}
+.float-email-btn{background:var(--gold-grad);color:var(--black);box-shadow:0 6px 30px rgba(212,175,55,.28)}
+.float-email-btn:hover{transform:translateY(-3px);filter:brightness(1.08)}
+@keyframes waPulse{0%,100%{box-shadow:0 6px 30px rgba(37,211,102,.36)}50%{box-shadow:0 6px 54px rgba(37,211,102,.62)}}
+
+/* AUDIO */
+#audio-bar{position:fixed;bottom:28px;left:28px;background:rgba(5,5,5,.95);backdrop-filter:blur(20px);border:var(--border);border-radius:50px;padding:12px 20px;display:none;align-items:center;gap:13px;z-index:1000;width:310px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+#audio-bar.show{display:flex}
+.a-bars{display:flex;gap:3px;align-items:flex-end;height:24px}
+.ab{width:3px;background:var(--gold-grad);border-radius:2px;animation:barA .85s ease-in-out infinite}
+.ab:nth-child(1){height:8px}.ab:nth-child(2){height:17px;animation-delay:.1s}.ab:nth-child(3){height:23px;animation-delay:.2s}.ab:nth-child(4){height:14px;animation-delay:.3s}.ab:nth-child(5){height:10px;animation-delay:.15s}
+@keyframes barA{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.a-info{display:flex;flex-direction:column;gap:2px;flex:1}
+.a-title{font-size:14px;color:var(--gold);font-weight:700}
+.a-sub{font-size:12px;color:var(--gray)}
+.a-btn{background:var(--gold-grad);color:var(--black);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0}
+.a-close{background:none;border:none;color:var(--gray);font-size:20px;cursor:pointer;padding:4px}
+
+/* FI ANIMATIONS */
+.fi{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.fi.vis{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{display:none}.hamburger{display:flex}
+  .stats-grid{grid-template-columns:1fr}.pkg-grid{grid-template-columns:1fr}
+  .roadmap-steps{grid-template-columns:1fr;gap:34px}.roadmap-steps::before{display:none}
+  .about-inner{grid-template-columns:1fr;gap:38px}.about-visual{display:none}
+  .contact-opts{grid-template-columns:1fr}
+  .section{padding:72px 24px}
+  #header{padding:16px 24px}#header.scrolled{padding:12px 24px}
+  .float-contact{right:14px;bottom:14px}
+  .float-btn{padding:10px 14px;font-size:13.5px}
+  .m-opts{grid-template-columns:1fr}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .deal-box{padding:34px 26px}.deal-section{padding:0 24px 72px}
+  .action-bar{flex-direction:column}
+}
+@media(max-width:600px){
+  .tabs-nav{flex-direction:column}.tab-btn{border-right:none;border-bottom:var(--border)}
+  .venues-grid{grid-template-columns:repeat(2,1fr)}
+  .artists-grid{grid-template-columns:1fr 1fr}
+  #audio-bar{width:62px;padding:10px;border-radius:50%}
+  #audio-bar .a-info,#audio-bar .a-close{display:none}
+  #audio-bar.show{width:62px}
+  .float-btn span.fl-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .m-step-anim{transition:none!important;transform:none!important;opacity:1!important}
+}
+</style>
+</head>
+<body>
+<div class="light-rays"><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div></div>
+
+<header id="header">
+  <a href="#hero" class="logo-wrap" aria-label="סולטון הפקות">
+    <span class="logo-main">SOLTON</span>
+    <span class="logo-sub">הפקות מוזיקליות</span>
+    <div class="logo-pulse"></div>
+  </a>
+  <nav>
+    <a href="#packages">דילים</a>
+    <a href="#artists">אומנים</a>
+    <a href="#about">עלינו</a>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לקבל%20הצעה%20לדיל%20עבור%20האירוע%20שלי" class="nav-cta" target="_blank">וואטסאפ להצעה</a>
+  </nav>
+  <div class="hamburger" id="hambBtn" role="button" tabindex="0" aria-controls="mobNav" aria-expanded="false" aria-label="תפריט"><span></span><span></span><span></span></div>
+</header>
+
+<div class="mobile-nav" id="mobNav" role="dialog" aria-modal="true">
+  <button class="mob-close" id="mobClose">✕</button>
+  <a href="#packages" onclick="closeMob()">דילים</a>
+  <a href="#artists" onclick="closeMob()">אומנים</a>
+  <a href="#matcher" onclick="closeMob()">AI Matcher</a>
+  <a href="#about" onclick="closeMob()">עלינו</a>
+  <a href="#contact" onclick="closeMob()">צור קשר</a>
+</div>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="bokeh"></div><div class="bokeh"></div><div class="bokeh"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ הדילים של סולטון ✦ מוזיקה גדולה, מחיר קטן</div>
+
+    <div class="solton-logo-hero">
+      <div class="particles" id="heroParticles"></div>
+      <span class="slh-main">SOLTON</span>
+      <svg class="slh-wave" viewBox="0 0 600 26" xmlns="http://www.w3.org/2000/svg" height="20" aria-hidden="true">
+        <defs>
+          <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#A8841A"/>
+            <stop offset="0.35" stop-color="#D4AF37"/>
+            <stop offset="0.6" stop-color="#F0D060"/>
+            <stop offset="1" stop-color="#A8841A"/>
+          </linearGradient>
+        </defs>
+        <path d="M10 13 C30 3,50 3,70 13 S110 23,130 13 S170 3,190 13 S230 23,250 13 S290 3,310 13 S350 23,370 13 S410 3,430 13 S470 23,490 13 S530 3,550 13 S590 23,600 17" fill="none" stroke="url(#wg)" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+      </svg>
+      <span class="slh-sub">הפקות מוזיקליות · שש שנות עוצמה</span>
+    </div>
+
+    <h1 class="hero-title">מפיקים לכם את השמחה.<br><span>הדילים החזקים בעולם המוזיקה</span></h1>
+    <div class="hero-slogan">SOLTON – שש שנים של עוצמה מוזיקלית בכל היכל</div>
+    <p class="hero-sub">אמן + הגברה + תאורה במחיר פיקס. אתם רק סוגרים תאריך, אנחנו סוגרים לכם דיל שמגיע בזמן ובדיוק.</p>
+    <div class="hero-ctas">
+      <a href="#packages" class="btn-gold">לצפייה בדילים</a>
+      <a href="https://wa.me/972500000000?text=שלום%2C%20איזה%20דיל%20חיפשתם%20היום%3F" target="_blank" class="btn-outline">דברו איתנו בוואטסאפ</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div><span>גלול למטה</span></div>
+</section>
+
+<div class="marquee-section"><div class="marquee-track">
+  <span class="m-item"><span class="m-dot"></span>לקוחות VIP</span><span class="m-item"><span class="m-dot"></span>הפקות ענק</span><span class="m-item"><span class="m-dot"></span>אירועי שיא</span><span class="m-item"><span class="m-dot"></span>דינרי יוקרה</span><span class="m-item"><span class="m-dot"></span>אירועי חוצות</span><span class="m-item"><span class="m-dot"></span>אולמות מובילים</span><span class="m-item"><span class="m-dot"></span>ניהול סאונד מקצועי</span><span class="m-item"><span class="m-dot"></span>אווירה פרימיום</span><span class="m-item"><span class="m-dot"></span>עיבודים מותאמים</span>
+  <span class="m-item"><span class="m-dot"></span>לקוחות VIP</span><span class="m-item"><span class="m-dot"></span>הפקות ענק</span><span class="m-item"><span class="m-dot"></span>אירועי שיא</span><span class="m-item"><span class="m-dot"></span>דינרי יוקרה</span><span class="m-item"><span class="m-dot"></span>אירועי חוצות</span><span class="m-item"><span class="m-dot"></span>אולמות מובילים</span><span class="m-item"><span class="m-dot"></span>ניהול סאונד מקצועי</span><span class="m-item"><span class="m-dot"></span>אווירה פרימיום</span><span class="m-item"><span class="m-dot"></span>עיבודים מותאמים</span>
+</div></div>
+
+<section id="stats" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">המספרים מדברים</span><h2 class="sec-title">ששת השנים שלנו <span>בארבע ספרות</span></h2><div class="sec-divider"></div></div>
+  <div class="stats-grid fi">
+    <div class="stat-card"><span class="stat-num" data-target="1200">0</span><div class="stat-lbl">שמחות וחתונות יוקרה<br>הופקו עד כה</div></div>
+    <div class="stat-card"><span class="stat-num" data-target="450">0</span><div class="stat-lbl">אירועי שיא<br>ודינרים ללקוחות</div></div>
+    <div class="stat-card"><span class="stat-num" data-target="100" data-suffix="%">0</span><div class="stat-lbl">שליטה בהיכלי היוקרה<br>אווניו · לאגו · וגשל</div></div>
+  </div>
+</section>
+
+<div class="deal-section">
+  <div class="deal-box fi">
+    <div class="deal-tag">✦ מבצע קיץ בלעדי ✦</div>
+    <h3>מבצע חתונות קיץ לאירועי קיץ</h3>
+    <p>חבילת תזמורת + זמר + הגברה בסיבסוד סולטון<br>דיל סגור ששמור רק לנו</p>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לשמוע%20על%20הדיל%20הסגור%20לקיץ" target="_blank"><button class="btn-gold">שלחו הודעה – קבלו פרטים עכשיו</button></a>
+  </div>
+</div>
+
+<section id="packages" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">דילים של סולטון</span><h2 class="sec-title">מוזיקה גדולה, <span>מחיר קטן</span></h2><div class="sec-divider"></div></div>
+  <div class="pkg-grid fi">
+    <div class="pkg-card">
+      <div class="pkg-icon-ring">🎤</div>
+      <div class="pkg-crown">מסלול פרימיום</div><div class="pkg-name">פרימיום פלוס</div>
+      <div class="pkg-sub">אמן + הגברה + תאורה במחיר פיקס</div><div class="pkg-price">מחיר פיקס: ₪—</div>
+      <ul class="pkg-list"><li>זמר מהשורה הראשונה</li><li>תזמורת מורחבת מלאה</li><li>תאורה מקצועית במה</li><li>הגברה ומערכת סאונד</li><li>תיאום מלא עם המוסד</li></ul>
+      <button class="btn-outline" style="width:100%" onclick="closePackageDeal('פרימיום פלוס')">סגור דיל עכשיו</button>
+    </div>
+    <div class="pkg-card featured">
+      <div class="pkg-icon-ring">👑</div>
+      <div class="pkg-crown">✦ המומלץ ✦</div><div class="pkg-name">מסלול אווניו</div>
+      <div class="pkg-sub">הפקה מלאה + אמן + סט תאורה והגברה</div><div class="pkg-price">מחיר פיקס: ₪—</div>
+      <ul class="pkg-list"><li>הפקה מלאה מאפס עד סוף</li><li>עיבודים מוזיקליים מיוחדים</li><li>זמר + תזמורת + DJ</li><li>תאורה ובמה מקצועית</li><li>ליווי אישי של המפיק</li><li>קוורדינציה מלאה עם האולם</li></ul>
+      <button class="btn-gold" style="width:100%" onclick="closePackageDeal('מסלול אווניו')">סגור דיל עכשיו</button>
+    </div>
+    <div class="pkg-card">
+      <div class="pkg-icon-ring">🎻</div>
+      <div class="pkg-crown">מסלול אקוסטי</div><div class="pkg-name">אקוסטי פרימיום</div>
+      <div class="pkg-sub">הרכב אקוסטי + הגברה מדויקת + תאורה נקייה</div><div class="pkg-price">מחיר פיקס: ₪—</div>
+      <ul class="pkg-list"><li>הרכב אקוסטי מרגש</li><li>זמר + כינור + גיטרה</li><li>מותאם לזרימה ולרגעים המרכזיים</li><li>רפרטואר מסורתי אותנטי</li><li>גמישות מלאה לפי צרכי האירוע</li></ul>
+      <button class="btn-outline" style="width:100%" onclick="closePackageDeal('אקוסטי פרימיום')">סגור דיל עכשיו</button>
+    </div>
+  </div>
+</section>
+
+<section id="venues" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">היכלי השמחה</span><h2 class="sec-title">בכל <span>היכל ומוסד</span></h2><div class="sec-divider"></div></div>
+  <div class="tabs-nav fi">
+    <button class="tab-btn active" data-tab="vip">היכלי VIP</button>
+    <button class="tab-btn" data-tab="jerusalem">ירושלים</button>
+    <button class="tab-btn" data-tab="center">מרכז ובני ברק</button>
+    <button class="tab-btn" data-tab="projects">פרויקטי שיא</button>
+  </div>
+  <div class="tab-content active" id="tab-vip"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🏛️</div><div class="venue-name">אווניו</div><div class="venue-desc">Avenue – חתונות ענק</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">💎</div><div class="venue-name">לאגו</div><div class="venue-desc">Lago – יוקרה מרבית</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">👑</div><div class="venue-name">כתר הרימון</div><div class="venue-desc">היכל יוקרה</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">✨</div><div class="venue-name">דימול</div><div class="venue-desc">Dimol – אירועי פאר</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🌟</div><div class="venue-name">סיטי טאואר</div><div class="venue-desc">City Tower</div></div>
+  </div></div>
+  <div class="tab-content" id="tab-jerusalem"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🕍</div><div class="venue-name">מונדיאל</div><div class="venue-desc">ירושלים</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🏰</div><div class="venue-name">תמיר</div><div class="venue-desc">היכל תמיר</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">⭐</div><div class="venue-name">פבליון</div><div class="venue-desc">Pavilion</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🌙</div><div class="venue-name">גוטניק</div><div class="venue-desc">Gootnik Center</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">✡️</div><div class="venue-name">היכלי מלכות</div><div class="venue-desc">ירושלים</div></div>
+  </div></div>
+  <div class="tab-content" id="tab-center"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🎪</div><div class="venue-name">וגשל</div><div class="venue-desc">בני ברק</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🏯</div><div class="venue-name">ארמונות חן</div><div class="venue-desc">פאר ויוקרה</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">💫</div><div class="venue-name">קונקורד</div><div class="venue-desc">Concord</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🎭</div><div class="venue-name">לביא</div><div class="venue-desc">אולמי לביא</div></div>
+  </div></div>
+  <div class="tab-content" id="tab-projects"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🎯</div><div class="venue-name">אירועי חוצות</div><div class="venue-desc">הפקות ענק</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🏆</div><div class="venue-name">דינרי יוקרה</div><div class="venue-desc">אווירה פרימיום</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🌆</div><div class="venue-name">אירועי עיר</div><div class="venue-desc">במה מרשימה</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">📣</div><div class="venue-name">כנסים וקמפיינים</div><div class="venue-desc">תכנית אומנותית</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🎇</div><div class="venue-name">שמחות מרכזיות</div><div class="venue-desc">עיבודים מותאמים</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">💎</div><div class="venue-name">אולמות VIP</div><div class="venue-desc">סטנדרט גבוה</div></div>
+  </div></div>
+</section>
+
+<section id="cities" class="section" style="background:var(--charcoal)">
+  <div class="sec-hdr fi"><span class="sec-label">נוכחות בשטח</span><h2 class="sec-title">השמחות שלנו <span>בכל נקודה</span></h2><div class="sec-divider"></div></div>
+  <div class="cities-grid fi">
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">ירושלים</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">בני ברק</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">מודיעין עילית</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">בית שמש</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">אשדוד</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">צפת</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">טבריה</div></div>
+    <div class="city-item"><div class="city-pin">✈️</div><div class="city-name">ניו יורק – חו"ל</div></div>
+  </div>
+</section>
+
+<section id="artists" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">גלריית אמנים</span><h2 class="sec-title">האמנים <span>שלנו</span></h2><p style="color:rgba(255,255,255,.42);font-size:15px;margin-top:10px">ייצוג בלעדי וסגירת דילים מראש</p><div class="sec-divider"></div></div>
+  <div class="artists-grid fi">
+    <div class="artist-card"><div class="artist-sil">🎤</div><div class="artist-type">זמר ראשי</div><div class="artist-title">אמן הבית של סולטון</div><div class="artist-badge">בייצוג בלעדי</div><button class="play-btn" onclick="openAudio('זמר ראשי','ייצוג בלעדי – סולטון הפקות')">▶ האזן לטעימה</button><button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('זמר ראשי')">סגור דיל</button></div>
+    <div class="artist-card"><div class="artist-sil">🎹</div><div class="artist-type">קלידן בכיר</div><div class="artist-title">אמן מהשורה הראשונה</div><div class="artist-badge">בייצוג בלעדי</div><button class="play-btn" onclick="openAudio('קלידן בכיר','ייצוג בלעדי – סולטון הפקות')">▶ האזן לטעימה</button><button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('קלידן בכיר')">סגור דיל</button></div>
+    <div class="artist-card"><div class="artist-sil">🎻</div><div class="artist-type">כינור ראשי</div><div class="artist-title">תזמורת הבית של סולטון</div><div class="artist-badge">בייצוג בלעדי</div><button class="play-btn" onclick="openAudio('כינור ראשי','ייצוג בלעדי – סולטון הפקות')">▶ האזן לטעימה</button><button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('כינור ראשי')">סגור דיל</button></div>
+    <div class="artist-card"><div class="artist-sil">🥁</div><div class="artist-type">קצב ותפקיד</div><div class="artist-title">אמן מהשורה הראשונה</div><div class="artist-badge">בייצוג בלעדי</div><button class="play-btn" onclick="openAudio('קצב ותפקיד','ייצוג בלעדי – סולטון הפקות')">▶ האזן לטעימה</button><button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('קצב ותפקיד')">סגור דיל</button></div>
+    <div class="artist-card"><div class="artist-sil">🎷</div><div class="artist-type">הרכב אקוסטי</div><div class="artist-title">הרכב אקוסטי פרימיום</div><div class="artist-badge">בייצוג בלעדי</div><button class="play-btn" onclick="openAudio('הרכב אקוסטי','ייצוג בלעדי – סולטון הפקות')">▶ האזן לטעימה</button><button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('הרכב אקוסטי')">סגור דיל</button></div>
+    <div class="artist-card"><div class="artist-sil">🎙️</div><div class="artist-type">זמר מופע</div><div class="artist-title">קול מוביל בסגנון שלך</div><div class="artist-badge">בייצוג בלעדי</div><button class="play-btn" onclick="openAudio('זמר מופע','ייצוג בלעדי – סולטון הפקות')">▶ האזן לטעימה</button><button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('זמר מופע')">סגור דיל</button></div>
+  </div>
+</section>
+
+<section id="matcher" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">מערכת חכמה</span><h2 class="sec-title">מצא את <span>ההרכב שלך</span></h2><div class="sec-divider"></div></div>
+  <div class="matcher-box fi">
+    <div class="matcher-hdr"><h3>✦ AI Matcher – מתאם ההרכב החכם ✦</h3><p>ענה על 3 שאלות ונמצא לך את ההרכב המושלם</p></div>
+    <div class="matcher-body">
+      <div class="m-progress"><div class="p-dot active" id="pd0"></div><div class="p-dot" id="pd1"></div><div class="p-dot" id="pd2"></div></div>
+      <div id="ms0"><div class="m-question">מה סוג האירוע?</div><div class="m-opts"><div class="m-opt" onclick="mSel(0,'חתונה',this)">💒 חתונה</div><div class="m-opt" onclick="mSel(0,'אקוסטי',this)">🎻 אירוע אקוסטי</div><div class="m-opt" onclick="mSel(0,'דינר יוקרה',this)">🥂 דינר יוקרה</div><div class="m-opt" onclick="mSel(0,'אירוע משפחתי',this)">👨‍👩‍👧 אירוע משפחתי</div></div></div>
+      <div id="ms1" style="display:none"><div class="m-question">מה הסגנון המוזיקלי?</div><div class="m-opts"><div class="m-opt" onclick="mSel(1,'מסורתי',this)">🕊️ מסורתי אותנטי</div><div class="m-opt" onclick="mSel(1,'קלאסי',this)">🎼 קלאסי מדויק</div><div class="m-opt" onclick="mSel(1,'מזרחי',this)">🌙 מזרחי תוסס</div><div class="m-opt" onclick="mSel(1,'מודרני',this)">✨ מודרני יוקרתי</div></div><button class="btn-outline btn-sm" style="margin-top:6px" onclick="mBack(1)">← חזור</button></div>
+      <div id="ms2" style="display:none"><div class="m-question">מה התקציב?</div><div class="m-opts"><div class="m-opt" onclick="mSel(2,'מותאם',this)">🌟 תקציב פרימיום</div><div class="m-opt" onclick="mSel(2,'בינוני',this)">⭐ בינוני – מרשים</div><div class="m-opt" onclick="mSel(2,'יוקרה',this)">👑 יוקרה – ללא מגבלה</div></div><button class="btn-outline btn-sm" style="margin-top:6px" onclick="mBack(2)">← חזור</button></div>
+
+      <div class="m-result" id="mRes">
+        <div class="result-card">
+          <div class="result-card-label">ההתאמה המושלמת עבורכם:</div>
+          <div class="result-card-title" id="mResTitle">הדיל המומלץ עבורך</div>
+          <ul class="result-checks" id="mResChecks">
+            <li id="mResCheck1"></li>
+            <li id="mResCheck2"></li>
+            <li id="mResCheck3"></li>
+          </ul>
+          <p class="result-note" id="mResTxt"></p>
+        </div>
+        <div style="padding:4px">
+          <div class="action-bar">
+            <a id="mResWA" href="#" target="_blank" class="action-bar-wa">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.2 7.6L4 20l.7-3.6a8.5 8.5 0 1 1 15.8-4.7Z"/><path d="M9 9.3c.5 1.3 1.4 2.6 2.6 3.8 1.2 1.2 2.5 2.1 3.8 2.6"/></svg>
+              דברו איתנו בוואטסאפ
+            </a>
+            <button onclick="sendToEmail()" class="action-bar-email">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/><path d="m22 8-10 6L2 8"/></svg>
+              קבלת הצעה למייל
+            </button>
+          </div>
+          <div class="action-secondary">
+            <a href="tel:+972500000000" class="action-phone">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2c-1.1-.1-2.3-.4-3.6-.9-3-1.1-5.8-3.8-6.9-6.9-.5-1.3-.8-2.5-.9-3.6A2 2 0 0 1 7.3 4h3a2 2 0 0 1 2 1.7c.1.8.3 1.6.6 2.3a2 2 0 0 1-.5 2.1l-1.2 1.2c1.5 2.7 3.8 5 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.7.3 1.5.5 2.3.6A2 2 0 0 1 22 16.9Z"/></svg>
+              ייעוץ טלפוני
+            </a>
+            <button onclick="resetM()" class="btn-reset">↩ התחל מחדש</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap" class="section" style="background:var(--black)">
+  <div class="sec-hdr fi"><span class="sec-label">תהליך העבודה</span><h2 class="sec-title">הדרך <span>לשמחה שלכם</span></h2><div class="sec-divider"></div></div>
+  <div class="roadmap-steps fi">
+    <div class="r-step"><div class="step-num">א</div><div class="step-title">שיחת ייעוץ והתאמה</div><div class="step-desc">אפיון מוזיקלי מלא – מה הסגנון, מה החזון, מה האווירה שאתם חולמים עליה.</div></div>
+    <div class="r-step"><div class="step-num">ב</div><div class="step-title">בניית הרכב ותכנית אומנותית</div><div class="step-desc">בחירת האמנים, עיבודים מיוחדים, תכנית ערב מפורטת ותיאום עם האולם.</div></div>
+    <div class="r-step"><div class="step-num">ג</div><div class="step-title">ליווי בשטח עד האקורד האחרון</div><div class="step-desc">המפיק שלנו איתכם מהגעה עד לרקוד האחרון. שקט נפשי מוחלט.</div></div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="about-inner">
+    <div class="about-visual"><div class="about-frame"><div class="about-icon-big">🎹</div></div><div class="about-badge-fl"><span class="n">2020</span><span class="l">שנת הקמה</span></div></div>
+    <div class="about-text fi">
+      <h2>המשרד שבא <span>לשנות את הסאונד</span></h2>
+      <p>סולטון הפקות היא לא רק משרד ייצוג. אנחנו המוח מאחורי אירועי הענק שלכם: תכנון מוסיקלי מדויק, ליווי מקצועי וחבילה אחת שסוגרת לכם את כל הפינות.</p>
+      <p>מהפקות מורכבות באולמות היוקרה ועד לאירועי שיא באאוט-דורס – אנחנו שם עם שפה הפקתית עקבית, איכות ללא פשרות ושקט נפשי אמיתי.</p>
+      <p>אנחנו לא רק מתווכים. אנחנו מייצגים וסוגרים לכם חבילה מלאה שחוסכת כאב ראש וכסף.</p>
+      <div class="about-tags"><span class="about-tag">אירועי חוצות</span><span class="about-tag">אולמות VIP</span><span class="about-tag">+1,200 פרויקטים</span><span class="about-tag">דילים סגורים</span><span class="about-tag">עיבודים מותאמים</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="representation" class="section" style="background:var(--charcoal)">
+  <div class="sec-hdr fi"><span class="sec-label">ייצוג בלעדי</span><h2 class="sec-title">דילים בלי כאב ראש <span>בידיים שלנו</span></h2><div class="sec-divider"></div></div>
+  <div class="deal-box fi" style="max-width:940px">
+    <div class="deal-tag">✦ חבילה מלאה, ראש שקט ✦</div>
+    <h3>אנחנו לא רק מתווכים</h3>
+    <p>אנחנו מייצגים וסוגרים לך חבילה מלאה שחוסכת לך כאב ראש וכסף.</p>
+    <ul class="pkg-list" style="text-align:right;margin:0 auto 26px;max-width:640px">
+      <li>ניהול הפקה ותיאום מול כל הגורמים</li>
+      <li>בחירת סגנון והרכב לפי התקציב והקהל</li>
+      <li>עיבודים מותאמים + סאונד מקצועי</li>
+    </ul>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לקבל%20הצעה%20לדיל%20עבור%20האירוע%20שלי" target="_blank"><button class="btn-gold" style="width:100%">לקבלת הצעה לדיל עכשיו</button></a>
+  </div>
+</section>
+
+<section id="faq" class="section" style="background:var(--black)">
+  <div class="sec-hdr fi"><span class="sec-label">שאלות נפוצות</span><h2 class="sec-title">כל התשובות <span>כאן</span></h2><div class="sec-divider"></div></div>
+  <div class="faq-list fi">
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">האם אתם עובדים עם תקציבים שונים?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כן. אנחנו בונים התאמה לפי היעד והתקציב, ומציעים דילים ברמות שונות – כולל הרכב, עיבודים, הגברה ותיאום מלא.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">איזה סגנונות מוזיקליים אפשר לקבל?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">בוחרים סגנון מתוך מגוון אפשרויות, ואנחנו מתאימים עיבודים, וייב ובחירת הרכב כך שהכול יישב בול עם האווירה של האירוע.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">איך משריינים תאריך לאירוע שיא?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כדאי לשריין כמה שיותר מוקדם. ברגע שסוגרים קו הפקה והרכב, אנחנו נותנים לכם לוח זמנים ברור.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">האם אפשר לשמוע טעימות לפני ההזמנה?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כמובן. בשיחת האפיון הראשונה אנחנו שולחים הקלטות ווידאו כדי שתוכלו לקבל החלטה בביטחון.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">האם אתם גם מפיקים אירועים בחו"ל?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כן. באירועי חו"ל אנחנו עובדים עם לוגיסטיקה ותיאום מוקדם מול המקום והצוות המקומי, כדי שכל ההפקה תרוץ חלק.</div></div></div>
+  </div>
+</section>
+
+<section id="contact" class="section" style="background:var(--charcoal)">
+  <div class="sec-hdr fi"><span class="sec-label">צור קשר</span><h2 class="sec-title">לקבלת <span>הצעה לדיל עכשיו</span></h2><div class="sec-divider"></div></div>
+  <div class="contact-inner fi">
+    <p>רוצים דיל שמוכן מראש? שלחו לנו הודעה בוואטסאפ, ונבנה לכם הצעה מדויקת עם ליווי מלא מקצה לקצה.</p>
+    <div class="contact-opts">
+      <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לקבל%20הצעה%20לדיל%20עבור%20האירוע%20שלי" target="_blank"><div class="contact-card"><div class="cc-icon cc-icon-wa"><svg viewBox="0 0 24 24"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.2 7.6L4 20l.7-3.6a8.5 8.5 0 1 1 15.8-4.7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9.3c.5 1.3 1.4 2.6 2.6 3.8 1.2 1.2 2.5 2.1 3.8 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cc-title">וואטסאפ</div><div class="cc-desc">שלחו הודעה ונחזור בהקדם</div></div></a>
+      <a href="tel:+972500000000"><div class="contact-card"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2c-1.1-.1-2.3-.4-3.6-.9-3-1.1-5.8-3.8-6.9-6.9-.5-1.3-.8-2.5-.9-3.6A2 2 0 0 1 7.3 4h3a2 2 0 0 1 2 1.7c.1.8.3 1.6.6 2.3a2 2 0 0 1-.5 2.1l-1.2 1.2c1.5 2.7 3.8 5 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.7.3 1.5.5 2.3.6A2 2 0 0 1 22 16.9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cc-title">שיחת טלפון</div><div class="cc-desc">050-000-0000</div></div></a>
+    </div>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לקבל%20הצעה%20לדיל%20עבור%20האירוע%20שלי" target="_blank"><button class="btn-gold" style="font-size:19px;padding:18px 64px">דברו איתנו בוואטסאפ</button></a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo-text">SOLTON</div>
+  <div class="footer-slogan">שש שנים של עוצמה מוזיקלית בכל היכל</div>
+  <div class="footer-links"><a href="#about">אודות</a><a href="#venues">היכלים</a><a href="#artists">אמנים</a><a href="#packages">חבילות</a><a href="#faq">שאלות נפוצות</a><a href="#contact">צור קשר</a></div>
+  <div class="footer-copy">© 2026 סולטון הפקות – כל הזכויות שמורות</div>
+</footer>
+
+<div class="float-contact">
+  <div class="wa-bubble">שלום, איזה דיל חיפשתם היום?</div>
+  <a href="https://wa.me/972500000000?text=שלום%2C%20איזה%20דיל%20חיפשתם%20היום%3F" target="_blank" class="float-btn float-wa-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.2 7.6L4 20l.7-3.6a8.5 8.5 0 1 1 15.8-4.7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9.3c.5 1.3 1.4 2.6 2.6 3.8 1.2 1.2 2.5 2.1 3.8 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fl-label">דברו איתנו בוואטסאפ</span></a>
+  <button onclick="sendToEmail()" class="float-btn float-email-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 8-10 6L2 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fl-label">שלחו הצעה למייל</span></button>
+</div>
+
+<div id="audio-bar"><div class="a-bars"><div class="ab"></div><div class="ab"></div><div class="ab"></div><div class="ab"></div><div class="ab"></div></div><div class="a-info"><div class="a-title" id="aTitle">אמן הבית של סולטון</div><div class="a-sub" id="aSub">בייצוג בלעדי</div></div><button class="a-btn" id="aPlayBtn" onclick="toggleAudio()">⏸</button><button class="a-close" onclick="closeAudio()">✕</button></div>
+
+<script>
+const hdr=document.getElementById('header');
+window.addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>60));
+const hambBtn=document.getElementById('hambBtn');
+const mobNav=document.getElementById('mobNav');
+function openMob(){mobNav.classList.add('open');hambBtn?.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';document.getElementById('mobClose')?.focus?.();}
+function closeMob(){mobNav.classList.remove('open');hambBtn?.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+hambBtn?.addEventListener('click',openMob);
+hambBtn?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openMob();}});
+document.getElementById('mobClose').addEventListener('click',closeMob);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mobNav.classList.contains('open'))closeMob();});
+document.querySelectorAll('#mobNav a').forEach(a=>a.addEventListener('click',closeMob));
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+});});
+function toggleFaq(btn){const item=btn.closest('.faq-item');const was=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));if(!was)item.classList.add('open');}
+function animCount(el){const target=parseInt(el.dataset.target);const suf=el.dataset.suffix||'+';let cur=0;const step=target/120;const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=Math.floor(cur).toLocaleString('he-IL')+(cur>=target?suf:'');if(cur>=target)clearInterval(t);},16);}
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll('[data-target]').forEach(animCount);obs.unobserve(e.target);}});},{threshold:.12});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+let mAnswers=[],mStep=0;
+{const steps=[0,1,2].map(i=>document.getElementById('ms'+i)).filter(Boolean);steps.forEach(el=>el.classList.add('m-step-anim'));document.getElementById('ms0')?.classList.add('in');}
+function mSel(step,val,el){
+  document.querySelectorAll('#ms'+step+' .m-opt').forEach(o=>o.classList.remove('sel'));
+  if(el)el.classList.add('sel');
+  setTimeout(()=>{
+    mAnswers[step]=val;
+    const cur=document.getElementById('ms'+step);cur.style.display='none';
+    mStep=step+1;
+    if(mStep<3){
+      document.getElementById('pd'+mStep).classList.add('active');
+      const next=document.getElementById('ms'+mStep);next.style.display='block';next.classList.remove('in');
+      requestAnimationFrame(()=>next.classList.add('in'));
+    }else showMRes();
+  },220);
+}
+function mBack(step){
+  const cur=document.getElementById('ms'+step);cur.style.display='none';
+  document.getElementById('pd'+(step-1)).classList.remove('active');
+  mStep=step-1;
+  const prev=document.getElementById('ms'+mStep);prev.style.display='block';prev.classList.remove('in');
+  requestAnimationFrame(()=>prev.classList.add('in'));
+}
+function resetM(){
+  mAnswers=[];mStep=0;
+  document.querySelectorAll('.p-dot').forEach((d,i)=>d.classList.toggle('active',i===0));
+  for(let i=0;i<3;i++){const el=document.getElementById('ms'+i);if(el){el.style.display=i===0?'block':'none';el.classList.toggle('in',i===0);el.querySelectorAll('.m-opt').forEach(o=>o.classList.remove('sel'));}}
+  document.getElementById('mRes').style.display='none';
+}
+function showMRes(){
+  const[ev,st,bu]=mAnswers;
+  const evStr=ev||'';const buStr=bu||'';const stStr=st||'';
+  let title='',checks=[],note='';
+  if(evStr==='אקוסטי'){
+    title='מסלול אקוסטי פרימיום';
+    checks=['הרכב אקוסטי מגיע עם הגברה מדויקת בחינם','ייצוג וניהול אישי לאורך כל הערב','עיבודים מיוחדים מותאמים לסגנון'];
+    note='אווירה נקייה ואותנטית ברמה גבוהה.';
+  }else if(evStr==='חתונה'&&buStr==='יוקרה'){
+    title='מסלול אווניו – חתונה יוקרה';
+    checks=['תזמורת מלאה מגיעה עם הגברה בחינם','זמר מהשורה הראשונה בייצוג בלעדי','ניהול אישי ומלא עד האקורד האחרון'];
+    note='הפקה ברמה הגבוהה ביותר, תיאום מלא עם האולם.';
+  }else if(evStr==='דינר יוקרה'){
+    title='מסלול אווניו – דינר יוקרה';
+    checks=['הרכב מוביל עם עיבודים יוקרתיים','סאונד מקצועי + תאורה מותאמת','תזמון נקי ומרשים על הבמה'];
+    note='הפקה מדויקת לאירועי VIP.';
+  }else if(evStr==='חתונה'){
+    title='מסלול אווניו – חתונה פרימיום';
+    checks=['הרכב איכותי עם הגברה כלולה','סאונד ברמה גבוהה לאורך הערב','ניהול מקצועי מהדקה הראשונה'];
+    note='התאמות לפי התקציב, בלי פשרות על האיכות.';
+  }else if(evStr==='אירוע משפחתי'){
+    title='מסלול פרימיום – אירוע משפחתי';
+    checks=['תכנית מסודרת עם סאונד שמחזיק','עיבודים מותאמים לקהל ולאווירה','גמישות מלאה לפי קצב האירוע'];
+    note='אנרגיה נכונה לכל גיל, עם ייצוג שמרגישים.';
+  }else{
+    title='מסלול פרימיום – הבחירה המושלמת';
+    checks=['סאונד איכותי + הרכב מקצועי','דיל משתלם עם ראש שקט','ליווי ייצוגי מקצה לקצה'];
+    note='ההתאמה הטובה ביותר עבורך.';
+  }
+  if(stStr){
+    if(stStr.includes('מזרחי'))checks[2]+=' (סגנון מזרחי)';
+    else if(stStr.includes('מודרני'))checks[2]+=' (נגיעה מודרנית)';
+    else if(stStr.includes('קלאסי'))checks[2]+=' (קו קלאסי)';
+  }
+  document.getElementById('mResTitle').textContent=title;
+  document.getElementById('mResTxt').textContent=note;
+  ['mResCheck1','mResCheck2','mResCheck3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el){el.textContent=checks[i]||'';el.style.display=checks[i]?'flex':'none';}
+  });
+  const waMsg=encodeURIComponent('שלום, עברתי על ה-AI Matcher באתר.\nהמלצה: '+title+'\nסוג אירוע: '+evStr+(stStr?'\nסגנון: '+stStr:'')+(buStr?'\nתקציב: '+buStr:'')+'\n\nאשמח לקבל הצעה מפורטת.');
+  document.getElementById('mResWA').href='https://wa.me/972500000000?text='+waMsg;
+  const res=document.getElementById('mRes');res.style.display='block';
+  res.classList.add('m-step-anim');requestAnimationFrame(()=>res.classList.add('in'));
+}
+function openWhatsApp(text){window.open('https://wa.me/972500000000?text='+encodeURIComponent(text),'_blank');}
+function closePackageDeal(p){openWhatsApp('שלום, אני רוצה לסגור דיל: '+p+'. מה השלבים?');}
+function closeArtistDeal(a){openWhatsApp('שלום, אשמח לסגור דיל עבור האמן: '+a+'.');}
+function sendToEmail(){
+  const title=document.getElementById('mResTitle')?.textContent||'המלצת הרכב';
+  const txt=document.getElementById('mResTxt')?.textContent||'';
+  const subj=encodeURIComponent('הצעת מחיר – סולטון הפקות');
+  const body=encodeURIComponent('שלום,\n\nקיבלתי המלצה ממערכת AI Matcher של סולטון הפקות:\n\n'+title+'\n'+txt+'\n\nאשמח לקבל הצעת מחיר מפורטת.\n\nתודה!');
+  window.location.href='mailto:info@solton.co.il?subject='+subj+'&body='+body;
+}
+let isPlaying=false;
+function openAudio(t,s){document.getElementById('aTitle').textContent=t;document.getElementById('aSub').textContent=s;document.getElementById('audio-bar').classList.add('show');isPlaying=true;document.getElementById('aPlayBtn').textContent='⏸';}
+function toggleAudio(){isPlaying=!isPlaying;document.getElementById('aPlayBtn').textContent=isPlaying?'⏸':'▶';}
+function closeAudio(){document.getElementById('audio-bar').classList.remove('show');isPlaying=false;}
+// Particles
+(function(){
+  const c=document.getElementById('heroParticles');if(!c)return;
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');p.className='particle';
+    p.style.cssText='right:'+(Math.random()*100)+'%;bottom:'+(Math.random()*40+10)+'%;animation-delay:'+(Math.random()*6)+'s;animation-duration:'+(3+Math.random()*4)+'s;width:'+(1.5+Math.random()*2.5)+'px;height:'+(1.5+Math.random()*2.5)+'px;opacity:0;';
+    c.appendChild(p);
+  }
+})();
+document.addEventListener('contextmenu',e=>{if(e.target.tagName==='IMG')e.preventDefault()});
+</script>
+</body>
+</html>
