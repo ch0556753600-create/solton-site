@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סולטון הפקות – מסלולי הפקה מוזיקלית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<!-- Firebase -->
+<script type="module">
+  import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import{getFirestore,collection,getDocs,doc,updateDoc,addDoc,deleteDoc,getDoc}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  // ← תיקון 2: הכניסי כאן את ה-config האמיתי של Firebase שלך
+  const firebaseConfig={
+    apiKey:"YOUR_API_KEY",
+    authDomain:"YOUR_PROJECT.firebaseapp.com",
+    projectId:"YOUR_PROJECT_ID",
+    storageBucket:"YOUR_PROJECT.appspot.com",
+    messagingSenderId:"YOUR_SENDER_ID",
+    appId:"YOUR_APP_ID"
+  };
+  const app=initializeApp(firebaseConfig);
+  const auth=getAuth(app);
+  const db=getFirestore(app);
+
+  window._fb={auth,db,signInWithEmailAndPassword,signOut,onAuthStateChanged,
+    collection,getDocs,doc,updateDoc,addDoc,deleteDoc,getDoc};
+
+  // תיקון 3: פונקציית extractYTId משופרת – מטפלת בכל סוגי קישורי YouTube
+  function extractYTId(url){
+    if(!url)return'';
+    // תמיכה ב: youtube.com/watch?v=, youtu.be/, youtube.com/embed/, youtube.com/shorts/
+    const m=url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return m?m[1]:'';
+  }
+  window._extractYTId=extractYTId;
+
+  function buildArtistCard(id,a){
+    const ytId=extractYTId(a.youtube||'');
+    const imgHtml=a.imageUrl
+      ?`<img src="${a.imageUrl}" alt="${(a.name||'').replace(/"/g,'&quot;')}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:1px solid rgba(201,168,76,.28);margin:0 auto 16px;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="artist-sil" style="display:none">${a.emoji||'🎤'}</div>`
+      :`<div class="artist-sil">${a.emoji||'🎤'}</div>`;
+    const videoBtn=ytId?`<button class="play-btn" onclick="openVideo('${ytId}','${(a.name||'').replace(/'/g,"\\'")}')" aria-label="צפה בביצוע של ${(a.name||'')}">▶ צפה בביצוע</button>`
+      :`<button class="play-btn" onclick="openAudio('${(a.name||'').replace(/'/g,"\\'"")}','ייצוג בלעדי – סולטון הפקות')" aria-label="האזן לטעימה">▶ האזן לטעימה</button>`;
+    return`<div class="artist-card" data-id="${id}">
+      ${imgHtml}
+      <div class="artist-type">${a.category||'אמן'}</div>
+      <div class="artist-title">${a.name||'אמן סולטון'}</div>
+      <div class="artist-badge">${a.badge||'בייצוג בלעדי'}</div>
+      ${videoBtn}
+      <button class="btn-gold btn-sm" style="width:100%;margin-top:14px" onclick="closeArtistDeal('${(a.name||'').replace(/'/g,"\\''")}')">בדיקת זמינות</button>
+    </div>`;
+  }
+
+  // תיקון 4: Loading & Empty States
+  async function fetchArtists(){
+    const grid=document.getElementById('artistsGrid');
+    if(!grid)return;
+    // הצג ספינר טעינה
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(201,168,76,.5)">
+      <div style="font-size:28px;margin-bottom:12px;animation:spinLoad 1s linear infinite;display:inline-block">✦</div>
+      <div style="font-size:14px;letter-spacing:2px">טוען אמנים...</div>
+    </div>`;
+    try{
+      const snap=await getDocs(collection(db,'artists'));
+      if(snap.empty){
+        // הודעה ידידותית כשהמסד ריק
+        grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:48px;color:rgba(255,255,255,.4)">
+          <div style="font-size:40px;margin-bottom:16px">🎵</div>
+          <div style="font-family:'Frank Ruhl Libre',serif;font-size:18px;color:rgba(201,168,76,.6);margin-bottom:8px">עדיין אין אמנים</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.3);margin-bottom:20px">לחץ על "כניסת צוות" בתחתית הדף כדי להוסיף אמן חדש</div>
+        </div>`;
+        return;
+      }
+      grid.innerHTML='';
+      snap.forEach(d=>{
+        const a=d.data();
+        grid.innerHTML+=buildArtistCard(d.id,a);
+      });
+    }catch(e){
+      // Firebase לא מחובר – הצג ברירות מחדל
+      renderDefaultArtists();
+    }
+  }
+
+  function renderDefaultArtists(){
+    const defaults=[
+      {id:'1',name:'אמן הבית של סולטון',category:'זמר ראשי',badge:'בייצוג בלעדי',emoji:'🎤'},
+      {id:'2',name:'אמן מהשורה הראשונה',category:'קלידן בכיר',badge:'בייצוג בלעדי',emoji:'🎹'},
+      {id:'3',name:'תזמורת הבית של סולטון',category:'כינור ראשי',badge:'בייצוג בלעדי',emoji:'🎻'},
+      {id:'4',name:'אמן מהשורה הראשונה',category:'קצב ותפקיד',badge:'בייצוג בלעדי',emoji:'🥁'},
+      {id:'5',name:'הרכב אקוסטי פרימיום',category:'הרכב אקוסטי',badge:'בייצוג בלעדי',emoji:'🎷'},
+      {id:'6',name:'קול מוביל בסגנון שלך',category:'זמר מופע',badge:'בייצוג בלעדי',emoji:'🎙️'},
+    ];
+    const grid=document.getElementById('artistsGrid');
+    if(!grid)return;
+    grid.innerHTML=defaults.map(a=>buildArtistCard(a.id,a)).join('');
+  }
+
+  // תיקון: onAuthStateChanged עם Persistence – שמירת מצב לאחר רענון
+  window.addEventListener('DOMContentLoaded',()=>{
+    fetchArtists();
+    onAuthStateChanged(auth,user=>{
+      if(user){
+        getDoc(doc(db,'users',user.uid)).then(snap=>{
+          const role=snap.exists()?snap.data().role:'artist';
+          window._currentUser={uid:user.uid,role,email:user.email};
+          const loginBtn=document.getElementById('adminLoginBtn');
+          const logoutBtn=document.getElementById('adminLogoutBtn');
+          if(loginBtn)loginBtn.style.display='none';
+          if(logoutBtn)logoutBtn.style.display='inline-flex';
+          // תיקון 6: ניתוב לפי תפקיד
+          if(role==='admin')openAdminPanel();
+          else openArtistPanel(user.uid);
+        });
+      }else{
+        window._currentUser=null;
+        const loginBtn=document.getElementById('adminLoginBtn');
+        const logoutBtn=document.getElementById('adminLogoutBtn');
+        if(loginBtn)loginBtn.style.display='inline-flex';
+        if(logoutBtn)logoutBtn.style.display='none';
+      }
+    });
+  });
+</script>
+<style>
+:root{
+  --gold:#C9A84C;--gold-light:#E2C97E;--gold-dark:#9A7428;
+  --champagne:#D4B896;--champagne-light:#E8D5BC;
+  --black:#080808;--charcoal:#0F0F0F;--charcoal2:#161616;
+  --white:#FAF8F2;--gray:#777;
+  --gold-grad:linear-gradient(135deg,#9A7428 0%,#C9A84C 35%,#E2C97E 55%,#C9A84C 75%,#9A7428 100%);
+  --gold-grad-h:linear-gradient(90deg,#9A7428 0%,#C9A84C 25%,#E2C97E 50%,#C9A84C 75%,#9A7428 100%);
+  --glass:rgba(12,10,4,0.82);
+  --border:1px solid rgba(201,168,76,0.22);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Heebo',sans-serif;direction:rtl;overflow-x:hidden}
+h1,h2,h3,h4{font-family:'Frank Ruhl Libre',serif;font-weight:500;letter-spacing:1px}
+a{text-decoration:none;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+img{max-width:100%;display:block;-webkit-user-drag:none;user-select:none;pointer-events:none}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes spinLoad{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* PRELOADER */
+#preloader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .5s ease,visibility .5s ease}
+#preloader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.pl-logo{font-family:'Cinzel Decorative',serif;font-weight:900;font-size:clamp(52px,9vw,96px);letter-spacing:0.14em;background:var(--gold-grad-h);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2s linear infinite,plFade .4s ease forwards;opacity:0}
+.pl-sub{font-size:11px;letter-spacing:5px;color:rgba(201,168,76,.45);text-transform:uppercase;animation:plFade .4s ease .1s forwards;opacity:0}
+@keyframes plFade{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
+
+.light-rays{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.ray{position:absolute;top:-20%;width:1px;height:140%;background:linear-gradient(to bottom,transparent,rgba(201,168,76,.04),transparent);animation:swayR linear infinite}
+.ray:nth-child(1){left:10%;animation-duration:15s}
+.ray:nth-child(2){left:26%;animation-duration:19s;animation-delay:-5s}
+.ray:nth-child(3){left:50%;animation-duration:13s;animation-delay:-2s}
+.ray:nth-child(4){left:70%;animation-duration:21s;animation-delay:-8s}
+.ray:nth-child(5){left:85%;animation-duration:12s;animation-delay:-10s}
+@keyframes swayR{0%,100%{opacity:.4;margin-left:0}50%{opacity:.9;margin-left:14px}}
+
+/* HEADER */
+#header{position:fixed;top:0;right:0;left:0;z-index:1000;padding:22px 48px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,padding .4s}
+#header.scrolled{background:rgba(8,8,8,0.94);backdrop-filter:blur(16px);padding:14px 48px;border-bottom:var(--border)}
+.logo-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:2px;cursor:pointer;position:relative;text-decoration:none}
+.logo-main{font-family:'Cinzel Decorative',serif;font-weight:900;font-size:32px;letter-spacing:0.18em;background:var(--gold-grad-h);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;filter:drop-shadow(0 0 12px rgba(201,168,76,.18));transition:font-size .4s,filter .3s;line-height:1}
+.logo-sub{font-size:8px;letter-spacing:5px;color:rgba(201,168,76,.5);text-transform:uppercase;font-weight:300}
+.logo-pulse{position:absolute;bottom:-5px;right:0;width:100%;height:1px;background:var(--gold-grad-h);transform:scaleX(0);transform-origin:right;transition:transform .4s}
+.logo-wrap:hover .logo-pulse{transform:scaleX(1)}
+.logo-wrap:hover .logo-main{filter:drop-shadow(0 0 22px rgba(201,168,76,.4))}
+#header.scrolled .logo-main{font-size:24px}
+nav{display:flex;gap:26px;align-items:center}
+nav a{font-family:'Frank Ruhl Libre',serif;font-size:14px;color:rgba(255,255,255,.6);letter-spacing:1px;transition:color .3s;position:relative}
+nav a::after{content:'';position:absolute;bottom:-4px;right:0;width:0;height:1px;background:var(--gold-grad-h);transition:width .3s}
+nav a:hover{color:var(--champagne)}
+nav a:hover::after{width:100%}
+.nav-cta{background:transparent!important;color:var(--champagne)!important;padding:9px 20px;border-radius:2px;font-weight:500;font-family:'Heebo',sans-serif;border:1px solid rgba(201,168,76,.35)!important;transition:all .3s!important;font-size:13px!important}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{border-color:var(--gold)!important;background:rgba(201,168,76,.07)!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px}
+.hamburger span{width:26px;height:1.5px;background:var(--gold);border-radius:2px}
+.mobile-nav{display:none;position:fixed;inset:0;background:rgba(5,5,5,.98);backdrop-filter:blur(24px);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-family:'Frank Ruhl Libre',serif;font-size:26px;color:var(--white);transition:color .3s;letter-spacing:2px}
+.mobile-nav a:hover{color:var(--champagne)}
+.mob-close{position:absolute;top:26px;left:26px;font-size:24px;color:var(--gold);cursor:pointer;background:none;border:none}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:130px 40px 90px}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 40%,rgba(201,168,76,.05) 0%,transparent 65%)}
+.bokeh{position:absolute;border-radius:50%;filter:blur(100px);animation:bFloat ease-in-out infinite;z-index:0;pointer-events:none}
+.bokeh:nth-child(1){width:500px;height:500px;background:rgba(201,168,76,.06);top:0%;right:-8%;animation-duration:16s}
+.bokeh:nth-child(2){width:360px;height:360px;background:rgba(154,116,40,.05);bottom:10%;left:2%;animation-duration:20s;animation-delay:-6s}
+.bokeh:nth-child(3){width:200px;height:200px;background:rgba(226,201,126,.07);top:45%;right:40%;animation-duration:12s;animation-delay:-3s}
+@keyframes bFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-28px) scale(1.06)}}
+.hero-content{position:relative;z-index:2;max-width:960px}
+.hero-badge{display:inline-block;border:var(--border);background:var(--glass);padding:7px 24px;font-size:9px;letter-spacing:5px;color:rgba(201,168,76,.7);text-transform:uppercase;margin-bottom:36px;border-radius:2px;backdrop-filter:blur(8px)}
+.solton-logo-hero{display:inline-block;position:relative;margin-bottom:24px}
+.slh-main{font-family:'Cinzel Decorative',serif;font-weight:900;font-size:clamp(68px,11vw,130px);letter-spacing:0.14em;line-height:1;background:var(--gold-grad-h);background-size:300% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2.8s linear infinite;filter:drop-shadow(0 0 32px rgba(201,168,76,.22));display:block}
+.slh-wave{display:block;width:100%;margin-top:4px;overflow:visible}
+.slh-sub{font-size:clamp(8px,.9vw,11px);letter-spacing:6px;color:rgba(201,168,76,.45);text-transform:uppercase;margin-top:10px;display:block;text-align:center;font-weight:300}
+.particles{position:absolute;inset:-40px;pointer-events:none;z-index:1}
+.particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--champagne);animation:pFloat linear infinite;opacity:0}
+@keyframes pFloat{0%{opacity:0;transform:translateY(0) scale(0)}20%{opacity:.6}80%{opacity:.2}100%{opacity:0;transform:translateY(-60px) scale(1.5)}}
+.hero-title{font-family:'Frank Ruhl Libre',serif;font-size:clamp(22px,3.2vw,44px);font-weight:400;line-height:1.22;margin-bottom:12px;letter-spacing:1px;color:rgba(255,255,255,.85)}
+.hero-title span{background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3.5s linear infinite}
+.hero-slogan{font-family:'Cinzel',serif;font-size:clamp(9px,1.2vw,12px);letter-spacing:5px;color:rgba(201,168,76,.6);margin-bottom:22px;text-transform:uppercase}
+.hero-sub{font-size:clamp(14px,1.6vw,16px);font-weight:300;color:rgba(255,255,255,.48);line-height:1.85;max-width:580px;margin:0 auto 48px}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-scroll{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(201,168,76,.3);font-size:9px;letter-spacing:4px;z-index:2;animation:scrollB 2.4s ease-in-out infinite}
+@keyframes scrollB{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(201,168,76,.4),transparent)}
+
+/* BUTTONS */
+.btn-gold{background:var(--gold-grad);color:var(--black);padding:14px 38px;font-family:'Frank Ruhl Libre',serif;font-size:16px;font-weight:600;border-radius:2px;border:none;cursor:pointer;transition:box-shadow .3s,transform .2s,filter .2s;display:inline-flex;align-items:center;gap:8px;justify-content:center;letter-spacing:.5px}
+.btn-gold:hover{box-shadow:0 10px 44px rgba(201,168,76,.45);transform:translateY(-2px);filter:brightness(1.08)}
+.btn-outline{background:transparent;color:var(--champagne);padding:14px 38px;font-family:'Frank Ruhl Libre',serif;font-size:16px;font-weight:400;border-radius:2px;border:1px solid rgba(201,168,76,.35);cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:8px;letter-spacing:.5px}
+.btn-outline:hover{border-color:var(--gold);background:rgba(201,168,76,.07);transform:translateY(-2px)}
+.btn-sm{font-size:13px!important;padding:9px 20px!important}
+
+/* MARQUEE */
+.marquee-section{background:var(--charcoal2);border-top:var(--border);border-bottom:var(--border);padding:16px 0;overflow:hidden;position:relative;z-index:2}
+.marquee-track{display:flex;gap:52px;animation:mScroll 30s linear infinite;white-space:nowrap;width:max-content}
+.marquee-section:hover .marquee-track{animation-play-state:paused}
+@keyframes mScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.m-item{display:flex;align-items:center;gap:16px;font-family:'Frank Ruhl Libre',serif;font-size:14px;font-weight:400;color:rgba(201,168,76,.65);letter-spacing:3px}
+.m-dot{width:3px;height:3px;border-radius:50%;background:var(--gold-grad);flex-shrink:0}
+
+/* SECTION */
+.section{position:relative;z-index:1;padding:110px 48px;scroll-margin-top:120px}
+.sec-hdr{text-align:center;margin-bottom:70px}
+.sec-label{font-size:9px;letter-spacing:6px;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:14px;display:block}
+.sec-title{font-family:'Frank Ruhl Libre',serif;font-size:clamp(22px,3vw,38px);font-weight:500;line-height:1.2;margin-bottom:16px;letter-spacing:1px}
+.sec-title span{background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3.5s linear infinite}
+.sec-divider{width:44px;height:1px;background:var(--gold-grad);margin:16px auto 0;border-radius:2px}
+
+/* STATS */
+#stats{background:var(--charcoal)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;max-width:1020px;margin:0 auto}
+.stat-card{background:var(--glass);border:var(--border);padding:56px 44px;text-align:center;position:relative;overflow:hidden;transition:background .3s}
+.stat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.04),transparent);opacity:0;transition:opacity .3s}
+.stat-card:hover::before{opacity:1}
+.stat-num{font-family:'Cinzel',serif;font-size:clamp(44px,5vw,68px);font-weight:600;background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:14px;display:block;background-size:200% auto;animation:shimmer 4s linear infinite}
+.stat-lbl{font-size:14px;color:rgba(255,255,255,.55);line-height:1.65;letter-spacing:.5px}
+
+/* DEAL BOX */
+.deal-section{background:var(--charcoal);padding:0 48px 80px}
+.deal-box{background:linear-gradient(135deg,rgba(201,168,76,.09),rgba(154,116,40,.05));border:1px solid rgba(201,168,76,.35);border-radius:4px;padding:52px 64px;text-align:center;max-width:840px;margin:0 auto;box-shadow:0 0 60px rgba(201,168,76,.07);position:relative}
+.deal-box::before{content:'✦';position:absolute;top:18px;right:26px;font-size:14px;color:rgba(201,168,76,.18)}
+.deal-box::after{content:'✦';position:absolute;bottom:18px;left:26px;font-size:14px;color:rgba(201,168,76,.18)}
+.deal-tag{display:inline-block;border:1px solid rgba(201,168,76,.4);color:var(--champagne);font-size:10px;font-weight:600;padding:5px 22px;border-radius:2px;margin-bottom:18px;letter-spacing:3px;background:rgba(201,168,76,.06)}
+.deal-box h3{font-family:'Frank Ruhl Libre',serif;font-size:clamp(18px,2.4vw,28px);font-weight:500;color:var(--champagne);margin-bottom:12px;line-height:1.3;letter-spacing:1px}
+.deal-box p{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:30px;line-height:1.72}
+
+/* PACKAGES */
+#packages{background:var(--black)}
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1120px;margin:0 auto}
+.pkg-card{background:var(--glass);border:var(--border);border-radius:4px;padding:48px 36px;position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s}
+.pkg-card::before{content:'';position:absolute;top:0;right:0;left:0;height:1px;background:var(--gold-grad)}
+.pkg-card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(201,168,76,.1)}
+.pkg-card.featured{border-color:rgba(201,168,76,.4);background:linear-gradient(160deg,rgba(201,168,76,.07),var(--glass));box-shadow:0 0 40px rgba(201,168,76,.06)}
+.pkg-icon-ring{width:48px;height:48px;border-radius:50%;border:1px solid rgba(201,168,76,.28);background:rgba(201,168,76,.05);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+.pkg-crown{font-size:9px;letter-spacing:4px;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:10px}
+.pkg-name{font-family:'Frank Ruhl Libre',serif;font-size:24px;font-weight:500;margin-bottom:6px;letter-spacing:2px}
+.pkg-sub{font-size:13px;color:var(--gray);margin-bottom:26px;line-height:1.6}
+.pkg-price{font-size:15px;font-weight:500;color:rgba(255,255,255,.75);margin:10px 0 22px}
+.pkg-list{list-style:none;margin-bottom:30px;display:flex;flex-direction:column;gap:10px}
+.pkg-list li{font-size:14px;color:rgba(255,255,255,.7);display:flex;align-items:flex-start;gap:10px}
+.pkg-list li::before{content:'–';color:var(--gold);font-size:12px;margin-top:3px;flex-shrink:0}
+.pkg-value-note{font-size:12px;color:rgba(201,168,76,.5);line-height:1.6;margin-bottom:24px;font-style:italic;border-right:2px solid rgba(201,168,76,.2);padding-right:12px;text-align:right}
+
+/* VENUES */
+#venues{background:var(--charcoal)}
+.tabs-nav{display:flex;justify-content:center;margin:0 auto 48px;border:var(--border);border-radius:3px;overflow:hidden;max-width:740px;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:130px;padding:14px 18px;background:var(--glass);border:none;color:rgba(255,255,255,.45);font-family:'Frank Ruhl Libre',serif;font-size:14px;cursor:pointer;transition:all .3s;border-right:var(--border);white-space:nowrap;letter-spacing:.5px}
+.tab-btn:last-child{border-right:none}
+.tab-btn.active{background:var(--gold-grad);color:var(--black);font-weight:600}
+.tab-btn:hover:not(.active){color:var(--champagne);background:rgba(201,168,76,.05)}
+.tab-content{display:none}.tab-content.active{display:block}
+.venues-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;max-width:1120px;margin:0 auto}
+.venue-card{background:var(--glass);border:var(--border);border-radius:3px;padding:26px 20px;text-align:center;transition:all .3s}
+.venue-card:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.05);transform:translateY(-3px)}
+.venue-icon-ring{width:42px;height:42px;border-radius:50%;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.05);display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px}
+.venue-name{font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:500;margin-bottom:3px;letter-spacing:.5px}
+.venue-desc{font-size:11px;color:var(--gray)}
+
+/* CITIES */
+#cities{background:var(--black)}
+.cities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:11px;max-width:1020px;margin:0 auto}
+.city-item{display:flex;align-items:center;gap:10px;background:var(--glass);border:var(--border);border-radius:3px;padding:18px 20px;transition:all .3s}
+.city-item:hover{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.04);transform:translateX(-3px)}
+.city-pin{font-size:16px;flex-shrink:0}
+.city-name{font-family:'Frank Ruhl Libre',serif;font-size:15px;font-weight:400;letter-spacing:.5px}
+
+/* ARTISTS */
+#artists{background:var(--charcoal)}
+.artists-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;max-width:1120px;margin:0 auto}
+.artist-card{background:var(--glass);border:var(--border);border-radius:4px;padding:38px 26px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
+.artist-card::before{content:'';position:absolute;top:0;right:0;left:0;height:1px;background:var(--gold-grad)}
+.artist-card:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(201,168,76,.09);border-color:rgba(201,168,76,.3)}
+.artist-sil{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.14),rgba(201,168,76,.03));border:1px solid rgba(201,168,76,.28);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:30px}
+.artist-type{font-size:9px;letter-spacing:4px;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:7px}
+.artist-title{font-family:'Frank Ruhl Libre',serif;font-size:16px;font-weight:500;margin-bottom:5px;letter-spacing:.5px}
+.artist-badge{font-size:12px;color:var(--gray);font-style:italic;margin-bottom:16px}
+.play-btn{background:transparent;border:1px solid rgba(201,168,76,.25);color:var(--champagne);padding:7px 16px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .3s;display:inline-flex;align-items:center;gap:6px;letter-spacing:.5px}
+.play-btn:hover{background:rgba(201,168,76,.08);border-color:var(--gold)}
+
+/* MATCHER */
+#matcher{background:var(--charcoal)}
+.matcher-box{max-width:700px;margin:0 auto;background:var(--glass);border:var(--border);border-radius:8px;overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,.5)}
+.matcher-hdr{background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.03));border-bottom:var(--border);padding:28px 36px;text-align:center}
+.matcher-hdr h3{font-family:'Frank Ruhl Libre',serif;font-size:20px;font-weight:500;color:var(--champagne);margin-bottom:5px;letter-spacing:2px}
+.matcher-hdr p{font-size:13px;color:rgba(255,255,255,.42)}
+.matcher-body{padding:36px}
+.m-question{font-family:'Frank Ruhl Libre',serif;font-size:18px;font-weight:500;margin-bottom:22px;text-align:center;line-height:1.4;letter-spacing:.5px}
+.m-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px}
+.m-opt{background:rgba(255,255,255,.03);backdrop-filter:blur(8px);border:1px solid rgba(201,168,76,.15);border-radius:4px;padding:14px 16px;color:rgba(255,255,255,.68);font-family:'Frank Ruhl Libre',serif;font-size:15px;cursor:pointer;transition:all .22s;text-align:center}
+.m-opt:hover{background:rgba(201,168,76,.09);border-color:rgba(201,168,76,.5);color:var(--champagne);transform:scale(1.01)}
+.m-opt.sel{background:rgba(201,168,76,.12);border:1px solid var(--gold);color:var(--champagne)}
+.m-progress{display:flex;gap:7px;justify-content:center;margin-bottom:22px}
+.p-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1);transition:background .35s,transform .35s}
+.p-dot.active{background:var(--gold-grad);transform:scale(1.3)}
+.m-step-anim{opacity:0;transform:translateY(10px);transition:opacity .35s ease,transform .35s ease}
+.m-step-anim.in{opacity:1;transform:none}
+
+/* RESULT CARD */
+#mRes{display:none;text-align:center;padding:4px 0}
+.result-outer{border:1px solid rgba(201,168,76,.35);border-radius:6px;padding:28px;background:linear-gradient(145deg,rgba(201,168,76,.06),rgba(154,116,40,.03));box-shadow:0 0 50px rgba(201,168,76,.08);margin-bottom:16px}
+.result-rec-label{font-size:9px;letter-spacing:5px;color:rgba(201,168,76,.55);text-transform:uppercase;margin-bottom:8px;display:block}
+.result-card-title{font-family:'Frank Ruhl Libre',serif;font-size:clamp(18px,2.5vw,24px);font-weight:500;color:var(--champagne);line-height:1.3;margin-bottom:16px;letter-spacing:1px}
+.result-checks{list-style:none;text-align:right;margin-bottom:14px;display:flex;flex-direction:column;gap:9px}
+.result-checks li{font-size:14px;color:rgba(255,255,255,.78);display:flex;align-items:center;gap:10px}
+.result-checks li::before{content:'–';color:var(--gold);font-size:11px;flex-shrink:0}
+.result-note{font-size:13px;color:rgba(255,255,255,.42);line-height:1.65;font-style:italic;margin-bottom:0}
+.action-bar{display:flex;gap:10px;margin-bottom:10px}
+.action-bar-wa{background:transparent;color:var(--champagne);padding:13px 20px;font-size:14px;font-weight:500;border:1px solid rgba(201,168,76,.35);border-radius:3px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;text-decoration:none;letter-spacing:.5px;font-family:'Heebo',sans-serif}
+.action-bar-wa:hover{background:rgba(201,168,76,.08);border-color:var(--gold);transform:translateY(-2px)}
+.action-bar-wa svg{color:rgba(100,210,120,.8)}
+.action-bar-email{background:var(--gold-grad);color:var(--black);padding:13px 20px;font-size:14px;font-weight:600;border:none;border-radius:3px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:8px;flex:1;justify-content:center;font-family:'Heebo',sans-serif;letter-spacing:.5px}
+.action-bar-email:hover{box-shadow:0 8px 32px rgba(201,168,76,.35);transform:translateY(-2px)}
+.action-secondary{display:flex;gap:10px;justify-content:center}
+.action-phone{background:transparent;color:rgba(255,255,255,.38);padding:9px 16px;font-size:12px;border:1px solid rgba(255,255,255,.08);border-radius:3px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:6px;font-family:'Heebo',sans-serif;text-decoration:none;letter-spacing:.5px}
+.action-phone:hover{color:var(--champagne);border-color:rgba(201,168,76,.25)}
+.btn-reset{background:transparent;color:rgba(255,255,255,.28);border:none;font-size:12px;cursor:pointer;padding:9px 14px;font-family:'Heebo',sans-serif;transition:color .3s;letter-spacing:.5px}
+.btn-reset:hover{color:var(--champagne)}
+
+/* ROADMAP */
+#roadmap{background:var(--black)}
+.roadmap-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;max-width:1020px;margin:0 auto;position:relative}
+.roadmap-steps::before{content:'';position:absolute;top:32px;right:16%;left:16%;height:1px;background:linear-gradient(to left,transparent,rgba(201,168,76,.35),transparent);z-index:0}
+.r-step{text-align:center;position:relative;z-index:1}
+.step-num{width:64px;height:64px;border-radius:50%;background:var(--gold-grad);color:var(--black);font-family:'Cinzel',serif;font-size:20px;font-weight:600;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 0 28px rgba(201,168,76,.3)}
+.step-title{font-family:'Frank Ruhl Libre',serif;font-size:17px;font-weight:500;margin-bottom:9px;letter-spacing:.5px}
+.step-desc{font-size:14px;color:rgba(255,255,255,.5);line-height:1.7}
+
+/* ABOUT */
+#about{background:var(--charcoal)}
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:84px;align-items:center;max-width:1120px;margin:0 auto}
+.about-frame{width:100%;aspect-ratio:4/5;background:linear-gradient(160deg,rgba(201,168,76,.07),rgba(0,0,0,0));border:var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.about-frame::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.06),transparent 70%)}
+.about-icon-big{font-size:120px;opacity:.18}
+.about-badge-fl{position:absolute;bottom:30px;right:-20px;background:var(--gold-grad);color:var(--black);padding:14px 22px;border-radius:3px;box-shadow:0 10px 38px rgba(201,168,76,.32)}
+.about-badge-fl .n{font-family:'Cinzel',serif;font-size:26px;font-weight:700;display:block;line-height:1}
+.about-badge-fl .l{font-size:11px;font-weight:500}
+.about-text h2{font-family:'Frank Ruhl Libre',serif;font-size:clamp(22px,2.8vw,36px);font-weight:500;line-height:1.25;margin-bottom:24px;letter-spacing:1px}
+.about-text h2 span{background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3.5s linear infinite}
+.about-text p{font-size:16px;color:rgba(255,255,255,.58);line-height:1.88;margin-bottom:16px}
+.about-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px}
+.about-tag{background:rgba(201,168,76,.06);border:var(--border);border-radius:2px;padding:6px 14px;font-size:12px;color:rgba(201,168,76,.7);letter-spacing:1.5px}
+
+/* FAQ */
+#faq{background:var(--black)}
+.faq-list{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:6px}
+.faq-item{background:var(--glass);border:var(--border);border-radius:3px;overflow:hidden;transition:border-color .3s}
+.faq-item.open{border-color:rgba(201,168,76,.32)}
+.faq-q{width:100%;background:none;border:none;padding:20px 26px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;text-align:right;gap:18px}
+.faq-q-txt{font-family:'Frank Ruhl Libre',serif;font-size:16px;font-weight:500;color:var(--white);letter-spacing:.5px}
+.faq-icon{width:26px;height:26px;border-radius:50%;border:1px solid rgba(201,168,76,.25);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px;flex-shrink:0;transition:transform .3s,background .3s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:rgba(201,168,76,.1)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-item.open .faq-a{max-height:220px}
+.faq-a-inner{padding:0 26px 20px;font-size:14px;color:rgba(255,255,255,.55);line-height:1.78;border-top:var(--border);padding-top:16px}
+
+/* CONTACT */
+#contact{background:var(--charcoal)}
+.contact-inner{max-width:720px;margin:0 auto;text-align:center}
+.contact-inner>p{font-size:16px;color:rgba(255,255,255,.55);line-height:1.78;margin-bottom:38px}
+.contact-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:40px}
+.contact-card{background:var(--glass);border:var(--border);border-radius:3px;padding:30px 22px;text-align:center;transition:all .3s}
+.contact-card:hover{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.05);transform:translateY(-3px)}
+.cc-icon{margin-bottom:12px;color:rgba(201,168,76,.7)}
+.cc-icon svg{width:30px;height:30px;display:block;margin:0 auto}
+.cc-icon-wa{color:rgba(100,210,120,.7)}
+.cc-title{font-family:'Frank Ruhl Libre',serif;font-size:17px;font-weight:500;color:var(--champagne);margin-bottom:5px;letter-spacing:1px}
+.cc-desc{font-size:13px;color:var(--gray)}
+
+/* FOOTER */
+footer{background:var(--charcoal2);border-top:var(--border);padding:60px 48px 28px;text-align:center;position:relative;z-index:2}
+.footer-logo-text{font-family:'Cinzel Decorative',serif;font-size:26px;font-weight:900;background:var(--gold-grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shimmer 3s linear infinite;margin-bottom:7px;letter-spacing:0.16em}
+.footer-slogan{font-size:11px;color:rgba(255,255,255,.28);letter-spacing:4px;margin-bottom:34px}
+.footer-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:34px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,.38);transition:color .3s;letter-spacing:1px}
+.footer-links a:hover{color:var(--champagne)}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.14);letter-spacing:1px}
+
+/* תיקון 1: כפתור כניסת צוות בעיצוב זהב עמום */
+.footer-admin{margin-top:22px;display:flex;gap:10px;justify-content:center;align-items:center}
+#adminLoginBtn{background:transparent;color:rgba(201,168,76,.35);border:1px solid rgba(201,168,76,.15);padding:7px 16px;border-radius:2px;font-size:11px;cursor:pointer;font-family:'Heebo',sans-serif;letter-spacing:1px;transition:all .3s;display:inline-flex;align-items:center;gap:6px}
+#adminLoginBtn:hover{color:rgba(201,168,76,.75);border-color:rgba(201,168,76,.35)}
+#adminLogoutBtn{background:transparent;color:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.1);padding:7px 16px;border-radius:2px;font-size:11px;cursor:pointer;font-family:'Heebo',sans-serif;letter-spacing:1px;transition:all .3s;display:none;align-items:center;gap:6px}
+#adminLogoutBtn:hover{color:var(--champagne);border-color:rgba(201,168,76,.3)}
+
+/* FLOAT */
+.float-contact{position:fixed;bottom:24px;right:24px;z-index:900;display:flex;flex-direction:column;gap:8px;align-items:flex-end;transition:bottom .3s ease}
+.float-contact.audio-open{bottom:100px}
+.float-btn{border-radius:4px;padding:10px 16px;display:flex;align-items:center;gap:8px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:transform .3s,box-shadow .3s,background .3s;border:none;text-decoration:none;white-space:nowrap;letter-spacing:.5px}
+.float-btn svg{width:15px;height:15px;display:block;flex-shrink:0}
+.float-wa-btn{background:rgba(20,20,20,.9);color:rgba(200,200,200,.8);border:1px solid rgba(201,168,76,.2)!important;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.float-wa-btn:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4)!important;transform:translateY(-2px)}
+.float-wa-btn svg{color:rgba(100,210,120,.75)}
+.float-email-btn{background:rgba(20,20,20,.9);color:rgba(200,200,200,.8);border:1px solid rgba(201,168,76,.2)!important;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.float-email-btn:hover{background:rgba(201,168,76,.1);border-color:rgba(201,168,76,.4)!important;transform:translateY(-2px)}
+.wa-bubble{position:absolute;bottom:74px;right:0;background:rgba(10,8,2,.94);border:var(--border);backdrop-filter:blur(12px);color:rgba(255,255,255,.75);padding:9px 13px;border-radius:10px;font-size:11px;max-width:200px;box-shadow:0 8px 32px rgba(0,0,0,.4);opacity:0;transform:translateY(8px);animation:waBubblePop 8s ease-in-out infinite}
+.wa-bubble:after{content:'';position:absolute;bottom:-6px;right:14px;border-width:6px 6px 0 6px;border-style:solid;border-color:rgba(201,168,76,.22) transparent transparent transparent}
+@keyframes waBubblePop{0%,60%{opacity:0;transform:translateY(8px)}65%{opacity:1;transform:translateY(0)}80%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(8px)}}
+
+/* AUDIO */
+#audio-bar{position:fixed;bottom:24px;left:24px;background:rgba(5,5,5,.96);backdrop-filter:blur(20px);border:var(--border);border-radius:40px;padding:10px 18px;display:none;align-items:center;gap:12px;z-index:900;width:290px;box-shadow:0 6px 28px rgba(0,0,0,.5)}
+#audio-bar.show{display:flex}
+.a-bars{display:flex;gap:3px;align-items:flex-end;height:20px}
+.ab{width:2.5px;background:var(--gold-grad);border-radius:2px;animation:barA .85s ease-in-out infinite}
+.ab:nth-child(1){height:7px}.ab:nth-child(2){height:15px;animation-delay:.1s}.ab:nth-child(3){height:20px;animation-delay:.2s}.ab:nth-child(4){height:12px;animation-delay:.3s}.ab:nth-child(5){height:9px;animation-delay:.15s}
+@keyframes barA{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.a-info{display:flex;flex-direction:column;gap:2px;flex:1}
+.a-title{font-size:13px;color:var(--champagne);font-weight:500}
+.a-sub{font-size:11px;color:var(--gray)}
+.a-btn{background:var(--gold-grad);color:var(--black);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;flex-shrink:0}
+.a-close{background:none;border:none;color:var(--gray);font-size:18px;cursor:pointer;padding:4px}
+
+/* VIDEO MODAL – תיקון 5: z-index גבוה */
+#videoModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9500;align-items:center;justify-content:center}
+#videoModal.show{display:flex}
+.video-inner{position:relative;width:min(760px,94vw);border:var(--border);border-radius:6px;overflow:hidden;background:#000;box-shadow:0 24px 80px rgba(0,0,0,.8)}
+.video-inner iframe{width:100%;aspect-ratio:16/9;display:block;border:none}
+.video-close{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.7);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:18px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1;transition:background .3s}
+.video-close:hover{background:rgba(201,168,76,.15)}
+
+/* ADMIN MODAL – תיקון 5: z-index גבוה מה-float */
+#adminModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9500;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+#adminModal.show{display:flex}
+.admin-panel{background:var(--charcoal);border:var(--border);border-radius:6px;padding:38px;width:min(700px,92vw);max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.7)}
+.admin-panel h2{font-family:'Frank Ruhl Libre',serif;font-size:22px;font-weight:500;color:var(--champagne);margin-bottom:24px;letter-spacing:2px;border-bottom:var(--border);padding-bottom:16px}
+/* תיקון 5: כפתור X ברור לסגירת מודאל */
+.admin-close{position:absolute;top:16px;left:16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:var(--champagne);font-size:18px;cursor:pointer;transition:all .3s;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+.admin-close:hover{background:rgba(201,168,76,.18);color:var(--white)}
+.admin-section{margin-bottom:28px}
+.admin-section h3{font-size:13px;letter-spacing:3px;color:rgba(201,168,76,.6);text-transform:uppercase;margin-bottom:14px}
+.admin-form{display:flex;flex-direction:column;gap:12px}
+.admin-input{background:rgba(255,255,255,.04);border:var(--border);border-radius:3px;padding:11px 14px;color:var(--white);font-family:'Heebo',sans-serif;font-size:14px;width:100%;transition:border-color .3s;direction:rtl}
+.admin-input:focus{outline:none;border-color:rgba(201,168,76,.5)}
+.admin-input::placeholder{color:rgba(255,255,255,.25)}
+.admin-btn{background:var(--gold-grad);color:var(--black);border:none;padding:11px 22px;border-radius:3px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:box-shadow .3s,transform .2s;letter-spacing:.5px}
+.admin-btn:hover{box-shadow:0 8px 28px rgba(201,168,76,.3);transform:translateY(-1px)}
+.admin-btn-outline{background:transparent;color:var(--champagne);border:1px solid rgba(201,168,76,.3);padding:9px 18px;border-radius:3px;font-family:'Heebo',sans-serif;font-size:13px;cursor:pointer;transition:all .3s}
+.admin-btn-outline:hover{border-color:var(--gold);background:rgba(201,168,76,.07)}
+.admin-btn-danger{background:transparent;color:#e05555;border:1px solid rgba(220,80,80,.3);padding:7px 14px;border-radius:3px;font-family:'Heebo',sans-serif;font-size:12px;cursor:pointer;transition:all .3s}
+.admin-btn-danger:hover{background:rgba(220,80,80,.08);border-color:rgba(220,80,80,.5)}
+.admin-msg{font-size:13px;color:rgba(100,200,120,.8);margin-top:8px;min-height:18px}
+.artists-admin-list{display:flex;flex-direction:column;gap:10px;max-height:280px;overflow-y:auto}
+.artist-admin-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:var(--border);border-radius:3px;padding:12px 14px}
+.artist-admin-name{flex:1;font-size:14px;color:rgba(255,255,255,.8)}
+.artist-admin-cat{font-size:11px;color:var(--gray);letter-spacing:1px}
+.login-form{display:flex;flex-direction:column;gap:14px;max-width:340px;margin:0 auto}
+.login-err{color:#e07070;font-size:13px;text-align:center;min-height:18px}
+
+/* FI ANIMATIONS */
+.fi{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
+.fi.vis{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{display:none}.hamburger{display:flex}
+  .stats-grid{grid-template-columns:1fr}.pkg-grid{grid-template-columns:1fr}
+  .roadmap-steps{grid-template-columns:1fr;gap:32px}.roadmap-steps::before{display:none}
+  .about-inner{grid-template-columns:1fr;gap:36px}.about-visual{display:none}
+  .contact-opts{grid-template-columns:1fr}
+  .section{padding:68px 22px}
+  #header{padding:14px 22px}#header.scrolled{padding:10px 22px}
+  .float-contact{right:12px;bottom:12px}
+  .float-btn{padding:9px 13px;font-size:12px}
+  .m-opts{grid-template-columns:1fr}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .deal-box{padding:32px 24px}.deal-section{padding:0 22px 68px}
+  .action-bar{flex-direction:column}
+}
+@media(max-width:600px){
+  .tabs-nav{flex-direction:column}.tab-btn{border-right:none;border-bottom:var(--border)}
+  .venues-grid{grid-template-columns:repeat(2,1fr)}
+  .artists-grid{grid-template-columns:1fr 1fr}
+  #audio-bar{width:56px;padding:9px;border-radius:50%}
+  #audio-bar .a-info,#audio-bar .a-close{display:none}
+  #audio-bar.show{width:56px}
+  .float-btn span.fl-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .m-step-anim{transition:none!important;transform:none!important;opacity:1!important}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pl-logo">SOLTON</div>
+  <div class="pl-sub">הפקות מוזיקליות</div>
+</div>
+
+<div class="light-rays"><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div><div class="ray"></div></div>
+
+<header id="header">
+  <a href="#hero" class="logo-wrap" aria-label="סולטון הפקות">
+    <span class="logo-main">SOLTON</span>
+    <span class="logo-sub">הפקות מוזיקליות</span>
+    <div class="logo-pulse"></div>
+  </a>
+  <nav>
+    <a href="#packages">מסלולי הפקה</a>
+    <a href="#artists">אמנים</a>
+    <a href="#about">אודות</a>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לבדוק%20זמינות%20לאירוע%20שלי" class="nav-cta" target="_blank">בדיקת זמינות</a>
+  </nav>
+  <div class="hamburger" id="hambBtn" role="button" tabindex="0" aria-controls="mobNav" aria-expanded="false" aria-label="תפריט"><span></span><span></span><span></span></div>
+</header>
+
+<div class="mobile-nav" id="mobNav" role="dialog" aria-modal="true">
+  <button class="mob-close" id="mobClose">✕</button>
+  <a href="#packages" onclick="closeMob()">מסלולי הפקה</a>
+  <a href="#artists" onclick="closeMob()">אמנים</a>
+  <a href="#matcher" onclick="closeMob()">התאמה חכמה</a>
+  <a href="#about" onclick="closeMob()">אודות</a>
+  <a href="#contact" onclick="closeMob()">יצירת קשר</a>
+</div>
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="bokeh"></div><div class="bokeh"></div><div class="bokeh"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ ייצוג בלעדי · ניהול אמנותי מלא ✦</div>
+    <div class="solton-logo-hero">
+      <div class="particles" id="heroParticles"></div>
+      <span class="slh-main">SOLTON</span>
+      <svg class="slh-wave" viewBox="0 0 600 26" xmlns="http://www.w3.org/2000/svg" height="18" aria-hidden="true">
+        <defs>
+          <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#9A7428"/><stop offset="0.35" stop-color="#C9A84C"/>
+            <stop offset="0.6" stop-color="#E2C97E"/><stop offset="1" stop-color="#9A7428"/>
+          </linearGradient>
+        </defs>
+        <path d="M10 13 C30 3,50 3,70 13 S110 23,130 13 S170 3,190 13 S230 23,250 13 S290 3,310 13 S350 23,370 13 S410 3,430 13 S470 23,490 13 S530 3,550 13 S590 23,600 17" fill="none" stroke="url(#wg)" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <span class="slh-sub">הפקות מוזיקליות · שש שנות עוצמה</span>
+    </div>
+    <h1 class="hero-title">מפיקים לכם את השמחה.<br><span>מסלולי הפקה מוזיקלית ברמה הגבוהה ביותר</span></h1>
+    <div class="hero-slogan">SOLTON – ניהול אמנותי · עוצמה מוזיקלית</div>
+    <p class="hero-sub">אמן, הגברה ותאורה – מנוהלים על ידי מפיק אישי מהיום הראשון עד האקורד האחרון.</p>
+    <div class="hero-ctas">
+      <a href="#packages" class="btn-gold">לצפייה במסלולי ההפקה</a>
+      <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לבדוק%20זמינות%20לאירוע" target="_blank" class="btn-outline">בדיקת זמינות לאירוע</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div><span>גלול למטה</span></div>
+</section>
+
+<div class="marquee-section"><div class="marquee-track">
+  <span class="m-item"><span class="m-dot"></span>ניהול אמנותי</span><span class="m-item"><span class="m-dot"></span>הפקות ענק</span><span class="m-item"><span class="m-dot"></span>אירועי שיא</span><span class="m-item"><span class="m-dot"></span>דינרי יוקרה</span><span class="m-item"><span class="m-dot"></span>ייצוג בלעדי</span><span class="m-item"><span class="m-dot"></span>אולמות מובילים</span><span class="m-item"><span class="m-dot"></span>שקט נפשי מלא</span><span class="m-item"><span class="m-dot"></span>איכות סאונד</span><span class="m-item"><span class="m-dot"></span>עיבודים מותאמים</span>
+  <span class="m-item"><span class="m-dot"></span>ניהול אמנותי</span><span class="m-item"><span class="m-dot"></span>הפקות ענק</span><span class="m-item"><span class="m-dot"></span>אירועי שיא</span><span class="m-item"><span class="m-dot"></span>דינרי יוקרה</span><span class="m-item"><span class="m-dot"></span>ייצוג בלעדי</span><span class="m-item"><span class="m-dot"></span>אולמות מובילים</span><span class="m-item"><span class="m-dot"></span>שקט נפשי מלא</span><span class="m-item"><span class="m-dot"></span>איכות סאונד</span><span class="m-item"><span class="m-dot"></span>עיבודים מותאמים</span>
+</div></div>
+
+<div class="marquee-section" style="background:rgba(201,168,76,.03);border-top:1px solid rgba(201,168,76,.1);border-bottom:1px solid rgba(201,168,76,.1)"><div class="marquee-track" style="animation-direction:reverse;animation-duration:40s">
+  <span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>ישיבת חברון</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>ישיבת מיר</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>עטרת שלמה</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>אור ישראל</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>פוניבז'</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>תפרח</span>
+  <span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>ישיבת חברון</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>ישיבת מיר</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>עטרת שלמה</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>אור ישראל</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>פוניבז'</span><span class="m-item" style="font-size:11px;letter-spacing:4px;opacity:.55"><span class="m-dot"></span>תפרח</span>
+</div></div>
+
+<section id="stats" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">המספרים מדברים</span><h2 class="sec-title">שש שנים, <span>אלפי אירועים</span></h2><div class="sec-divider"></div></div>
+  <div class="stats-grid fi">
+    <div class="stat-card"><span class="stat-num" data-target="1200">0</span><div class="stat-lbl">שמחות וחתונות<br>יוקרה הופקו עד כה</div></div>
+    <div class="stat-card"><span class="stat-num" data-target="450">0</span><div class="stat-lbl">אירועי שיא<br>ודינרים ללקוחות</div></div>
+    <div class="stat-card"><span class="stat-num" data-target="100" data-suffix="%">0</span><div class="stat-lbl">כיסוי היכלי היוקרה<br>אווניו · לאגו · וגשל</div></div>
+  </div>
+</section>
+
+<div class="deal-section">
+  <div class="deal-box fi">
+    <div class="deal-tag">✦ מסלול קיץ פרמיום ✦</div>
+    <h3>חבילת תוכן לאירועי קיץ</h3>
+    <p>תזמורת מלאה, זמר ייצוגי, הגברה ותאורה מנוהלים על ידי מפיק אישי. שקט נפשי מוחלט מהיום הראשון.</p>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לשמוע%20על%20מסלול%20הקיץ%20שלכם" target="_blank"><button class="btn-gold">לתיאום פגישת ייעוץ</button></a>
+  </div>
+</div>
+
+<section id="packages" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">מסלולי הפקה</span><h2 class="sec-title">בחרו את המסלול <span>המתאים לכם</span></h2><div class="sec-divider"></div></div>
+  <div class="pkg-grid fi">
+    <div class="pkg-card">
+      <div class="pkg-icon-ring">🎤</div>
+      <div class="pkg-crown">מסלול חברון</div><div class="pkg-name">חברון</div>
+      <div class="pkg-sub">הרכב איכותי עם ניהול אישי</div>
+      <div class="pkg-value-note">שקט נפשי, תיאום מלא מול האולם, איכות סאונד ללא פשרות</div>
+      <ul class="pkg-list"><li>זמר מהשורה הראשונה</li><li>תזמורת מורחבת</li><li>תאורה מקצועית</li><li>הגברה ומערכת סאונד</li><li>תיאום מלא עם המוסד</li></ul>
+      <button class="btn-outline" style="width:100%" onclick="closePackageDeal('מסלול חברון')">בדיקת זמינות</button>
+    </div>
+    <div class="pkg-card featured">
+      <div class="pkg-icon-ring">👑</div>
+      <div class="pkg-crown">✦ המומלץ ✦</div><div class="pkg-name">אווניו</div>
+      <div class="pkg-sub">הפקה מלאה ברמה הגבוהה ביותר</div>
+      <div class="pkg-value-note">ניהול אמנותי מלא, עיבודים בלעדיים, ליווי צמוד מהאפיון עד האקורד האחרון</div>
+      <ul class="pkg-list"><li>הפקה מלאה מאפס</li><li>עיבודים מוזיקליים מיוחדים</li><li>זמר + תזמורת + DJ</li><li>תאורה ובמה מקצועית</li><li>ליווי אישי של המפיק</li><li>תיאום מלא עם האולם</li></ul>
+      <button class="btn-gold" style="width:100%" onclick="closePackageDeal('מסלול אווניו')">בדיקת זמינות</button>
+    </div>
+    <div class="pkg-card">
+      <div class="pkg-icon-ring">🎻</div>
+      <div class="pkg-crown">מסלול בוטיק</div><div class="pkg-name">בוטיק</div>
+      <div class="pkg-sub">הרכב אקוסטי – אווירה מעודנת ואישית</div>
+      <div class="pkg-value-note">אותנטיות מוזיקלית, גמישות מלאה, מתאים לאירועים אינטימיים ברמה גבוהה</div>
+      <ul class="pkg-list"><li>הרכב אקוסטי מרגש</li><li>זמר + כינור + גיטרה</li><li>מותאם לרגעים המרכזיים</li><li>רפרטואר מסורתי ומותאם</li><li>גמישות לפי קצב האירוע</li></ul>
+      <button class="btn-outline" style="width:100%" onclick="closePackageDeal('מסלול בוטיק')">בדיקת זמינות</button>
+    </div>
+  </div>
+</section>
+
+<section id="venues" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">היכלי השמחה</span><h2 class="sec-title">בכל <span>היכל ומוסד</span></h2><div class="sec-divider"></div></div>
+  <div class="tabs-nav fi">
+    <button class="tab-btn active" data-tab="vip">היכלי VIP</button>
+    <button class="tab-btn" data-tab="jerusalem">ירושלים</button>
+    <button class="tab-btn" data-tab="center">מרכז ובני ברק</button>
+    <button class="tab-btn" data-tab="projects">פרויקטי שיא</button>
+  </div>
+  <div class="tab-content active" id="tab-vip"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🏛️</div><div class="venue-name">אווניו</div><div class="venue-desc">Avenue – חתונות ענק</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">💎</div><div class="venue-name">לאגו</div><div class="venue-desc">Lago – יוקרה מרבית</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">👑</div><div class="venue-name">כתר הרימון</div><div class="venue-desc">היכל יוקרה</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">✨</div><div class="venue-name">דימול</div><div class="venue-desc">Dimol – אירועי פאר</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🌟</div><div class="venue-name">סיטי טאואר</div><div class="venue-desc">City Tower</div></div>
+  </div></div>
+  <div class="tab-content" id="tab-jerusalem"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🕍</div><div class="venue-name">מונדיאל</div><div class="venue-desc">ירושלים</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🏰</div><div class="venue-name">תמיר</div><div class="venue-desc">היכל תמיר</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">⭐</div><div class="venue-name">פבליון</div><div class="venue-desc">Pavilion</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🌙</div><div class="venue-name">גוטניק</div><div class="venue-desc">Gootnik Center</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">✡️</div><div class="venue-name">היכלי מלכות</div><div class="venue-desc">ירושלים</div></div>
+  </div></div>
+  <div class="tab-content" id="tab-center"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🎪</div><div class="venue-name">וגשל</div><div class="venue-desc">בני ברק</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🏯</div><div class="venue-name">ארמונות חן</div><div class="venue-desc">פאר ויוקרה</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">💫</div><div class="venue-name">קונקורד</div><div class="venue-desc">Concord</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🎭</div><div class="venue-name">לביא</div><div class="venue-desc">אולמי לביא</div></div>
+  </div></div>
+  <div class="tab-content" id="tab-projects"><div class="venues-grid">
+    <div class="venue-card"><div class="venue-icon-ring">🎯</div><div class="venue-name">אירועי חוצות</div><div class="venue-desc">הפקות ענק</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🏆</div><div class="venue-name">דינרי יוקרה</div><div class="venue-desc">אווירה פרמיום</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🌆</div><div class="venue-name">אירועי עיר</div><div class="venue-desc">במה מרשימה</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">📣</div><div class="venue-name">כנסים וקמפיינים</div><div class="venue-desc">תכנית אומנותית</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">🎇</div><div class="venue-name">שמחות מרכזיות</div><div class="venue-desc">עיבודים מותאמים</div></div>
+    <div class="venue-card"><div class="venue-icon-ring">💎</div><div class="venue-name">אולמות VIP</div><div class="venue-desc">סטנדרט גבוה</div></div>
+  </div></div>
+</section>
+
+<section id="cities" class="section" style="background:var(--charcoal)">
+  <div class="sec-hdr fi"><span class="sec-label">נוכחות בשטח</span><h2 class="sec-title">השמחות שלנו <span>בכל נקודה</span></h2><div class="sec-divider"></div></div>
+  <div class="cities-grid fi">
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">ירושלים</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">בני ברק</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">מודיעין עילית</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">בית שמש</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">אשדוד</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">צפת</div></div>
+    <div class="city-item"><div class="city-pin">📍</div><div class="city-name">טבריה</div></div>
+    <div class="city-item"><div class="city-pin">✈️</div><div class="city-name">ניו יורק – חו"ל</div></div>
+  </div>
+</section>
+
+<section id="artists" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">גלריית אמנים</span><h2 class="sec-title">האמנים <span>שלנו</span></h2><p style="color:rgba(255,255,255,.35);font-size:14px;margin-top:8px;letter-spacing:1px">ייצוג בלעדי וסגירת מסלולים מראש</p><div class="sec-divider"></div></div>
+  <div class="artists-grid fi" id="artistsGrid">
+    <!-- Populated by fetchArtists() or defaults -->
+  </div>
+</section>
+
+<section id="matcher" class="section">
+  <div class="sec-hdr fi"><span class="sec-label">ייעוץ חכם</span><h2 class="sec-title">מצא את <span>המסלול שלך</span></h2><div class="sec-divider"></div></div>
+  <div class="matcher-box fi">
+    <div class="matcher-hdr"><h3>AI MATCHER</h3><p>3 שאלות, המלצה מקצועית מותאמת אישית</p></div>
+    <div class="matcher-body">
+      <div class="m-progress"><div class="p-dot active" id="pd0"></div><div class="p-dot" id="pd1"></div><div class="p-dot" id="pd2"></div></div>
+      <div id="ms0"><div class="m-question">מה סוג האירוע?</div><div class="m-opts"><div class="m-opt" onclick="mSel(0,'חתונה',this)">💒 חתונה</div><div class="m-opt" onclick="mSel(0,'אקוסטי',this)">🎻 אירוע אקוסטי</div><div class="m-opt" onclick="mSel(0,'דינר יוקרה',this)">🥂 דינר יוקרה</div><div class="m-opt" onclick="mSel(0,'אירוע משפחתי',this)">👨‍👩‍👧 אירוע משפחתי</div></div></div>
+      <div id="ms1" style="display:none"><div class="m-question">מה הסגנון המוזיקלי?</div><div class="m-opts"><div class="m-opt" onclick="mSel(1,'מסורתי',this)">🕊️ מסורתי אותנטי</div><div class="m-opt" onclick="mSel(1,'קלאסי',this)">🎼 קלאסי מדויק</div><div class="m-opt" onclick="mSel(1,'מזרחי',this)">🌙 מזרחי תוסס</div><div class="m-opt" onclick="mSel(1,'מודרני',this)">✨ מודרני יוקרתי</div></div><button class="btn-outline btn-sm" style="margin-top:6px" onclick="mBack(1)">← חזור</button></div>
+      <div id="ms2" style="display:none"><div class="m-question">מה רמת ההפקה הרצויה?</div><div class="m-opts"><div class="m-opt" onclick="mSel(2,'מותאם',this)">🌟 פרמיום – מסלול חברון</div><div class="m-opt" onclick="mSel(2,'בינוני',this)">⭐ פרמיום מלא</div><div class="m-opt" onclick="mSel(2,'יוקרה',this)">👑 פסגה – מסלול אווניו</div></div><button class="btn-outline btn-sm" style="margin-top:6px" onclick="mBack(2)">← חזור</button></div>
+      <div class="m-result" id="mRes">
+        <div class="result-outer">
+          <span class="result-rec-label">ההמלצה המקצועית עבורכם</span>
+          <div class="result-card-title" id="mResTitle">המסלול המומלץ</div>
+          <ul class="result-checks" id="mResChecks">
+            <li id="mResCheck1"></li><li id="mResCheck2"></li><li id="mResCheck3"></li>
+          </ul>
+          <p class="result-note" id="mResTxt"></p>
+        </div>
+        <div style="padding:4px">
+          <div class="action-bar">
+            <a id="mResWA" href="#" target="_blank" class="action-bar-wa">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.2 7.6L4 20l.7-3.6a8.5 8.5 0 1 1 15.8-4.7Z"/><path d="M9 9.3c.5 1.3 1.4 2.6 2.6 3.8 1.2 1.2 2.5 2.1 3.8 2.6"/></svg>
+              תיאום פגישת ייעוץ
+            </a>
+            <button onclick="sendToEmail()" class="action-bar-email">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/><path d="m22 8-10 6L2 8"/></svg>
+              קבלת הצעה למייל
+            </button>
+          </div>
+          <div class="action-secondary">
+            <a href="tel:+972500000000" class="action-phone">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2c-1.1-.1-2.3-.4-3.6-.9-3-1.1-5.8-3.8-6.9-6.9-.5-1.3-.8-2.5-.9-3.6A2 2 0 0 1 7.3 4h3a2 2 0 0 1 2 1.7c.1.8.3 1.6.6 2.3a2 2 0 0 1-.5 2.1l-1.2 1.2c1.5 2.7 3.8 5 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.7.3 1.5.5 2.3.6A2 2 0 0 1 22 16.9Z"/></svg>
+              ייעוץ טלפוני
+            </a>
+            <button onclick="resetM()" class="btn-reset">↩ התחל מחדש</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap" class="section" style="background:var(--black)">
+  <div class="sec-hdr fi"><span class="sec-label">תהליך העבודה</span><h2 class="sec-title">הדרך <span>לשמחה שלכם</span></h2><div class="sec-divider"></div></div>
+  <div class="roadmap-steps fi">
+    <div class="r-step"><div class="step-num">א</div><div class="step-title">שיחת ייעוץ והתאמה</div><div class="step-desc">אפיון מוזיקלי מלא – מה הסגנון, מה החזון, מה האווירה שאתם חולמים עליה.</div></div>
+    <div class="r-step"><div class="step-num">ב</div><div class="step-title">בניית הרכב ותכנית אומנותית</div><div class="step-desc">בחירת האמנים, עיבודים מיוחדים, תכנית ערב מפורטת ותיאום עם האולם.</div></div>
+    <div class="r-step"><div class="step-num">ג</div><div class="step-title">ליווי בשטח עד האקורד האחרון</div><div class="step-desc">המפיק שלנו איתכם מהגעה עד לרקוד האחרון. שקט נפשי מוחלט.</div></div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="about-inner">
+    <div class="about-visual"><div class="about-frame"><div class="about-icon-big">🎹</div></div><div class="about-badge-fl"><span class="n">2020</span><span class="l">שנת הקמה</span></div></div>
+    <div class="about-text fi">
+      <h2>המשרד שבא <span>לשנות את הסאונד</span></h2>
+      <p>סולטון הפקות היא לא רק משרד ייצוג. אנחנו המוח מאחורי אירועי הענק שלכם: תכנון מוסיקלי מדויק, ליווי מקצועי וחבילה אחת שסוגרת לכם את כל הפינות.</p>
+      <p>מהפקות מורכבות באולמות היוקרה ועד לאירועי שיא באאוט-דורס – אנחנו שם עם שפה הפקתית עקבית, איכות ללא פשרות ושקט נפשי אמיתי.</p>
+      <p>אנחנו לא רק מתווכים. אנחנו מייצגים וסוגרים לכם חבילה מלאה שחוסכת כאב ראש וכסף.</p>
+      <div class="about-tags"><span class="about-tag">אירועי חוצות</span><span class="about-tag">אולמות VIP</span><span class="about-tag">+1,200 פרויקטים</span><span class="about-tag">ניהול אמנותי</span><span class="about-tag">עיבודים מותאמים</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="representation" class="section" style="background:var(--charcoal)">
+  <div class="sec-hdr fi"><span class="sec-label">ייצוג בלעדי</span><h2 class="sec-title">ניהול אמנותי מלא, <span>שקט נפשי מוחלט</span></h2><div class="sec-divider"></div></div>
+  <div class="deal-box fi" style="max-width:940px">
+    <div class="deal-tag">✦ חבילת תוכן מלאה ✦</div>
+    <h3>ניהול הפקה מקצה לקצה</h3>
+    <p>אנחנו מייצגים וסוגרים לך חבילת תוכן מלאה שחוסכת לך זמן, כסף ועצבים. שקט נפשי אמיתי – מהאפיון ועד לרקוד האחרון.</p>
+    <ul class="pkg-list" style="text-align:right;margin:0 auto 26px;max-width:640px">
+      <li>ניהול הפקה ותיאום מול כל הגורמים</li>
+      <li>בחירת סגנון והרכב לפי הצרכים</li>
+      <li>עיבודים מותאמים + איכות סאונד מרבית</li>
+    </ul>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לתאם%20פגישת%20ייעוץ%20לאירוע%20שלי" target="_blank"><button class="btn-gold" style="width:100%">תיאום פגישת ייעוץ</button></a>
+  </div>
+</section>
+
+<section id="faq" class="section" style="background:var(--black)">
+  <div class="sec-hdr fi"><span class="sec-label">שאלות נפוצות</span><h2 class="sec-title">כל התשובות <span>כאן</span></h2><div class="sec-divider"></div></div>
+  <div class="faq-list fi">
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">האם אתם עובדים עם תקציבים שונים?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כן. אנחנו בונים התאמה לפי היעד, ומציעים מסלולי הפקה ברמות שונות – כולל הרכב, עיבודים, הגברה וניהול מלא.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">איזה סגנונות מוזיקליים אפשר לקבל?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">בוחרים סגנון מתוך מגוון אפשרויות, ואנחנו מתאימים עיבודים ובחירת הרכב כך שהכול יישב בול עם האווירה.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">איך משריינים תאריך?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כדאי לשריין כמה שיותר מוקדם. ברגע שסוגרים מסלול הפקה, אנחנו נותנים לוח זמנים ברור עם נקודות ביקורת.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">האם אפשר לשמוע טעימות לפני ההזמנה?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כמובן. בשיחת האפיון הראשונה שולחים הקלטות ווידאו כדי שתוכלו להחליט בביטחון.</div></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt">האם אתם גם מפיקים בחו"ל?</span><span class="faq-icon">+</span></button><div class="faq-a"><div class="faq-a-inner">כן. באירועי חו"ל עובדים עם לוגיסטיקה ותיאום מוקדם מול המקום, כדי שכל ההפקה תרוץ חלק.</div></div></div>
+  </div>
+</section>
+
+<section id="contact" class="section" style="background:var(--charcoal)">
+  <div class="sec-hdr fi"><span class="sec-label">יצירת קשר</span><h2 class="sec-title">מענה מקצועי, <span>מהיר ואישי</span></h2><div class="sec-divider"></div></div>
+  <div class="contact-inner fi">
+    <p>תיאום פגישת ייעוץ, בדיקת זמינות לאירוע – אנחנו כאן לכל שאלה. מענה מהיר ומקצועי בכל ערוץ.</p>
+    <div class="contact-opts">
+      <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לבדוק%20זמינות%20לאירוע%20שלי" target="_blank"><div class="contact-card"><div class="cc-icon cc-icon-wa"><svg viewBox="0 0 24 24"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.2 7.6L4 20l.7-3.6a8.5 8.5 0 1 1 15.8-4.7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9.3c.5 1.3 1.4 2.6 2.6 3.8 1.2 1.2 2.5 2.1 3.8 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cc-title">בדיקת זמינות</div><div class="cc-desc">מענה מהיר בוואטסאפ</div></div></a>
+      <a href="tel:+972500000000"><div class="contact-card"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2c-1.1-.1-2.3-.4-3.6-.9-3-1.1-5.8-3.8-6.9-6.9-.5-1.3-.8-2.5-.9-3.6A2 2 0 0 1 7.3 4h3a2 2 0 0 1 2 1.7c.1.8.3 1.6.6 2.3a2 2 0 0 1-.5 2.1l-1.2 1.2c1.5 2.7 3.8 5 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.7.3 1.5.5 2.3.6A2 2 0 0 1 22 16.9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="cc-title">ייעוץ טלפוני</div><div class="cc-desc">050-000-0000</div></div></a>
+    </div>
+    <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לתאם%20פגישת%20ייעוץ" target="_blank"><button class="btn-gold" style="font-size:17px;padding:16px 56px">תיאום פגישת ייעוץ</button></a>
+  </div>
+</section>
+
+<!-- תיקון 1: Footer עם כפתור "כניסת צוות" בזהב עמום -->
+<footer>
+  <div class="footer-logo-text">SOLTON</div>
+  <div class="footer-slogan">שש שנים של עוצמה מוזיקלית בכל היכל</div>
+  <div class="footer-links"><a href="#about">אודות</a><a href="#venues">היכלים</a><a href="#artists">אמנים</a><a href="#packages">מסלולים</a><a href="#faq">שאלות</a><a href="#contact">יצירת קשר</a></div>
+  <div class="footer-copy">© 2026 סולטון הפקות – כל הזכויות שמורות</div>
+  <div class="footer-admin">
+    <!-- כניסת צוות – מעוצב בזהב עמום, בולט למנהלים, לא מפריע לגולשים -->
+    <button id="adminLoginBtn" onclick="openLoginModal()" aria-label="כניסת צוות ניהול">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      כניסת צוות
+    </button>
+    <button id="adminLogoutBtn" onclick="doLogout()" aria-label="יציאה מהמערכת">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      יציאה
+    </button>
+  </div>
+</footer>
+
+<!-- FLOAT CONTACT -->
+<div class="float-contact" id="floatContact">
+  <div class="wa-bubble">בדיקת זמינות לאירוע שלכם</div>
+  <a href="https://wa.me/972500000000?text=שלום%2C%20אשמח%20לבדוק%20זמינות%20לאירוע%20שלי" target="_blank" class="float-btn float-wa-btn">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.2 7.6L4 20l.7-3.6a8.5 8.5 0 1 1 15.8-4.7Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 9.3c.5 1.3 1.4 2.6 2.6 3.8 1.2 1.2 2.5 2.1 3.8 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="fl-label">בדיקת זמינות</span>
+  </a>
+  <button onclick="sendToEmail()" class="float-btn float-email-btn">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 8-10 6L2 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="fl-label">הצעה למייל</span>
+  </button>
+</div>
+
+<div id="audio-bar"><div class="a-bars"><div class="ab"></div><div class="ab"></div><div class="ab"></div><div class="ab"></div><div class="ab"></div></div><div class="a-info"><div class="a-title" id="aTitle">אמן הבית של סולטון</div><div class="a-sub" id="aSub">בייצוג בלעדי</div></div><button class="a-btn" id="aPlayBtn" onclick="toggleAudio()">⏸</button><button class="a-close" onclick="closeAudio()">✕</button></div>
+
+<!-- VIDEO MODAL -->
+<div id="videoModal"><div class="video-inner"><button class="video-close" onclick="closeVideo()" aria-label="סגור וידאו">✕</button><iframe id="videoFrame" src="" allowfullscreen title="ביצוע אמן סולטון"></iframe></div></div>
+
+<!-- ADMIN/LOGIN MODAL -->
+<div id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+  <div class="admin-panel" id="adminPanelContent">
+    <!-- תיקון 5: כפתור X ברור לסגירת מודאל -->
+    <button class="admin-close" onclick="closeAdminModal()" aria-label="סגור חלון ניהול">✕</button>
+    <div id="adminPanelInner"></div>
+  </div>
+</div>
+
+<script>
+// ── PRELOADER ──
+setTimeout(()=>{
+  const p=document.getElementById('preloader');
+  p.classList.add('hide');
+  setTimeout(()=>p.style.display='none',520);
+},500);
+
+// ── HEADER ──
+const hdr=document.getElementById('header');
+window.addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>60));
+const hambBtn=document.getElementById('hambBtn');
+const mobNav=document.getElementById('mobNav');
+function openMob(){mobNav.classList.add('open');hambBtn?.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';document.getElementById('mobClose')?.focus?.();}
+function closeMob(){mobNav.classList.remove('open');hambBtn?.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+hambBtn?.addEventListener('click',openMob);
+hambBtn?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openMob();}});
+document.getElementById('mobClose').addEventListener('click',closeMob);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMob();closeAdminModal();closeVideo();}});
+document.querySelectorAll('#mobNav a').forEach(a=>a.addEventListener('click',closeMob));
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+});});
+function toggleFaq(btn){const item=btn.closest('.faq-item');const was=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));if(!was)item.classList.add('open');}
+function animCount(el){const target=parseInt(el.dataset.target);const suf=el.dataset.suffix||'+';let cur=0;const step=target/120;const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=Math.floor(cur).toLocaleString('he-IL')+(cur>=target?suf:'');if(cur>=target)clearInterval(t);},16);}
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');e.target.querySelectorAll('[data-target]').forEach(animCount);obs.unobserve(e.target);}});},{threshold:.12});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+// ── MATCHER (AI – ללא שינוי) ──
+let mAnswers=[],mStep=0;
+{const steps=[0,1,2].map(i=>document.getElementById('ms'+i)).filter(Boolean);steps.forEach(el=>el.classList.add('m-step-anim'));document.getElementById('ms0')?.classList.add('in');}
+function mSel(step,val,el){
+  document.querySelectorAll('#ms'+step+' .m-opt').forEach(o=>o.classList.remove('sel'));
+  if(el)el.classList.add('sel');
+  setTimeout(()=>{
+    mAnswers[step]=val;
+    const cur=document.getElementById('ms'+step);cur.style.display='none';
+    mStep=step+1;
+    if(mStep<3){document.getElementById('pd'+mStep).classList.add('active');const next=document.getElementById('ms'+mStep);next.style.display='block';next.classList.remove('in');requestAnimationFrame(()=>next.classList.add('in'));}
+    else showMRes();
+  },200);
+}
+function mBack(step){const cur=document.getElementById('ms'+step);cur.style.display='none';document.getElementById('pd'+(step-1)).classList.remove('active');mStep=step-1;const prev=document.getElementById('ms'+mStep);prev.style.display='block';prev.classList.remove('in');requestAnimationFrame(()=>prev.classList.add('in'));}
+function resetM(){mAnswers=[];mStep=0;document.querySelectorAll('.p-dot').forEach((d,i)=>d.classList.toggle('active',i===0));for(let i=0;i<3;i++){const el=document.getElementById('ms'+i);if(el){el.style.display=i===0?'block':'none';el.classList.toggle('in',i===0);el.querySelectorAll('.m-opt').forEach(o=>o.classList.remove('sel'));}}document.getElementById('mRes').style.display='none';}
+function showMRes(){
+  const[ev,st,bu]=mAnswers;
+  const evStr=ev||'';const buStr=bu||'';const stStr=st||'';
+  let title='',checks=[],note='';
+  if(evStr==='אקוסטי'){title='מסלול בוטיק – חוויה אקוסטית';checks=['הרכב אקוסטי עם הגברה מדויקת','ניהול אישי לאורך כל הערב','עיבודים מותאמים לסגנון'];note='אווירה מעודנת ואינטימית ברמה גבוהה.';}
+  else if(evStr==='חתונה'&&buStr==='יוקרה'){title='מסלול אווניו – חתונה יוקרה';checks=['תזמורת מלאה עם הגברה','זמר ראשי בניהול בלעדי','ניווט אמנותי מלא עד האקורד האחרון'];note='הפקה ברמה הגבוהה ביותר, שקט נפשי מוחלט.';}
+  else if(evStr==='דינר יוקרה'){title='מסלול אווניו – דינר VIP';checks=['הרכב יוקרתי עם עיבודים בלעדיים','סאונד מקצועי ותאורה מותאמת','תזמון מדויק ומרשים'];note='הפקה מדויקת לאירועי VIP.';}
+  else if(evStr==='חתונה'){title='מסלול חברון – חתונה פרמיום';checks=['הרכב איכותי עם הגברה כלולה','סאונד ברמה גבוהה לאורך הערב','ניהול מקצועי מהדקה הראשונה'];note='ניהול אמנותי מלא, בלי פשרות על האיכות.';}
+  else if(evStr==='אירוע משפחתי'){title='מסלול חברון – אירוע משפחתי';checks=['תכנית מסודרת עם סאונד שמחזיק','עיבודים לקהל ולאווירה','גמישות לפי קצב האירוע'];note='אנרגיה נכונה לכל גיל.';}
+  else{title='מסלול חברון – המלצה מקצועית';checks=['סאונד איכותי + הרכב מקצועי','ניהול אמנותי ושקט נפשי','ליווי ייצוגי מקצה לקצה'];note='ההתאמה הטובה ביותר עבורך.';}
+  if(stStr){if(stStr.includes('מזרחי'))checks[2]+=' · סגנון מזרחי';else if(stStr.includes('מודרני'))checks[2]+=' · נגיעה מודרנית';else if(stStr.includes('קלאסי'))checks[2]+=' · קו קלאסי';}
+  document.getElementById('mResTitle').textContent=title;
+  document.getElementById('mResTxt').textContent=note;
+  ['mResCheck1','mResCheck2','mResCheck3'].forEach((id,i)=>{const el=document.getElementById(id);if(el){el.textContent=checks[i]||'';el.style.display=checks[i]?'flex':'none';}});
+  const waMsg=encodeURIComponent('שלום, עברתי על ה-AI Matcher באתר.\nהמלצה: '+title+'\nסוג אירוע: '+evStr+(stStr?'\nסגנון: '+stStr:'')+(buStr?'\nרמת הפקה: '+buStr:'')+'\n\nאשמח לתאם פגישת ייעוץ.');
+  document.getElementById('mResWA').href='https://wa.me/972500000000?text='+waMsg;
+  const res=document.getElementById('mRes');res.style.display='block';res.classList.add('m-step-anim');requestAnimationFrame(()=>res.classList.add('in'));
+}
+
+// ── UTILS ──
+function openWhatsApp(text){window.open('https://wa.me/972500000000?text='+encodeURIComponent(text),'_blank');}
+function closePackageDeal(p){openWhatsApp('שלום, אשמח לשמוע על '+p+'. אפשר לתאם שיחה?');}
+function closeArtistDeal(a){openWhatsApp('שלום, אשמח לבדוק זמינות לאמן: '+a+'.');}
+function sendToEmail(){const title=document.getElementById('mResTitle')?.textContent||'המלצת מסלול';const txt=document.getElementById('mResTxt')?.textContent||'';const subj=encodeURIComponent('הצעת מחיר – סולטון הפקות');const body=encodeURIComponent('שלום,\n\nקיבלתי המלצה מ-AI Matcher של סולטון הפקות:\n\n'+title+'\n'+txt+'\n\nאשמח לקבל הצעה מפורטת.\n\nתודה!');window.location.href='mailto:info@solton.co.il?subject='+subj+'&body='+body;}
+
+// ── AUDIO ──
+let isPlaying=false;
+function openAudio(t,s){document.getElementById('aTitle').textContent=t;document.getElementById('aSub').textContent=s;document.getElementById('audio-bar').classList.add('show');isPlaying=true;document.getElementById('aPlayBtn').textContent='⏸';document.getElementById('floatContact').classList.add('audio-open');}
+function toggleAudio(){isPlaying=!isPlaying;document.getElementById('aPlayBtn').textContent=isPlaying?'⏸':'▶';}
+function closeAudio(){document.getElementById('audio-bar').classList.remove('show');isPlaying=false;document.getElementById('floatContact').classList.remove('audio-open');}
+
+// ── VIDEO MODAL ──
+function openVideo(ytId,name){document.getElementById('videoFrame').src='https://www.youtube.com/embed/'+ytId+'?autoplay=1';document.getElementById('videoModal').classList.add('show');document.body.style.overflow='hidden';}
+function closeVideo(){document.getElementById('videoFrame').src='';document.getElementById('videoModal').classList.remove('show');document.body.style.overflow='';}
+document.getElementById('videoModal').addEventListener('click',function(e){if(e.target===this)closeVideo();});
+
+// ── ADMIN MODAL ──
+function openAdminModal(){document.getElementById('adminModal').classList.add('show');document.body.style.overflow='hidden';}
+function closeAdminModal(){document.getElementById('adminModal').classList.remove('show');document.body.style.overflow='';}
+// סגירה בלחיצה מחוץ לפאנל
+document.getElementById('adminModal').addEventListener('click',function(e){if(e.target===this)closeAdminModal();});
+
+// ── LOGIN ──
+function openLoginModal(){
+  document.getElementById('adminPanelInner').innerHTML=`
+    <h2 id="adminModalTitle">כניסת צוות</h2>
+    <div class="login-form">
+      <input class="admin-input" id="loginEmail" type="email" placeholder="כתובת אימייל" dir="ltr" autocomplete="email">
+      <input class="admin-input" id="loginPass" type="password" placeholder="סיסמה" dir="ltr" autocomplete="current-password">
+      <div class="login-err" id="loginErr" role="alert"></div>
+      <button class="admin-btn" onclick="doLogin()">כניסה</button>
+    </div>`;
+  openAdminModal();
+  setTimeout(()=>document.getElementById('loginEmail')?.focus(),100);
+}
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const errEl=document.getElementById('loginErr');
+  if(!email||!pass){errEl.textContent='נא למלא אימייל וסיסמה';return;}
+  if(!window._fb){errEl.textContent='Firebase לא מחובר – הגדר config';return;}
+  errEl.textContent='מתחבר...';
+  try{
+    await window._fb.signInWithEmailAndPassword(window._fb.auth,email,pass);
+    closeAdminModal();
+  }catch(e){
+    const msgs={'auth/user-not-found':'משתמש לא קיים','auth/wrong-password':'סיסמה שגויה','auth/invalid-email':'אימייל לא תקין','auth/too-many-requests':'יותר מדי ניסיונות – נסה שוב מאוחר יותר'};
+    errEl.textContent=msgs[e.code]||('שגיאה: '+e.message);
+  }
+}
+
+async function doLogout(){
+  if(window._fb)await window._fb.signOut(window._fb.auth);
+}
+
+// ── תיקון 6: Admin Panel – ניתוב לפי תפקיד ──
+async function openAdminPanel(){
+  const panelEl=document.getElementById('adminPanelInner');
+  panelEl.innerHTML=`<h2 id="adminModalTitle">ניהול מנהל על</h2>
+  <div class="admin-section"><h3>אמנים רשומים</h3>
+    <div class="artists-admin-list" id="artistsAdminList">
+      <div style="text-align:center;padding:20px;color:rgba(201,168,76,.5)">
+        <div style="animation:spinLoad 1s linear infinite;display:inline-block;margin-bottom:8px">✦</div>
+        <div style="font-size:13px">טוען רשימת אמנים...</div>
+      </div>
+    </div>
+  </div>
+  <div class="admin-section"><h3>הוסף אמן חדש</h3>
+  <div class="admin-form">
+    <input class="admin-input" id="newName" placeholder="שם האמן">
+    <input class="admin-input" id="newCat" placeholder="קטגוריה (זמר / קלידן / ...)">
+    <input class="admin-input" id="newEmoji" placeholder="אימוג'י (🎤)">
+    <input class="admin-input" id="newYT" placeholder="קישור YouTube (כל פורמט)" dir="ltr">
+    <!-- תיקון 7: שדה תמונה -->
+    <input class="admin-input" id="newImg" placeholder="קישור תמונה – URL (Google Drive / Cloudinary)" dir="ltr">
+    <input class="admin-input" id="newBadge" placeholder="תגית (ייצוג בלעדי)">
+    <button class="admin-btn" onclick="addArtist()">הוסף אמן</button>
+    <div class="admin-msg" id="addMsg" role="status"></div>
+  </div></div>`;
+  openAdminModal();
+  if(!window._fb){document.getElementById('artistsAdminList').innerHTML='<p style="color:#e07070;padding:12px">Firebase לא מחובר</p>';return;}
+  try{
+    const snap=await window._fb.getDocs(window._fb.collection(window._fb.db,'artists'));
+    const listEl=document.getElementById('artistsAdminList');
+    listEl.innerHTML='';
+    if(snap.empty){
+      // תיקון 4: הודעת ריק
+      listEl.innerHTML='<div style="text-align:center;padding:24px;color:rgba(255,255,255,.3)"><div style="font-size:28px;margin-bottom:8px">🎵</div><div style="font-size:14px;color:rgba(201,168,76,.5)">עדיין אין אמנים</div><div style="font-size:12px;margin-top:6px">הוסף אמן חדש בטופס למטה</div></div>';
+    } else {
+      snap.forEach(d=>{
+        const a=d.data();
+        listEl.innerHTML+=`<div class="artist-admin-row">
+          <span style="font-size:20px">${a.emoji||'🎤'}</span>
+          <span class="artist-admin-name">${a.name||'ללא שם'}</span>
+          <span class="artist-admin-cat">${a.category||''}</span>
+          <button class="admin-btn-outline" onclick="editArtist('${d.id}')">עריכה</button>
+          <button class="admin-btn-danger" onclick="deleteArtist('${d.id}')">מחיקה</button>
+        </div>`;
+      });
+    }
+  }catch(e){document.getElementById('artistsAdminList').innerHTML='<p style="color:#e07070;padding:12px">שגיאה: '+e.message+'</p>';}
+}
+
+// תיקון 6: Artist Panel – עריכה עצמית בלבד
+async function openArtistPanel(uid){
+  if(!window._fb)return;
+  try{
+    const snap=await window._fb.getDocs(window._fb.collection(window._fb.db,'artists'));
+    let artistDoc=null;
+    snap.forEach(d=>{if(d.data().uid===uid)artistDoc={id:d.id,...d.data()};});
+    const panelEl=document.getElementById('adminPanelInner');
+    if(!artistDoc){
+      panelEl.innerHTML=`<h2 id="adminModalTitle">עריכת פרופיל</h2><p style="color:var(--gray);padding:12px 0">לא נמצא פרופיל לחשבון זה. פנה למנהל.</p>`;
+      openAdminModal();return;
+    }
+    panelEl.innerHTML=`<h2 id="adminModalTitle">עריכת הפרופיל שלך</h2>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">ניתן לעדכן קישור וידאו ותמונה בלבד</p>
+    <div class="admin-form">
+      <input class="admin-input" id="editYT" placeholder="קישור YouTube (כל פורמט)" dir="ltr" value="${artistDoc.youtube||''}">
+      <input class="admin-input" id="editImg" placeholder="קישור תמונה – URL" dir="ltr" value="${artistDoc.imageUrl||''}">
+      <button class="admin-btn" onclick="saveArtistSelf('${artistDoc.id}')">שמור</button>
+      <div class="admin-msg" id="editMsg" role="status"></div>
+    </div>`;
+    openAdminModal();
+  }catch(e){console.error(e);}
+}
+
+async function saveArtistSelf(id){
+  if(!window._fb)return;
+  const youtubeRaw=document.getElementById('editYT').value;
+  const imageUrl=document.getElementById('editImg').value.trim();
+  // תיקון 3: חילוץ YouTube ID לפני שמירה
+  const ytId=window._extractYTId?window._extractYTId(youtubeRaw):youtubeRaw;
+  const youtube=ytId||youtubeRaw;
+  try{
+    await window._fb.updateDoc(window._fb.doc(window._fb.db,'artists',id),{youtube,imageUrl});
+    document.getElementById('editMsg').textContent='✓ נשמר בהצלחה';
+    setTimeout(()=>{if(document.getElementById('editMsg'))document.getElementById('editMsg').textContent='';},3000);
+  }catch(e){document.getElementById('editMsg').textContent='שגיאה: '+e.message;}
+}
+
+// תיקון 3 + 7: הוספת אמן עם YouTube ID חילוץ + תמונה
+async function addArtist(){
+  if(!window._fb)return;
+  const youtubeRaw=document.getElementById('newYT').value.trim();
+  const ytId=window._extractYTId?window._extractYTId(youtubeRaw):youtubeRaw;
+  const data={
+    name:document.getElementById('newName').value.trim(),
+    category:document.getElementById('newCat').value.trim(),
+    emoji:document.getElementById('newEmoji').value.trim()||'🎤',
+    youtube:ytId||youtubeRaw,
+    imageUrl:document.getElementById('newImg').value.trim(),
+    badge:document.getElementById('newBadge').value.trim()||'בייצוג בלעדי'
+  };
+  if(!data.name){document.getElementById('addMsg').textContent='נא להזין שם אמן';return;}
+  try{
+    await window._fb.addDoc(window._fb.collection(window._fb.db,'artists'),data);
+    document.getElementById('addMsg').textContent='✓ אמן נוסף בהצלחה';
+    ['newName','newCat','newEmoji','newYT','newImg','newBadge'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    // רענן רשימה
+    setTimeout(()=>openAdminPanel(),1200);
+  }catch(e){document.getElementById('addMsg').textContent='שגיאה: '+e.message;}
+}
+
+async function deleteArtist(id){
+  if(!window._fb||!confirm('למחוק את האמן? לא ניתן לבטל פעולה זו.'))return;
+  try{await window._fb.deleteDoc(window._fb.doc(window._fb.db,'artists',id));openAdminPanel();}
+  catch(e){alert('שגיאה: '+e.message);}
+}
+
+// תיקון 3 + 7: עריכת אמן עם YouTube ID חילוץ + תמונה
+async function editArtist(id){
+  if(!window._fb)return;
+  try{
+    const snap=await window._fb.getDoc(window._fb.doc(window._fb.db,'artists',id));
+    const a=snap.data();
+    document.getElementById('adminPanelInner').innerHTML=`<h2 id="adminModalTitle">עריכת אמן</h2>
+    <div class="admin-form">
+      <input class="admin-input" id="eName" value="${(a.name||'').replace(/"/g,'&quot;')}" placeholder="שם">
+      <input class="admin-input" id="eCat" value="${(a.category||'').replace(/"/g,'&quot;')}" placeholder="קטגוריה">
+      <input class="admin-input" id="eEmoji" value="${a.emoji||''}" placeholder="אימוג'י">
+      <input class="admin-input" id="eYT" value="${(a.youtube||'').replace(/"/g,'&quot;')}" placeholder="YouTube (כל פורמט)" dir="ltr">
+      <input class="admin-input" id="eImg" value="${(a.imageUrl||'').replace(/"/g,'&quot;')}" placeholder="קישור תמונה – URL" dir="ltr">
+      <input class="admin-input" id="eBadge" value="${(a.badge||'').replace(/"/g,'&quot;')}" placeholder="תגית">
+      <input class="admin-input" id="ePrice" value="${(a.price||'').replace(/"/g,'&quot;')}" placeholder="מחיר">
+      <div style="display:flex;gap:10px">
+        <button class="admin-btn" onclick="saveEdit('${id}')">שמור</button>
+        <button class="admin-btn-outline" onclick="openAdminPanel()">← חזור לרשימה</button>
+      </div>
+      <div class="admin-msg" id="editMsg2" role="status"></div>
+    </div>`;
+  }catch(e){alert('שגיאה: '+e.message);}
+}
+
+async function saveEdit(id){
+  if(!window._fb)return;
+  const youtubeRaw=document.getElementById('eYT').value.trim();
+  // תיקון 3: חילוץ ID תמיד לפני שמירה
+  const ytId=window._extractYTId?window._extractYTId(youtubeRaw):youtubeRaw;
+  const data={
+    name:document.getElementById('eName').value.trim(),
+    category:document.getElementById('eCat').value.trim(),
+    emoji:document.getElementById('eEmoji').value.trim(),
+    youtube:ytId||youtubeRaw,
+    imageUrl:document.getElementById('eImg').value.trim(),
+    badge:document.getElementById('eBadge').value.trim(),
+    price:document.getElementById('ePrice').value.trim()
+  };
+  try{
+    await window._fb.updateDoc(window._fb.doc(window._fb.db,'artists',id),data);
+    document.getElementById('editMsg2').textContent='✓ נשמר בהצלחה';
+    setTimeout(()=>openAdminPanel(),1200);
+  }
+  catch(e){document.getElementById('editMsg2').textContent='שגיאה: '+e.message;}
+}
+
+// ── PARTICLES ──
+(function(){
+  const c=document.getElementById('heroParticles');if(!c)return;
+  for(let i=0;i<16;i++){const p=document.createElement('div');p.className='particle';p.style.cssText='right:'+(Math.random()*100)+'%;bottom:'+(Math.random()*40+10)+'%;animation-delay:'+(Math.random()*6)+'s;animation-duration:'+(3+Math.random()*4)+'s;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;opacity:0;';c.appendChild(p);}
+})();
+document.addEventListener('contextmenu',e=>{if(e.target.tagName==='IMG')e.preventDefault()});
+</script>
+</body>
+</html>
