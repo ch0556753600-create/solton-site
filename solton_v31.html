@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ═══ SEO – GOOGLE FIRST ═══ -->
+<title>SOLTON | הפסקול של עולם התורה – הזמנת אמנים ישירה, 0% עמלות</title>
+<!-- SOLTON V31 — Full Rewrite per Master Architect Spec -->
+<meta name="description" content="סולטון הפקות – הזמנת אמנים ישירה ללא תיווך. קלידן פרימיום חרדי, תזמורת כלייזמר, ניגוני חופה. 0% עמלה. ישיבות חברון, מיר, פוניבז', בעלזא, ויז'ניץ.">
+<meta name="keywords" content="direct artist booking haredi, premium haredi keyboardist, 0% commission wedding production, קלידן פרימיום, תזמורת חרדית, הזמנת אמנים ישירה, חתונה חרדית, שמחת בית השואבה, מלווה מלכה">
+<meta property="og:title" content="SOLTON | 0% עמלות – ישירות מהאמנים">
+<meta property="og:description" content="הפסקול של עולם התורה. קלידן וירטואוז, תזמורת כלייזמר, חופות ודינרים. ישירות מהאמן אליכם.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=1200&q=80">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Flatpickr -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<!-- Hebcal for Hebrew dates -->
+<script src="https://cdn.jsdelivr.net/npm/@hebcal/core@5/dist/index.umd.min.js"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Frank+Ruhl+Libre:wght@300;400;700;900&family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* ════════════════════════════════════════════════
+   SOLTON V30 — SILENT LUXURY + HEBREW CALENDAR
+   "Stealth Wealth" Design System
+════════════════════════════════════════════════ */
+:root {
+  --bg:        #0D0D0D;
+  --bg-card:   #1A1A1A;
+  --bg-deep:   #101008;
+  --bg-glass:  rgba(13,13,13,0.92);
+  --gold:      #C9A84C;
+  --gold-l:    #E8C96B;
+  --gold-b:    #F5D878;
+  --gold-d:    #7A6028;
+  --gold-dim:  rgba(201,168,76,0.12);
+  --pearl:     #F0EAD8;
+  --muted:     rgba(240,234,216,0.52);
+  --muted2:    rgba(240,234,216,0.28);
+  --border:    rgba(201,168,76,0.16);
+  --border2:   rgba(201,168,76,0.32);
+  --green-wa:  #25D366;
+  --player-h:  68px;
+  --ticker-h:  38px;
+  --nav-h:     70px;
+
+  --flogo:  'Cinzel', serif;
+  --fheb:   'Frank Ruhl Libre', serif;
+  --fbody:  'Heebo', sans-serif;
+
+  --ease:   cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--pearl);
+  font-family: var(--fbody);
+  direction: rtl;
+  overflow-x: hidden;
+  line-height: 1.75;
+  padding-bottom: var(--player-h);
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--fbody); cursor: pointer; }
+img { max-width: 100%; display: block; object-fit: cover; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold-d); border-radius: 2px; }
+
+/* ── NAVBAR ── */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 600;
+  height: var(--nav-h);
+  padding: 0 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(13,13,13,0.97);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow .35s;
+}
+#nav.scrolled { box-shadow: 0 4px 40px rgba(0,0,0,.75); border-bottom-color: var(--border2); }
+
+.nav-brand { display: flex; align-items: center; gap: 16px; }
+/* LOGO — forced LTR, shimmer animation */
+.solton-nav-logo {
+  direction: ltr !important;
+  font-family: var(--flogo);
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 7px;
+  background: linear-gradient(
+    90deg,
+    var(--gold-d) 0%,
+    var(--gold) 20%,
+    var(--gold-b) 40%,
+    var(--gold) 60%,
+    var(--gold-d) 80%,
+    var(--gold) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: logoShimmer 4s linear infinite;
+}
+@keyframes logoShimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.nav-mute {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem;
+  transition: all .25s;
+}
+.nav-mute:hover, .nav-mute.active { border-color: var(--gold); color: var(--gold); }
+
+.nav-ul { display: flex; gap: 26px; list-style: none; align-items: center; }
+.nav-ul a {
+  font-size: .82rem; font-weight: 500; letter-spacing: .5px;
+  color: var(--muted); transition: color .25s;
+  position: relative; padding-bottom: 3px;
+}
+.nav-ul a::after {
+  content: ''; position: absolute; bottom: 0; right: 0;
+  width: 0; height: 1px; background: var(--gold);
+  transition: width .3s var(--ease);
+}
+.nav-ul a:hover { color: var(--gold); }
+.nav-ul a:hover::after { width: 100%; }
+.nav-book {
+  background: var(--gold) !important;
+  color: var(--bg) !important;
+  padding: 9px 22px !important;
+  border-radius: 2px;
+  font-weight: 700 !important;
+  transition: background .25s, transform .2s !important;
+}
+.nav-book:hover { background: var(--gold-l) !important; transform: translateY(-1px) !important; }
+.nav-book::after { display: none !important; }
+
+.ham {
+  display: none;
+  flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 8px;
+}
+.ham span {
+  display: block; width: 21px; height: 1.5px;
+  background: var(--gold); border-radius: 1px; transition: all .3s;
+}
+.ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.ham.open span:nth-child(2) { opacity: 0; }
+.ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+#mob-nav {
+  display: none; position: fixed; inset: 0;
+  background: rgba(13,13,13,.98);
+  z-index: 590;
+  flex-direction: column; align-items: center; justify-content: center; gap: 26px;
+}
+#mob-nav.open { display: flex; }
+#mob-nav a {
+  font-family: var(--fheb); font-size: 1.55rem; font-weight: 700;
+  color: var(--pearl);
+  border-bottom: 1px solid var(--border);
+  width: 52%; text-align: center; padding-bottom: 14px;
+  transition: color .3s;
+}
+#mob-nav a:hover { color: var(--gold); }
+.mob-x { position: absolute; top: 20px; left: 20px; background: none; border: none; color: var(--gold); font-size: 1.2rem; padding: 8px; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  padding-top: var(--nav-h);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, #1a1400 0%, #0D0D0D 70%),
+    linear-gradient(180deg, #0D0D0D 0%, #0a0800 100%);
+}
+/* Geometric light rays */
+.hero-rays {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    conic-gradient(from 260deg at 30% 0%, transparent 0deg, rgba(201,168,76,.04) 15deg, transparent 30deg),
+    conic-gradient(from 280deg at 70% 0%, transparent 0deg, rgba(201,168,76,.035) 14deg, transparent 28deg),
+    conic-gradient(from 270deg at 50% 0%, transparent 0deg, rgba(201,168,76,.025) 22deg, transparent 44deg);
+}
+/* Fine gold grid */
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(201,168,76,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,.022) 1px, transparent 1px);
+  background-size: 65px 65px;
+  mask-image: radial-gradient(ellipse 75% 70% at 50% 50%, black 20%, transparent 70%);
+}
+/* Ambient gold orb */
+.hero-orb {
+  position: absolute; width: 680px; height: 680px;
+  background: radial-gradient(circle, rgba(201,168,76,.07) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -55%);
+  animation: orbPulse 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes orbPulse {
+  0%,100% { transform: translate(-50%,-55%) scale(1); opacity: .65; }
+  50%      { transform: translate(-50%,-55%) scale(1.2);  opacity: 1;   }
+}
+
+/* Corner ornaments */
+.corner { position: absolute; width: 36px; height: 36px; border-color: rgba(201,168,76,.18); border-style: solid; }
+.corner.tl { top: 36px; right: 36px; border-width: 1px 0 0 1px; }
+.corner.tr { top: 36px; left: 36px;  border-width: 1px 1px 0 0; }
+.corner.bl { bottom: 90px; right: 36px; border-width: 0 0 1px 1px; }
+.corner.br { bottom: 90px; left: 36px;  border-width: 0 1px 1px 0; }
+
+.hero-inner { position: relative; z-index: 2; text-align: center; max-width: 920px; padding: 0 24px; }
+
+/* Hero SOLTON logo — giant, LTR, shimmer */
+.hero-solton {
+  direction: ltr !important;
+  display: inline-block;
+  font-family: var(--flogo);
+  font-size: clamp(4.5rem, 13vw, 10rem);
+  font-weight: 900;
+  letter-spacing: .18em;
+  line-height: 1;
+  background: linear-gradient(
+    180deg,
+    #FFF0A0 0%, #F0D080 12%, #C9A84C 38%,
+    #7A6028 52%, #C9A84C 68%, #FFE066 84%, #F0D080 100%
+  );
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 38px rgba(201,168,76,.5)) drop-shadow(0 2px 8px rgba(0,0,0,.95));
+  margin-bottom: 28px;
+  animation: heroFadeIn .9s var(--ease) .3s both;
+}
+/* Brushed-gold texture */
+.hero-solton::before {
+  content: 'SOLTON';
+  position: absolute; inset: 0;
+  font-family: var(--flogo); font-size: inherit; letter-spacing: inherit; font-weight: 900;
+  background: repeating-linear-gradient(88deg, transparent 0px, transparent 3px, rgba(255,255,255,.055) 3px, rgba(255,255,255,.055) 4px);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  pointer-events: none;
+}
+/* Shine sweep */
+.hero-solton::after {
+  content: 'SOLTON';
+  position: absolute; inset: 0;
+  font-family: var(--flogo); font-size: inherit; letter-spacing: inherit; font-weight: 900;
+  background: linear-gradient(105deg, transparent 25%, rgba(255,255,255,0) 35%, rgba(255,255,255,.85) 50%, rgba(255,255,255,0) 65%, transparent 75%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  background-size: 220% 100%;
+  animation: shineSweep 5.5s ease-in-out infinite 1s;
+  pointer-events: none;
+}
+@keyframes shineSweep {
+  0%,30% { background-position: 220% center; }
+  65%     { background-position: -60% center; }
+  100%    { background-position: -60% center; }
+}
+/* Per-letter wave */
+.hero-solton .L {
+  display: inline-block;
+  animation: letterFloat 3.8s ease-in-out infinite, letterGlow 5.5s ease-in-out infinite;
+}
+.hero-solton .L:nth-child(1) { animation-delay: 0s, 0s; }
+.hero-solton .L:nth-child(2) { animation-delay: .11s, .28s; }
+.hero-solton .L:nth-child(3) { animation-delay: .22s, .56s; }
+.hero-solton .L:nth-child(4) { animation-delay: .33s, .84s; }
+.hero-solton .L:nth-child(5) { animation-delay: .44s, 1.12s; }
+.hero-solton .L:nth-child(6) { animation-delay: .55s, 1.4s; }
+@keyframes letterFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes letterGlow  { 0%,22%,100% { filter: none; } 11% { filter: drop-shadow(0 0 18px rgba(255,220,80,.9)) drop-shadow(0 0 38px rgba(201,168,76,.6)); } }
+
+.hero-tagline {
+  font-family: var(--fbody); font-size: clamp(.82rem, 1.8vw, 1.05rem);
+  font-weight: 300; color: var(--pearl); opacity: .68; letter-spacing: 2.5px;
+  margin-bottom: 42px;
+  animation: heroFadeIn .8s var(--ease) .8s both;
+}
+.hero-ctas {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  animation: heroFadeIn .8s var(--ease) 1.1s both;
+}
+@keyframes heroFadeIn { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+
+.scroll-cue {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  opacity: .38; font-size: .64rem; letter-spacing: 2.5px; text-transform: uppercase;
+  animation: cueBob 2.4s ease-in-out infinite;
+}
+.scroll-arrow { width: 16px; height: 16px; border-right: 1.5px solid var(--gold); border-bottom: 1.5px solid var(--gold); transform: rotate(45deg); }
+@keyframes cueBob {
+  0%,100% { transform: translateX(-50%) translateY(0); opacity: .38; }
+  50%      { transform: translateX(-50%) translateY(7px); opacity: .7; }
+}
+
+/* ── BUTTONS ── */
+.btn-g {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: var(--bg);
+  border: none; padding: 14px 36px; border-radius: 2px;
+  font-weight: 700; font-size: .95rem; letter-spacing: .5px;
+  transition: all .28s; position: relative; overflow: hidden;
+}
+.btn-g::before { content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: rgba(255,255,255,.25); transform: skewX(-20deg); transition: left .4s; }
+.btn-g:hover::before { left: 150%; }
+.btn-g:hover { background: var(--gold-l); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,.42); }
+
+.btn-o {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--gold);
+  border: 1px solid var(--gold); padding: 13px 34px; border-radius: 2px;
+  font-weight: 500; font-size: .95rem; letter-spacing: .5px;
+  transition: all .28s;
+}
+.btn-o:hover { background: rgba(201,168,76,.08); transform: translateY(-2px); }
+
+/* ── SECTIONS ── */
+section { padding: 100px 0; }
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 36px; }
+.sec-eye { font-size: .68rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 13px; display: block; }
+.sec-title { font-family: var(--fheb); font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; margin-bottom: 18px; }
+.sec-title em { font-style: normal; background: linear-gradient(135deg, var(--gold-l), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.gold-rule { width: 52px; height: 2px; background: linear-gradient(90deg, var(--gold), transparent); margin-bottom: 28px; }
+
+/* Reveal */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ── CSS IMAGE PLACEHOLDERS (No Women / Instrument Only) ── */
+/* All "images" are CSS-rendered placeholders with cinematic alt descriptions */
+.img-pl {
+  width: 100%; border-radius: 2px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px;
+}
+.img-pl-grand {
+  background: linear-gradient(145deg, #0a0800, #1a1400, #0a0900);
+  height: 220px;
+}
+.img-pl-grand::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 60%, rgba(201,168,76,.12), transparent),
+    linear-gradient(135deg, transparent, rgba(201,168,76,.06));
+}
+/* Keyboard silhouette via CSS */
+.img-pl-grand::after {
+  content: '';
+  position: absolute;
+  bottom: 20px; left: 50%; transform: translateX(-50%);
+  width: 72%; height: 40px;
+  background: linear-gradient(90deg,
+    #111 0%, #111 7%, #222 7%, #222 9%, #111 9%,
+    #111 16%, #222 16%, #222 18%, #111 18%,
+    #111 23%, #222 23%, #222 25%, #111 25%,
+    #111 32%, #222 32%, #222 34%, #111 34%,
+    #111 41%, #222 41%, #222 43%, #111 43%,
+    #111 50%, #222 50%, #222 52%, #111 52%,
+    #111 59%, #222 59%, #222 61%, #111 61%,
+    #111 68%, #222 68%, #222 70%, #111 70%,
+    #111 77%, #222 77%, #222 79%, #111 79%,
+    #111 86%, #222 86%, #222 88%, #111 88%, #111 100%
+  );
+  border-radius: 2px 2px 4px 4px;
+  box-shadow: 0 4px 24px rgba(201,168,76,.25), 0 -2px 8px rgba(201,168,76,.15);
+}
+.img-pl-brass {
+  background: linear-gradient(145deg, #100900, #1e1400, #0e0a00);
+  height: 220px;
+}
+.img-pl-brass::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(201,168,76,.16), transparent);
+}
+.img-pl-violin {
+  background: linear-gradient(145deg, #0c0800, #180f00, #0a0600);
+  height: 220px;
+}
+.img-pl-violin::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 40% 60% at 45% 55%, rgba(201,120,30,.12), transparent);
+}
+.img-pl-hall {
+  background: linear-gradient(145deg, #0a0600, #100a00, #0d0800);
+  height: 220px;
+}
+.img-pl-hall::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 50% 30% at 50% 25%, rgba(255,200,80,.14), transparent),
+    radial-gradient(ellipse 80% 40% at 50% 80%, rgba(201,168,76,.06), transparent);
+}
+.img-icon {
+  position: relative; z-index: 1;
+  font-size: 2.4rem; color: var(--gold); opacity: .55;
+}
+.img-caption {
+  position: relative; z-index: 1;
+  font-size: .65rem; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--gold); opacity: .6;
+}
+
+/* ── DEALS / PACKAGES ── */
+#deals { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%); }
+.deals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 22px; margin-top: 56px; }
+.deal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 3px; overflow: hidden;
+  position: relative;
+  transition: all .4s var(--ease);
+}
+.deal-card::before { content: ''; position: absolute; top: 0; right: 0; width: 72px; height: 3px; background: var(--gold); transition: width .4s; z-index: 2; }
+.deal-card:hover { border-color: var(--border2); transform: translateY(-5px); box-shadow: 0 20px 56px rgba(0,0,0,.55), 0 0 28px rgba(201,168,76,.06); }
+.deal-card:hover::before { width: 100%; }
+.deal-body { padding: 28px 28px 32px; position: relative; }
+.deal-num { font-size: 4.5rem; font-weight: 900; color: rgba(201,168,76,.07); position: absolute; bottom: 6px; left: 14px; line-height: 1; font-family: var(--fheb); pointer-events: none; }
+.deal-badge { display: inline-block; background: var(--gold); color: var(--bg); font-size: .66rem; font-weight: 700; letter-spacing: 2px; padding: 3px 11px; border-radius: 2px; margin-bottom: 12px; text-transform: uppercase; }
+.deal-badge.premium { background: linear-gradient(90deg, var(--gold-d), var(--gold)); color: #fff; }
+.deal-title { font-family: var(--fheb); font-size: 1.35rem; font-weight: 900; margin-bottom: 10px; color: var(--pearl); }
+.deal-desc { font-size: .86rem; line-height: 1.88; color: var(--muted); position: relative; z-index: 1; margin-bottom: 18px; }
+.deal-promise { font-size: .76rem; color: var(--gold); font-style: italic; border-right: 2px solid rgba(201,168,76,.3); padding-right: 10px; margin-bottom: 18px; }
+.deal-cta { display: inline-flex; align-items: center; gap: 8px; color: var(--gold); font-size: .84rem; font-weight: 700; letter-spacing: 1px; border-bottom: 1px solid transparent; transition: border-color .25s; }
+.deal-cta:hover { border-color: var(--gold); }
+.deal-cta::after { content: '←'; transition: transform .25s; }
+.deal-cta:hover::after { transform: translateX(-4px); }
+
+/* ── SEASONS / MOADIM ── */
+#seasons { background: var(--bg-card); }
+.seasons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 56px; }
+.season-card {
+  border: 1px solid var(--border);
+  border-radius: 3px; overflow: hidden;
+  position: relative; height: 320px;
+  transition: border-color .4s, transform .4s var(--ease);
+  cursor: default;
+}
+.season-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+.season-bg { position: absolute; inset: 0; transition: transform .5s var(--ease); }
+.season-card:hover .season-bg { transform: scale(1.04); }
+/* Unique gradient per season */
+.s-elul   .season-bg { background: linear-gradient(160deg, #0a0e0c, #060c09, #0c0e0a); }
+.s-sukot  .season-bg { background: linear-gradient(160deg, #0e0c00, #12100a, #0c0900); }
+.s-chanuka .season-bg { background: linear-gradient(160deg, #080612, #0a0814, #08060e); }
+.s-lag    .season-bg { background: linear-gradient(160deg, #0e0600, #12080a, #0a0600); }
+.s-beyn   .season-bg { background: linear-gradient(160deg, #060a0e, #080c12, #060810); }
+/* Star particles */
+.season-card::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    radial-gradient(circle 1.5px at 18% 22%, rgba(201,168,76,.55) 1.5px, transparent 1.5px),
+    radial-gradient(circle 1px   at 62% 15%, rgba(201,168,76,.4)  1px,   transparent 1px),
+    radial-gradient(circle 1.5px at 82% 52%, rgba(201,168,76,.4)  1.5px, transparent 1.5px),
+    radial-gradient(circle 1px   at 38% 78%, rgba(201,168,76,.45) 1px,   transparent 1px),
+    radial-gradient(circle 1px   at 8%  66%, rgba(201,168,76,.35) 1px,   transparent 1px);
+  animation: starGlow 3.5s ease-in-out infinite alternate;
+}
+@keyframes starGlow { from { opacity: .45; } to { opacity: 1; } }
+.season-fade { position: absolute; inset: 0; z-index: 2; background: linear-gradient(0deg, rgba(13,13,13,.92) 0%, rgba(13,13,13,.3) 55%, transparent 100%); }
+.season-ico { position: absolute; top: 20px; right: 20px; z-index: 3; width: 44px; height: 44px; border: 1px solid rgba(201,168,76,.22); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 1.1rem; background: rgba(13,13,13,.4); }
+.season-body { position: absolute; bottom: 0; left: 0; right: 0; padding: 22px; z-index: 3; }
+.season-tag { font-size: .58rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 7px; font-family: var(--fbody); }
+.season-h { font-family: var(--fheb); font-size: 1.1rem; font-weight: 900; color: var(--pearl); margin-bottom: 8px; line-height: 1.3; }
+.season-p { font-family: var(--fbody); font-size: .79rem; color: rgba(240,234,216,.6); line-height: 1.65; }
+.season-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 11px; color: var(--gold); font-size: .73rem; opacity: 0; transform: translateY(5px); transition: opacity .3s, transform .3s; cursor: pointer; border: none; background: none; }
+.season-card:hover .season-link { opacity: 1; transform: translateY(0); }
+
+/* ── ABOUT ── */
+#about { background: linear-gradient(135deg, var(--bg-deep), var(--bg), #0e0a00); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 2px; }
+.stat-box { background: rgba(201,168,76,.04); border: 1px solid var(--border); padding: 26px 18px; text-align: center; transition: background .3s; }
+.stat-box:hover { background: rgba(201,168,76,.09); }
+.stat-n { font-family: var(--fheb); font-size: 2.6rem; font-weight: 900; color: var(--gold); line-height: 1; display: block; }
+.stat-l { font-size: .72rem; color: var(--muted); letter-spacing: 1px; margin-top: 5px; display: block; }
+.about-text p { font-size: .97rem; line-height: 2; color: rgba(240,234,216,.78); margin-bottom: 14px; }
+.about-text strong { color: var(--gold-l); font-weight: 700; }
+
+/* ── TESTIMONIALS ── */
+#testimonials { background: var(--bg); }
+.testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; margin-top: 56px; }
+.testi-card {
+  border: 1px solid var(--border); border-radius: 3px;
+  padding: 30px; background: linear-gradient(135deg, rgba(201,168,76,.04), transparent);
+  position: relative; opacity: 0; transform: translateY(26px);
+}
+.testi-card.in { animation: fup .65s var(--ease) forwards; }
+@keyframes fup { to { opacity: 1; transform: translateY(0); } }
+.testi-card::before { content: '"'; font-family: var(--fheb); font-size: 5rem; color: var(--gold); opacity: .12; position: absolute; top: 6px; right: 20px; line-height: 1; pointer-events: none; }
+.testi-stars { color: var(--gold); font-size: .78rem; margin-bottom: 12px; letter-spacing: 2px; }
+.testi-text { font-size: .9rem; line-height: 1.9; color: rgba(240,234,216,.78); margin-bottom: 18px; position: relative; z-index: 1; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-d), var(--gold)); display: flex; align-items: center; justify-content: center; font-family: var(--fheb); font-weight: 900; font-size: 1.1rem; color: var(--bg); flex-shrink: 0; }
+.testi-name { font-weight: 700; font-size: .88rem; }
+.testi-role { font-size: .72rem; color: var(--gold); opacity: .8; }
+
+/* ── FAQ ACCORDION ── */
+#faq { background: var(--bg-card); }
+.faq-list { max-width: 820px; margin: 56px auto 0; display: flex; flex-direction: column; gap: 8px; }
+details.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: rgba(201,168,76,.025);
+  overflow: hidden;
+  transition: border-color .3s;
+}
+details.faq-item[open] { border-color: var(--border2); }
+details.faq-item summary {
+  list-style: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  font-family: var(--fheb); font-size: 1.05rem; font-weight: 700;
+  color: var(--pearl); cursor: pointer;
+  transition: color .25s;
+  user-select: none;
+}
+details.faq-item summary::-webkit-details-marker { display: none; }
+details.faq-item summary:hover { color: var(--gold); }
+.faq-icon { color: var(--gold); font-size: .9rem; transition: transform .35s var(--ease); flex-shrink: 0; margin-right: 12px; }
+details.faq-item[open] .faq-icon { transform: rotate(45deg); }
+.faq-body { padding: 0 24px 22px; font-size: .92rem; color: rgba(240,234,216,.72); line-height: 1.9; border-top: 1px solid var(--border); padding-top: 18px; }
+
+/* ── BOOKING / INTERNAL CALENDAR ── */
+#booking { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%); }
+.booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; margin-top: 56px; }
+.booking-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; padding: 36px; }
+.booking-panel h3 { font-family: var(--fheb); font-size: 1.35rem; font-weight: 900; margin-bottom: 22px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: .7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 5px; }
+.fc {
+  width: 100%; background: rgba(255,255,255,.04);
+  border: 1px solid var(--border); border-radius: 2px;
+  padding: 11px 14px; color: var(--pearl);
+  font-family: var(--fbody); font-size: .9rem;
+  outline: none; transition: border-color .25s; direction: rtl;
+}
+.fc:focus { border-color: var(--gold); background: rgba(201,168,76,.04); }
+.fc option { background: #1a1400; color: var(--pearl); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Flatpickr Gold Theme */
+.flatpickr-calendar { background: #100d00 !important; border: 1px solid var(--border) !important; border-radius: 3px !important; box-shadow: 0 10px 44px rgba(0,0,0,.7) !important; font-family: var(--fbody) !important; direction: ltr !important; }
+.flatpickr-months, .flatpickr-weekdays { background: #1a1400 !important; border-bottom: 1px solid var(--border) !important; }
+.flatpickr-months .flatpickr-month, .flatpickr-current-month .flatpickr-monthDropdown-months, .flatpickr-current-month input.cur-year { color: var(--gold) !important; background: transparent !important; }
+.flatpickr-day { color: var(--pearl) !important; }
+.flatpickr-day:hover { background: rgba(201,168,76,.2) !important; border-color: var(--gold) !important; }
+.flatpickr-day.selected { background: var(--gold) !important; border-color: var(--gold) !important; color: var(--bg) !important; font-weight: 700 !important; }
+.flatpickr-day.today { border-color: var(--gold-d) !important; }
+.flatpickr-day.disabled { color: rgba(240,234,216,.18) !important; }
+span.flatpickr-weekday { color: var(--gold) !important; font-weight: 600 !important; }
+.flatpickr-prev-month svg, .flatpickr-next-month svg { fill: var(--gold) !important; }
+
+/* Inline calendar container */
+.cal-display {
+  text-align: center; padding: 14px;
+  border: 1px solid var(--border); border-radius: 2px;
+  background: rgba(201,168,76,.04);
+  font-family: var(--fheb); font-size: 1rem; color: var(--gold-l);
+  min-height: 52px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+
+/* Gold spinner (Loading) */
+.gold-spinner {
+  display: none; text-align: center; padding: 24px;
+  flex-direction: column; align-items: center; gap: 14px;
+}
+.gold-spinner.show { display: flex; }
+.spinner-ring {
+  width: 48px; height: 48px;
+  border: 3px solid rgba(201,168,76,.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner-text { font-size: .8rem; color: var(--gold); letter-spacing: 1.5px; }
+
+/* Availability success box */
+.avail-success {
+  display: none;
+  border: 1px solid rgba(100,200,80,.28);
+  background: rgba(50,150,60,.06);
+  border-radius: 3px; padding: 24px;
+}
+.avail-success.show { display: block; }
+.avail-mazal { font-family: var(--fheb); font-size: 1rem; font-weight: 900; color: #6db87a; margin-bottom: 8px; }
+.avail-line { font-size: .86rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+.avail-scarcity { font-size: .78rem; color: #ef9a9a; font-style: italic; margin-bottom: 16px; }
+.avail-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-wa {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--green-wa); color: #fff;
+  padding: 12px 20px; border-radius: 2px; border: none;
+  font-family: var(--fbody); font-size: .86rem; font-weight: 700;
+  cursor: pointer; transition: transform .25s, box-shadow .25s;
+  text-decoration: none;
+}
+.btn-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,211,102,.3); }
+.btn-email {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent; color: var(--gold);
+  border: 1px solid var(--border2);
+  padding: 11px 20px; border-radius: 2px;
+  font-family: var(--fbody); font-size: .86rem; font-weight: 600;
+  cursor: pointer; transition: background .25s, transform .25s;
+  text-decoration: none;
+}
+.btn-email:hover { background: rgba(201,168,76,.08); transform: translateY(-2px); }
+
+/* ── FOOTER ── */
+footer { background: linear-gradient(135deg, var(--bg-deep), var(--bg)); border-top: 1px solid var(--border); padding: 60px 0 0; }
+.footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 50px; margin-bottom: 44px; }
+.f-logo { font-family: var(--flogo); font-size: 1.4rem; font-weight: 900; letter-spacing: 6px; direction: ltr !important; display: inline-block; margin-bottom: 12px; background: linear-gradient(90deg, var(--gold-d), var(--gold), var(--gold-b), var(--gold)); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent; animation: logoShimmer 5s linear infinite; }
+.f-brand p { font-size: .84rem; line-height: 1.88; color: var(--muted); }
+.f-col h4 { font-size: .7rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+.f-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.f-col ul li a { font-size: .84rem; color: var(--muted); transition: color .25s; }
+.f-col ul li a:hover { color: var(--gold); }
+.f-bottom { border-top: 1px solid rgba(255,255,255,.04); padding: 18px 0; display: flex; justify-content: space-between; font-size: .7rem; color: rgba(240,234,216,.28); }
+.seo-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* ── MODAL ── */
+#modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 800;
+  background: rgba(0,0,0,.88); backdrop-filter: blur(14px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+#modal-overlay.open { display: flex; }
+.modal-box {
+  background: linear-gradient(150deg, #141000, #0d0a00);
+  border: 1px solid var(--border2); border-radius: 3px;
+  padding: 44px 40px; width: 100%; max-width: 500px;
+  position: relative; animation: mIn .4s var(--spring);
+}
+@keyframes mIn { from { opacity: 0; transform: scale(.88) translateY(22px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-x { position: absolute; top: 12px; left: 12px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 50%; width: 28px; height: 28px; color: var(--muted); font-size: .78rem; display: flex; align-items: center; justify-content: center; transition: all .25s; }
+.modal-x:hover { color: var(--pearl); background: rgba(255,255,255,.1); }
+.modal-box h3 { font-family: var(--fheb); font-size: 1.5rem; margin-bottom: 6px; }
+.modal-sub { font-size: .85rem; color: var(--muted); margin-bottom: 22px; line-height: 1.6; }
+.modal-urg { font-size: .76rem; color: #ef9a9a; background: rgba(200,50,50,.07); border: 1px solid rgba(200,50,50,.2); border-radius: 2px; padding: 8px 12px; margin-bottom: 14px; line-height: 1.6; }
+
+/* ── TICKER (in-flow, above footer) ── */
+#ticker {
+  position: static;
+  left: 0; right: 0;
+  z-index: 100;
+  height: auto;
+  min-height: var(--ticker-h);
+  background: #111111;
+  border-top: 1px solid rgba(201,168,76,.18);
+  border-bottom: 1px solid rgba(201,168,76,.12);
+  display: flex; align-items: center; overflow: hidden;
+}
+.ticker-label { flex-shrink: 0; padding: 0 14px 0 16px; font-size: .58rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); font-family: var(--fbody); border-right: 1px solid var(--border); white-space: nowrap; }
+.ticker-item { display: inline-flex; align-items: center; gap: 9px; font-size: .8rem; font-weight: 500; color: #C9A84C; opacity: 0.9; letter-spacing: .4px; font-family: var(--fbody); }
+.ticker-item::before { content: '·'; color: var(--gold-d); font-size: .9rem; }
+@keyframes tickScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-track { display: flex; white-space: nowrap; animation: tickScroll 90s linear infinite; gap: 72px; }
+#ticker:hover .ticker-track { animation-play-state: paused; }
+
+/* ── STICKY PLAYER (glassmorphism) ── */
+#player {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 490;
+  height: var(--player-h);
+  background: rgba(8, 6, 0, 0.55);
+  backdrop-filter: blur(10px) saturate(180%); -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border-top: 1px solid rgba(201,168,76,0.28);
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.38);
+  display: flex; align-items: center;
+  padding: 0 22px; gap: 18px;
+}
+#player.hidden { transform: translateY(100%); }
+.p-close { position: absolute; top: 5px; right: 10px; background: none; border: none; color: var(--muted2); font-size: .68rem; padding: 3px 6px; transition: color .2s; }
+.p-close:hover { color: var(--pearl); }
+/* Track info */
+.p-track { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; min-width: 165px; }
+.p-disc { width: 38px; height: 38px; border-radius: 50%; background: conic-gradient(var(--gold-d) 0deg, var(--gold) 120deg, var(--gold-d) 240deg, var(--gold) 360deg); border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.p-disc.spin { animation: dSpin 3.5s linear infinite; }
+@keyframes dSpin { to { transform: rotate(360deg); } }
+.disc-hole { width: 10px; height: 10px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--border2); }
+.p-nm { font-weight: 600; font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+.p-sty { font-size: .64rem; color: var(--gold); opacity: .75; }
+/* Controls */
+.p-ctrl { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.p-btns { display: flex; align-items: center; gap: 14px; }
+.pbtn { background: none; border: none; color: rgba(240,234,216,.62); font-size: .88rem; padding: 3px; transition: color .2s; display: flex; align-items: center; }
+.pbtn:hover { color: var(--pearl); }
+.play-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--gold); color: var(--bg); transition: all .22s; flex-shrink: 0; }
+.play-btn:hover { background: var(--gold-l); transform: scale(1.07); }
+.p-prog-wrap { display: flex; align-items: center; gap: 8px; width: 100%; }
+.ptime { font-size: .62rem; color: var(--muted); min-width: 28px; text-align: center; }
+.p-prog { flex: 1; height: 3px; background: rgba(255,255,255,.1); border-radius: 2px; cursor: pointer; overflow: hidden; }
+.p-prog-bar { height: 100%; background: linear-gradient(90deg, var(--gold-d), var(--gold)); border-radius: 2px; width: 0%; transition: width .4s linear; }
+/* Right */
+.p-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.sty-btn { background: rgba(201,168,76,.06); border: 1px solid var(--border); color: var(--muted); font-size: .68rem; padding: 4px 10px; border-radius: 2px; transition: all .22s; white-space: nowrap; }
+.sty-btn.on, .sty-btn:hover { background: rgba(201,168,76,.18); border-color: var(--gold); color: var(--gold); }
+.p-vol { display: flex; align-items: center; gap: 6px; }
+.p-vol svg { width: 14px; height: 14px; fill: var(--muted); }
+.vol-sl { width: 72px; -webkit-appearance: none; height: 3px; background: rgba(255,255,255,.12); border-radius: 2px; outline: none; cursor: pointer; }
+.vol-sl::-webkit-slider-thumb { -webkit-appearance: none; width: 11px; height: 11px; background: var(--gold); border-radius: 50%; }
+/* Download button */
+.p-dl { display: inline-flex; align-items: center; gap: 5px; font-size: .68rem; color: var(--gold); border: 1px solid var(--border); border-radius: 2px; padding: 4px 10px; text-decoration: none; transition: all .22s; white-space: nowrap; }
+.p-dl:hover { background: rgba(201,168,76,.1); border-color: var(--gold); }
+
+/* ── FLOAT HUB ── */
+.float-hub {
+  position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+  z-index: 550; display: flex; flex-direction: column; gap: 11px;
+}
+.fbtn {
+  width: 50px; height: 50px; border-radius: 50%; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+  transition: transform .3s var(--spring), box-shadow .3s;
+}
+.fbtn:hover { transform: scale(1.1); }
+.fbtn::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; animation: fpulse 2.2s ease-in-out infinite; pointer-events: none; }
+.fbtn-wa  { background: var(--green-wa); color: #fff; }
+.fbtn-wa::before  { background: rgba(37,211,102,.22); }
+.fbtn-ph  { background: linear-gradient(135deg, var(--gold-d), var(--gold)); color: var(--bg); }
+.fbtn-ph::before  { background: rgba(201,168,76,.2); animation-delay: .25s; }
+.fbtn-em  { background: var(--bg-card); color: var(--gold); border: 1.5px solid var(--border2); }
+.fbtn-em::before  { background: rgba(201,168,76,.12); animation-delay: .5s; }
+@keyframes fpulse { 0%,100% { transform: scale(1); opacity: .65; } 50% { transform: scale(1.2); opacity: 0; } }
+/* Tooltips to the RIGHT of buttons (left side of screen) */
+.fbtn::after {
+  content: attr(data-tip);
+  position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+  background: rgba(13,13,13,.96); border: 1px solid var(--border2);
+  color: var(--pearl); font-family: var(--fbody); font-size: .7rem;
+  padding: 5px 11px; border-radius: 2px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.fbtn:hover::after { opacity: 1; }
+
+/* Show-number tooltip (privacy) */
+.contact-reveal {
+  display: none; position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+  background: var(--bg-card); border: 1px solid var(--gold);
+  border-radius: 3px; padding: 10px 16px;
+  font-family: var(--fbody); font-size: .88rem; color: var(--gold-l);
+  font-weight: 700; white-space: nowrap; z-index: 10;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
+.fbtn-ph:hover .contact-reveal,
+.fbtn-ph:focus .contact-reveal { display: block; }
+
+/* ── FOMO ── */
+#fomo {
+  position: fixed; bottom: calc(var(--player-h) + 14px); right: 20px;
+  z-index: 560;
+  background: rgba(13,13,13,.97); border: 1px solid var(--border2); border-radius: 3px;
+  padding: 14px 34px 14px 14px; max-width: 298px;
+  display: flex; align-items: flex-start; gap: 10px;
+  transform: translateY(130%); opacity: 0;
+  transition: transform .48s var(--ease), opacity .48s;
+  pointer-events: none; box-shadow: 0 8px 28px rgba(0,0,0,.6);
+}
+#fomo.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.fomo-dot { width: 7px; height: 7px; background: #6db87a; border-radius: 50%; flex-shrink: 0; margin-top: 3px; animation: livePulse 1.2s ease-in-out infinite; }
+@keyframes livePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(109,184,122,.6); } 50% { box-shadow: 0 0 0 5px rgba(109,184,122,0); } }
+#fomo-text { font-size: .8rem; color: var(--pearl); line-height: 1.55; }
+.fomo-x { position: absolute; top: 7px; left: 8px; background: none; border: none; color: var(--muted2); font-size: .62rem; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; transition: color .2s; }
+.fomo-x:hover { color: var(--pearl); }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; top: calc(var(--nav-h) + 14px); right: 22px; z-index: 700;
+  background: linear-gradient(135deg, #0d0a00, #1a1400);
+  border: 1px solid var(--gold); border-radius: 2px;
+  padding: 14px 18px; font-size: .84rem; line-height: 1.6;
+  max-width: 280px; color: var(--pearl);
+  box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  transform: translateX(120%); opacity: 0;
+  transition: all .4s var(--spring); pointer-events: none;
+}
+#toast.show { transform: translateX(0); opacity: 1; }
+#toast strong { color: var(--gold-l); }
+
+/* ── HEBREW CALENDAR OVERLAY ── */
+/* Expand flatpickr day cells to fit Hebrew date below */
+.flatpickr-calendar { direction: rtl !important; }
+.flatpickr-day {
+  position: relative;
+  height: 52px !important;
+  line-height: 1.3 !important;
+  padding-top: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+.flatpickr-days .dayContainer { min-height: 260px !important; }
+.heb-date {
+  display: block;
+  font-size: .48rem;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.72;
+  margin-top: 1px;
+  font-family: var(--fheb);
+  letter-spacing: 0;
+  pointer-events: none;
+}
+.flatpickr-day.heb-blocked {
+  background: rgba(180,30,30,.1) !important;
+  border-color: rgba(180,30,30,.25) !important;
+  color: rgba(240,234,216,.28) !important;
+  cursor: not-allowed !important;
+  position: relative;
+}
+.flatpickr-day.heb-blocked .heb-date { color: rgba(200,80,80,.6); }
+.flatpickr-day.heb-blocked::after {
+  content: '✕';
+  position: absolute; top: 1px; left: 2px;
+  font-size: .48rem; color: rgba(200,80,80,.5);
+}
+
+/* ── INSTRUMENT IMAGES (replacing icons) ── */
+.img-pl-instrument {
+  width: 100%; height: 220px;
+  border-radius: 2px 2px 0 0;
+  overflow: hidden; position: relative;
+  background: #0a0800;
+}
+.img-pl-instrument img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(0.78) saturate(0.9);
+  transition: transform .5s var(--ease), filter .4s;
+}
+.deal-card:hover .img-pl-instrument img {
+  transform: scale(1.04);
+  filter: brightness(0.85) saturate(1.1);
+}
+.img-pl-instrument .img-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 8px 14px;
+  background: linear-gradient(to top, rgba(0,0,0,.7), transparent);
+  font-size: .65rem; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--gold); opacity: .85;
+}
+
+/* ── FAQ ACCORDION (details/summary with animation) ── */
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.faq-item summary {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 0; cursor: pointer;
+  font-family: var(--fheb); font-size: 1.05rem; font-weight: 700;
+  color: var(--pearl); list-style: none; gap: 16px;
+  transition: color .25s;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary:hover { color: var(--gold-l); }
+.faq-icon { flex-shrink: 0; color: var(--gold); font-size: .8rem; transition: transform .35s var(--ease); }
+.faq-item[open] .faq-icon { transform: rotate(45deg); }
+.faq-body {
+  padding: 0 0 22px;
+  font-size: .91rem; color: var(--muted); line-height: 1.85;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.faq-list { max-width: 820px; margin: 48px auto 0; }
+
+
+@media (max-width: 900px) {
+  #nav { padding: 0 20px; }
+  .nav-ul { display: none; }
+  .ham { display: flex; }
+  .about-grid, .booking-grid { grid-template-columns: 1fr; gap: 36px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .seasons-grid { grid-template-columns: repeat(2, 1fr); }
+  .wrap { padding: 0 22px; }
+  section { padding: 76px 0; }
+  .p-right, .p-prog-wrap { display: none; }
+  .p-track { min-width: unset; }
+  .float-hub { left: 14px; top: unset; bottom: calc(var(--player-h) + 14px); transform: none; }
+  .fbtn::after { left: calc(100% + 10px); }
+  #fomo { right: 12px; max-width: 252px; bottom: calc(var(--player-h) + 14px); }
+  .corner { display: none; }
+}
+@media (max-width: 600px) {
+  .deals-grid, .testi-grid { grid-template-columns: 1fr; }
+  .seasons-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .hero-ctas { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ NAVBAR ══════ -->
+<header id="nav">
+  <div class="nav-brand">
+    <!-- Logo forced LTR -->
+    <div class="solton-nav-logo" dir="ltr">SOLTON</div>
+    <button class="nav-mute" id="muteBtn" onclick="toggleMute()" aria-label="השתק/הפעל מוזיקה" title="שלוט בנגן">
+      <i class="fas fa-volume-high" id="muteIco"></i>
+    </button>
+  </div>
+
+  <ul class="nav-ul" role="navigation" aria-label="ניווט ראשי">
+    <li><a href="artists-gallery.html">גלריית אמנים</a></li>
+    <li><a href="#deals">מסלולים</a></li>
+    <li><a href="#seasons">מעגל השנה</a></li>
+    <li><a href="#about">אודות</a></li>
+    <li><a href="#testimonials">המלצות</a></li>
+    <li><a href="#faq">שאלות</a></li>
+    <li><a href="#booking" class="nav-book">בדיקת זמינות</a></li>
+  </ul>
+
+  <button class="ham" id="ham" aria-label="תפריט" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- Mobile Menu -->
+<nav id="mob-nav" role="dialog" aria-modal="true">
+  <button class="mob-x" id="mob-x" aria-label="סגור"><i class="fas fa-times"></i></button>
+  <a href="artists-gallery.html" style="color:var(--gold-l)">🎵 גלריית האמנים</a>
+  <a href="#deals">מסלולים</a>
+  <a href="#seasons">מעגל השנה</a>
+  <a href="#about">אודות</a>
+  <a href="#testimonials">המלצות</a>
+  <a href="#faq">שאלות ותשובות</a>
+  <a href="#booking" style="color:var(--gold)">📅 בדיקת זמינות</a>
+</nav>
+
+<!-- ══════ HERO ══════ -->
+<section id="hero" aria-label="SOLTON – הפסקול של עולם הישיבות">
+  <div class="hero-rays"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+
+  <div class="hero-inner">
+    <!-- Giant logo — LTR, shimmer + float + glow -->
+    <div class="hero-solton" dir="ltr" aria-label="SOLTON" style="position:relative">
+      <span class="L">S</span><span class="L">O</span><span class="L">L</span><span class="L">T</span><span class="L">O</span><span class="L">N</span>
+    </div>
+
+    <p class="hero-tagline">ניהול והפקה מוזיקלית בסטנדרט שטרם נראה במגזר. מישיבות הדגל ועד לחצרות הקודש. ישירות מהאמנים – 0% עמלות תיווך.</p>
+
+    <div class="hero-ctas">
+      <button class="btn-g" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">
+        <i class="fas fa-calendar-check"></i> בדוק זמינות לאירוע שלך
+      </button>
+      <a href="artists-gallery.html" class="btn-o">
+        <i class="fas fa-music"></i> גלריית האמנים
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <div class="scroll-arrow"></div>
+    <span>גלול</span>
+  </div>
+</section>
+
+<!-- ══════ DEALS ══════ -->
+<section id="deals" aria-label="מסלולי הפקה">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-eye">מסלולים ישירים – 0% עמלות</span>
+      <h2 class="sec-title">הסאונד שמדבר <em>אל הנשמה</em></h2>
+    </div>
+    <div class="deals-grid">
+
+      <!-- מסלול 1: הליין הישיבתי -->
+      <div class="deal-card reveal" data-d="0">
+        <div class="img-pl-instrument" role="img" aria-label="קלידן פרימיום על במה">
+          <img src="https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80&fit=crop" alt="קלידן פרימיום על במה עם תאורת ענבר">
+          <span class="img-caption">קלידן פרימיום · ציוד מקצועי</span>
+        </div>
+        <div class="deal-body">
+          <span class="deal-badge">אנרגיה אבסולוטית</span>
+          <div class="deal-title">הליין הישיבתי</div>
+          <p class="deal-desc">האנרגיה המדויקת של עולם הישיבות בשיאה. הפקה מוזיקלית שחיה את ה"ליין" המעודכן ביותר של "חברון", "מיר" ו"פוניבז'". קלידן פרימיום השולט בסאונד האלקטרוני החדשני, טראקים ישיבתיים קצביים, זמר עוצמתי ועיבודים חיים ב-132 BPM מדויק וסוחף. מערכת סאונד עוצמתית שתרעיד את הרחבה ותשאיר את הקהל באוויר.</p>
+          <p class="deal-promise">"הסאונד של חברון, פוניבז', עטרת שלמה – בדיוק מקצועי."</p>
+          <a href="javascript:void(0)" onclick="openModal()" class="deal-cta">בדיקת זמינות</a>
+          <div class="deal-num">01</div>
+        </div>
+      </div>
+
+      <!-- מסלול 2: מסורת חצרות הקודש -->
+      <div class="deal-card reveal" data-d="130">
+        <div class="img-pl-instrument" role="img" aria-label="כלי נשיפה זהב על רקע כהה">
+          <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80&fit=crop" alt="כלי נשיפה מוזהבים על רקע כהה">
+          <span class="img-caption">כלי נשיפה · ניגוני חצרות</span>
+        </div>
+        <div class="deal-body">
+          <span class="deal-badge premium">הוד והדר חסידי</span>
+          <div class="deal-title">מסורת חצרות הקודש</div>
+          <p class="deal-desc">ניגון חסידי שורשי בסטנדרט הפקה בינלאומי. תזמורת כלי נשיפה (Brass Section) מורחבת עם סאונד חם ומפואר. עיבודים אותנטיים של ניגוני החצרות המקוריים – מגור ובעלזא ועד ויז'ניץ ותולדות אהרן. מותאם במיוחד לחופות יוקרה, חתונות בחצרות הקודש ומעמדי "פארנצ'עס" המצריכים דיוק והבנה עמוקה בכל ניואנס חסידי.</p>
+          <p class="deal-promise">"סאונד שורשי, הרכב מקצועי, הבנה עמוקה של כל חצר."</p>
+          <a href="javascript:void(0)" onclick="openModal()" class="deal-cta">בדיקת זמינות</a>
+          <div class="deal-num">02</div>
+        </div>
+      </div>
+
+      <!-- מסלול 3: חופות רגש וקומזיצים -->
+      <div class="deal-card reveal" data-d="260">
+        <div class="img-pl-instrument" role="img" aria-label="פסנתר כנף וכינור בתאורת נרות">
+          <img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&q=80&fit=crop" alt="כינור ופסנתר כנף בתאורת ענבר חמה">
+          <span class="img-caption">פסנתר כנף ומיתרים · חופות רגש</span>
+        </div>
+        <div class="deal-body">
+          <span class="deal-badge">נשמה וצליל נקי</span>
+          <div class="deal-title">חופות רגש וקומזיצים</div>
+          <p class="deal-desc">רגעים של חיבור צרוף. הפקה אקוסטית אינטימית המבוססת על טהרת הכלים החיים: פסנתר כנף, כינור וצ'לו. פתרון יוקרתי לחופות מרטיטות, עם ניגוני נשמה כמו "ניגון הבעל שם טוב" המובילים לדמעות של רגש. מיד לאחר שבירת הכוס, מעבר חלק ומקפיץ לניגוני "עוד ישמע" שיזניקו את הקהל לריקודים. מושלם גם לערבי הוקרה וקומזיצים.</p>
+          <p class="deal-promise">"מעברים חלקים בין דבקות לשמחה. ריפרטואר מותאם אישית."</p>
+          <a href="javascript:void(0)" onclick="openModal()" class="deal-cta">בדיקת זמינות</a>
+          <div class="deal-num">03</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════ SEASONS / MOADIM ══════ -->
+<section id="seasons" aria-label="סולטון במעגל השנה">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-eye">סולטון 365 – כל השנה</span>
+      <h2 class="sec-title">מעגל השנה, <em>מעגל השמחה</em></h2>
+      <p style="max-width:640px;margin:16px auto 0;font-size:.94rem;color:var(--muted);line-height:1.9">
+        עולם התורה והחסידות לא עוצר רק בחתונות. בסולטון הפקות אנחנו מלווים את הישיבות, הקהילות והחצרות סביב שעון השנה, עם התאמה מוזיקלית מושלמת לכל מועד.
+      </p>
+    </div>
+    <div class="seasons-grid" style="margin-top:54px">
+
+      <div class="season-card s-elul reveal" data-d="0">
+        <div class="season-bg"></div><div class="season-fade"></div>
+        <div class="season-ico"><i class="fas fa-moon"></i></div>
+        <div class="season-body">
+          <span class="season-tag">אלול · ימים נוראים</span>
+          <div class="season-h">סליחות והתעוררות</div>
+          <p class="season-p">ליווי מוזיקלי מרגש לסליחות וקומזיצים של התעוררות בישיבות. אווירת ימי הרחמים מוגשת באמצעות הרכבים אקוסטיים הפותחים שערי שמיים.</p>
+          <button class="season-link" onclick="openModal()"><i class="fas fa-arrow-left" style="font-size:.65rem"></i> לפרטים</button>
+        </div>
+      </div>
+
+      <div class="season-card s-sukot reveal" data-d="90">
+        <div class="season-bg"></div><div class="season-fade"></div>
+        <div class="season-ico"><i class="fas fa-fire"></i></div>
+        <div class="season-body">
+          <span class="season-tag">סוכות · שמחות בית השואבה</span>
+          <div class="season-h">הקצב שלא נח עד אור הבוקר</div>
+          <p class="season-p">הקצב שלא נח עד אור הבוקר. קלידנים וזמרים להקפות שניות ושמחות בית השואבה בכל סדר גודל – מסאונד ישיבתי מתפרץ ועד לתזמורות ענק.</p>
+          <button class="season-link" onclick="openModal()"><i class="fas fa-arrow-left" style="font-size:.65rem"></i> לפרטים</button>
+        </div>
+      </div>
+
+      <div class="season-card s-chanuka reveal" data-d="180">
+        <div class="season-bg"></div><div class="season-fade"></div>
+        <div class="season-ico"><i class="fas fa-star-of-david"></i></div>
+        <div class="season-body">
+          <span class="season-tag">חנוכה · פורים</span>
+          <div class="season-h">טישים בחצרות ומסיבות ישיבה</div>
+          <p class="season-p">טישים בחצרות האדמו"רים, מסיבות חנוכה, ומשתאות פורים ישיבתיים עם מוזיקת דאנס, אלקטרוני וטראקים שמעיפים את הישיבה באוויר.</p>
+          <button class="season-link" onclick="openModal()"><i class="fas fa-arrow-left" style="font-size:.65rem"></i> לפרטים</button>
+        </div>
+      </div>
+
+      <div class="season-card s-lag reveal" data-d="270">
+        <div class="season-bg"></div><div class="season-fade"></div>
+        <div class="season-ico"><i class="fas fa-fire-flame-curved"></i></div>
+        <div class="season-body">
+          <span class="season-tag">ל"ג בעומר · מירון</span>
+          <div class="season-h">הפקות ענק להדלקות</div>
+          <p class="season-p">הפקות ענק להדלקות בכל רחבי הארץ ובמירון. במות, תאורה, שירי מירון מסורתיים בעיבודים חדשניים וכלי נשיפה סוחפים.</p>
+          <button class="season-link" onclick="openModal()"><i class="fas fa-arrow-left" style="font-size:.65rem"></i> לפרטים</button>
+        </div>
+      </div>
+
+      <div class="season-card s-beyn reveal" data-d="360">
+        <div class="season-bg"></div><div class="season-fade"></div>
+        <div class="season-ico"><i class="fas fa-sun"></i></div>
+        <div class="season-body">
+          <span class="season-tag">בין הזמנים · פסח ושבועות</span>
+          <div class="season-h">קמפים, נופשים וכנסי בוגרים</div>
+          <p class="season-p">מוזיקה לקמפים, נופשי ישיבות, כנסי בוגרים ואירועי קהילה. מופעים מלאים במחירים שוברי שוק למוסדות – הכל ישירות מהאמן ללא עמלות.</p>
+          <button class="season-link" onclick="openModal()"><i class="fas fa-arrow-left" style="font-size:.65rem"></i> לפרטים</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════ ABOUT ══════ -->
+<section id="about" aria-label="אודות סולטון">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <div style="height:340px;border-radius:2px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden;position:relative" role="img" aria-label="Cinematic wedding hall with crystal chandeliers">
+          <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=700&q=80&fit=crop" alt="Grand wedding hall with warm amber lighting" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.75) saturate(0.85)">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:12px 18px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);opacity:.85">SOLTON PRODUCTIONS · אולמי יוקרה</div>
+        </div>
+        <div class="about-stats" style="margin-top:2px">
+          <div class="stat-box"><span class="stat-n">0%</span><span class="stat-l">עמלות תיווך</span></div>
+          <div class="stat-box"><span class="stat-n">500+</span><span class="stat-l">אירועים בשנה</span></div>
+          <div class="stat-box"><span class="stat-n">30%</span><span class="stat-l">פחות ממחיר שוק</span></div>
+          <div class="stat-box"><span class="stat-n">100%</span><span class="stat-l">שביעות רצון</span></div>
+        </div>
+      </div>
+      <div class="about-text reveal" style="transition-delay:.14s">
+        <span class="sec-eye">המהפכה שלנו</span>
+        <h2 class="sec-title">תעשיית האירועים עשתה<br>עליכם <em>קופה</em> מספיק זמן</h2>
+        <div class="gold-rule"></div>
+        <p>מפיקים, סוכנים ומתווכים גוזלים עשרות אחוזים מהתקציב שלכם. <strong>סולטון הפקות באה לשבור את השיטה.</strong></p>
+        <p>מסולן חסידי שורשי, דרך אשפי קלידים שמכירים כל "ליין" בחברון, מיר ופוניבז', ועד לנגני Brass שמרעידים את הפארנצ'עס בבעלזא וויז'ניץ. <strong>כולם אצלנו. ישירות אליכם. 0% עמלות.</strong></p>
+        <p>אותו אמן, אותה תזמורת – <strong>מחיר ישיר מהאמן, ללא עמלות תיווך (חיסכון של אלפי שקלים)</strong>. תבדקו אותנו.</p>
+        <button class="btn-g" style="margin-top:10px" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">
+          <i class="fas fa-calendar-check"></i> בדיקת זמינות עכשיו
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ TESTIMONIALS ══════ -->
+<section id="testimonials" aria-label="המלצות">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-eye">קולות מהשטח</span>
+      <h2 class="sec-title">הם <em>בדקו</em> אותנו</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card" style="transition-delay:.07s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">רציתי אורגניסט מסוים שראיתי בחתונה של וולפסון. מפיק אחר נתן לי הצעת מחיר בשמיים. סולטון סגרו לי אותו ב-30% פחות. הרחבה עפה. אלופים.</p>
+        <div class="testi-author"><div class="testi-av">י</div><div><div class="testi-name">ישראל מ.</div><div class="testi-role">חתן, ירושלים</div></div></div>
+      </div>
+      <div class="testi-card" style="transition-delay:.17s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">הבאנו אותם לשמחת בית השואבה בישיבה (חברון). הסאונד היה נקי ברמה של אולפן, והזמר הרגיש את הקהל. זה לא רק ביצוע, זה הבנה של הנפש.</p>
+        <div class="testi-author"><div class="testi-av">ו</div><div><div class="testi-name">ועד שיעור ג'</div><div class="testi-role">ישיבת חברון, ירושלים</div></div></div>
+      </div>
+      <div class="testi-card" style="transition-delay:.27s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">אצלנו בחצר מחפשים רק הכלייזמר האותנטי. סולטון הרימו לנו דינר שהזכיר את הימים הגדולים. שירות VIP בלי לשדוד את קופת המוסדות.</p>
+        <div class="testi-author"><div class="testi-av">ג</div><div><div class="testi-name">גבאי קהילה</div><div class="testi-role">בני ברק</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ FAQ ACCORDION ══════ -->
+<section id="faq" aria-label="שאלות ותשובות">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-eye">שאלות ותשובות</span>
+      <h2 class="sec-title">כל מה שרציתם <em>לדעת</em></h2>
+    </div>
+    <div class="faq-list">
+
+      <details class="faq-item reveal" data-d="0">
+        <summary>
+          איך ייתכן שהמחיר שלכם זול משמעותית משאר השוק?
+          <i class="fas fa-plus faq-icon"></i>
+        </summary>
+        <div class="faq-body">
+          המהפכה של סולטון הפקות פשוטה: חתכנו את המתווכים. בעוד סוכנים ומפיקים חיצוניים גוזרים עמלות של 20% ואף 30% מעלות הנגנים, אנחנו מחברים אתכם ישירות למערך האמנים שלנו. אתם מקבלים את האורגניסט המוביל או התזמורת המלאה במחיר נטו.
+        </div>
+      </details>
+
+      <details class="faq-item reveal" data-d="60">
+        <summary>
+          מה קורה אם אני רוצה אמן ספציפי שראיתי בחתונה של ישיבה אחרת?
+          <i class="fas fa-plus faq-icon"></i>
+        </summary>
+        <div class="faq-body">
+          רוב הסיכויים שהוא נמצא בגלריית האמנים שלנו. המערך של סולטון מכסה את טווח השמות החמים ביותר במגזר – מאשפי סאונד שמרקידים את חברון ומיר, ועד לבעלי מנגנים קלאסיים של בני ברק וירושלים.
+        </div>
+      </details>
+
+      <details class="faq-item reveal" data-d="120">
+        <summary>
+          האם אתם מתחייבים לסנכרון מוזיקלי בחופה (תיאום שירים)?
+          <i class="fas fa-plus faq-icon"></i>
+        </summary>
+        <div class="faq-body">
+          תיאום מוזיקלי הוא לב האירוע. אנחנו עורכים פגישת תיאום מדוקדקת כדי לבחור את הניגון הנכון לכניסת החתן, ניגוני הדבקות העמוקים של החופה (כמו ניגון הבעל שם טוב), ואת התזמון המדויק לשבירת הכוס וההתפרצות הקצבית עם קטעים כמו "עוד ישמע".
+        </div>
+      </details>
+
+      <details class="faq-item reveal" data-d="180">
+        <summary>
+          האם אפשר לשלב בין סגנון ישיבתי לכלים חיים (כמו כלי נשיפה)?
+          <i class="fas fa-plus faq-icon"></i>
+        </summary>
+        <div class="faq-body">
+          בהחלט! הטרנד המוביל היום הוא "ליין ישיבתי" (קלידן וסינתיסייזר) בשילוב חצוצרה וסקסופון לייב. זה מעניק נפח של תזמורת יחד עם האנרגיה הממוחשבת, במינימום עלות.
+        </div>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════ BOOKING – INTERNAL CALENDAR ══════ -->
+<section id="booking" aria-label="בדיקת זמינות ויומן">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <span class="sec-eye">יומן פנימי – 5 שנים קדימה</span>
+      <h2 class="sec-title"><em>תפסו תאריך</em> לפני שיגמר</h2>
+    </div>
+    <div class="booking-grid">
+
+      <!-- Quick Form -->
+      <div class="booking-panel reveal" style="transition-delay:.08s">
+        <h3>שלחו פרטים ונחזור אליכם</h3>
+        <div class="form-group"><label>שם מלא</label><input class="fc" id="f-name" type="text" placeholder="ישראל ישראלי"></div>
+        <div class="form-row">
+          <div class="form-group"><label>טלפון</label><input class="fc" id="f-phone" type="tel" placeholder="מספר טלפון..."></div>
+          <div class="form-group"><label>ישיבה / קהילה</label><input class="fc" id="f-yeshiva" type="text" placeholder="ישיבת..."></div>
+        </div>
+        <div class="form-group">
+          <label>סוג האירוע</label>
+          <select class="fc" id="f-event">
+            <option value="">בחרו סוג</option>
+            <option>חתונה / חופה</option><option>שמחת בית השואבה</option>
+            <option>קומזיץ ישיבתי</option><option>מלווה מלכה</option>
+            <option>דינר יוקרה / חצר</option><option>פורים / חנוכה</option><option>אחר</option>
+          </select>
+        </div>
+        <div class="form-group"><label>תאריך מבוקש</label><input class="fc" id="f-date" type="text" placeholder="בחרו תאריך..." readonly></div>
+        <button class="btn-g" style="width:100%;margin-top:12px;justify-content:center" onclick="sendFormWA()">
+          <i class="fab fa-whatsapp"></i> שלח לוואטסאפ
+        </button>
+        <p style="font-size:.74rem;color:var(--muted2);margin-top:10px;text-align:center">
+          <i class="fas fa-lock" style="color:var(--gold-d);font-size:.68rem"></i>
+          הפרטים נשמרים בסודיות מלאה
+        </p>
+      </div>
+
+      <!-- Calendar Checker -->
+      <div class="booking-panel reveal" style="transition-delay:.18s">
+        <h3>בדיקת זמינות בקליק</h3>
+        <p style="font-size:.84rem;color:var(--muted);line-height:1.7;margin-bottom:18px">
+          בחרו תאריך האירוע. המערכת תסנכרן עם יומן הנגנים ותספק קישורי הזמנה מיידית.
+        </p>
+        <!-- Flatpickr inline calendar -->
+        <div id="cal-widget" style="margin-bottom:14px"></div>
+        <div class="cal-display" id="cal-display">לא נבחר תאריך</div>
+
+        <div class="form-group">
+          <label>סוג האירוע</label>
+          <select class="fc" id="cal-etype">
+            <option value="">בחרו...</option>
+            <option>חתונה / חופה</option><option>שמחת בית השואבה</option>
+            <option>קומזיץ ישיבתי</option><option>מלווה מלכה</option>
+            <option>דינר יוקרה / חצר</option><option>פורים / חנוכה</option><option>אחר</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>שם</label>
+          <input class="fc" id="cal-name" type="text" placeholder="ישראל ישראלי">
+        </div>
+
+        <button class="btn-g" style="width:100%;justify-content:center;margin-bottom:16px" onclick="checkAvail()">
+          <i class="fas fa-magnifying-glass-chart"></i> בדוק זמינות אירוע
+        </button>
+
+        <!-- Spinner -->
+        <div class="gold-spinner" id="spinner">
+          <div class="spinner-ring"></div>
+          <span class="spinner-text">מסנכרן עם יומן הנגנים...</span>
+        </div>
+
+        <!-- Result -->
+        <div class="avail-success" id="avail-res">
+          <div class="avail-mazal">✅ מזל טוב! התאריך <span id="res-date"></span> פנוי.</div>
+          <div class="avail-line">מחיר הזמנה ישירה (0% עמלה) נעול לתאריך זה.</div>
+          <div class="avail-scarcity">⚠ נותרו 2 הרכבים אחרונים זמינים למועד זה. שריינו עכשיו.</div>
+          <div class="avail-actions">
+            <a class="btn-wa" id="avail-wa-btn" href="#" target="_blank" rel="noopener">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              שריינו לי מקום עכשיו
+            </a>
+            <a class="btn-email" id="avail-em-btn" href="#">
+              <i class="fas fa-envelope"></i> הצעת מחיר למוסד/פרטי
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════ TICKER (in-flow, above footer) ══════ -->
+<div id="ticker" role="marquee" aria-label="עדכוני אירועים">
+  <div class="ticker-label">עדכונים חיים</div>
+  <div class="ticker-track">
+    <span class="ticker-item">✅ נסגר עכשיו: תזמורת כלי נשיפה לישיבת עטרת שלמה (אולמי וולף)</span>
+    <span class="ticker-item">🔥 שריון תאריך: חופה אקוסטית (מיתרים ופסנתר) באולמי כתר הרימון</span>
+    <span class="ticker-item">✅ נסגר: קלידן פרימיום לישיבת מיר (אולמי קונקורד)</span>
+    <span class="ticker-item">⚠ פתיחת יומנים: פורים ובין הזמנים נפתחו להזמנות, מהרו לשריין</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item">✅ נסגר עכשיו: תזמורת כלי נשיפה לישיבת עטרת שלמה (אולמי וולף)</span>
+    <span class="ticker-item">🔥 שריון תאריך: חופה אקוסטית (מיתרים ופסנתר) באולמי כתר הרימון</span>
+    <span class="ticker-item">✅ נסגר: קלידן פרימיום לישיבת מיר (אולמי קונקורד)</span>
+    <span class="ticker-item">⚠ פתיחת יומנים: פורים ובין הזמנים נפתחו להזמנות, מהרו לשריין</span>
+  </div>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <div class="f-logo" dir="ltr">SOLTON</div>
+        <p>סולטון הפקות – הפסקול של עולם הישיבות. ישירות מהאמנים, 0% עמלות, 100% גע'שמאק.</p>
+      </div>
+      <div class="f-col">
+        <h4>ניווט</h4>
+        <ul>
+          <li><a href="artists-gallery.html">גלריית האמנים</a></li>
+          <li><a href="#deals">המסלולים שלנו</a></li>
+          <li><a href="#seasons">מעגל השנה</a></li>
+          <li><a href="#about">אודות</a></li>
+          <li><a href="#testimonials">המלצות</a></li>
+          <li><a href="#faq">שאלות ותשובות</a></li>
+          <li><a href="#booking">בדיקת זמינות</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>צרו קשר</h4>
+        <ul>
+          <li><a href="javascript:void(0)" onclick="revealContact()">🔒 לחצו לחשיפת הטלפון</a></li>
+          <li><a href="javascript:void(0)" onclick="callUs()">חיוג למפיק</a></li>
+          <li><a href="javascript:void(0)" onclick="waUs()">וואטסאפ מהיר</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#2d44434b426d5e4241594243034e42034441"><span class="__cf_email__" data-cfemail="137a7d757c53607c7f677c7d3d707c3d7a7f">[email&#160;protected]</span></a></li>
+        </ul>
+        <div id="contact-reveal-box" style="display:none;margin-top:12px;padding:10px 14px;border:1px solid var(--gold);border-radius:2px;background:rgba(201,168,76,.06);font-family:var(--fheb);font-size:.95rem;color:var(--gold-l);font-weight:700"></div>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2026 סולטון הפקות. כל הזכויות שמורות.</span>
+      <span>V30 · Hebrew Calendar Protocol</span>
+    </div>
+  </div>
+</footer>
+
+<div class="seo-hidden" aria-hidden="true">
+  direct artist booking haredi, premium haredi keyboardist, 0% commission wedding production, קלידן פרימיום חרדי, תזמורת חרדית ללא עמלות, הזמנת אמנים ישירה, חתונה חרדית ירושלים, שמחת בית השואבה, מלווה מלכה, קומזיץ ישיבתי, ישיבת חברון, מיר, פוניבז, עטרת שלמה, בעלזא, ויז'ניץ, תולדות אהרן, ל"ג בעומר מירון, אורגניסט ישיבתי מומלץ
+</div>
+
+<!-- ══════ MODAL ══════ -->
+<div id="modal-overlay" role="dialog" aria-modal="true" aria-label="הזמנה מהירה">
+  <div class="modal-box">
+    <button class="modal-x" onclick="closeModal()" aria-label="סגור"><i class="fas fa-times"></i></button>
+    <h3>🗓 הזמנה מהירה</h3>
+    <p class="modal-sub">מלאו פרטים ונחזור אליכם עם הצעת מחיר ישירה – ללא עמלות.</p>
+    <div class="form-group"><label>שם מלא</label><input class="fc" id="m-name" type="text" placeholder="ישראל ישראלי"></div>
+    <div class="form-row">
+      <div class="form-group"><label>טלפון</label><input class="fc" id="m-phone" type="tel" placeholder="מספר טלפון..."></div>
+      <div class="form-group"><label>ישיבה / קהילה</label><input class="fc" id="m-yeshiva" type="text" placeholder="ישיבת..."></div>
+    </div>
+    <div class="form-group">
+      <label>סוג האירוע</label>
+      <select class="fc" id="m-event">
+        <option value="">בחרו...</option>
+        <option>חתונה / חופה</option><option>שמחת בית השואבה</option>
+        <option>קומזיץ ישיבתי</option><option>מלווה מלכה</option>
+        <option>דינר יוקרה / חצר</option><option>פורים / חנוכה</option><option>אחר</option>
+      </select>
+    </div>
+    <div class="form-group"><label>תאריך</label><input class="fc" id="m-date" type="text" placeholder="בחרו תאריך..." readonly></div>
+    <div class="modal-urg">⚠ תאריכי חורף 2026 מתמלאים. שריינו עכשיו להבטיח מחיר נטו.</div>
+    <button class="btn-g" style="width:100%;justify-content:center" onclick="sendModalWA()">
+      <i class="fab fa-whatsapp"></i> שלח לוואטסאפ ←
+    </button>
+  </div>
+</div>
+
+<!-- ══════ STICKY PLAYER (glassmorphism) ══════ -->
+<div id="player" role="region" aria-label="נגן מוזיקה – סולטון הפקות">
+  <button class="p-close" onclick="closePlayer()" aria-label="סגור נגן">✕</button>
+
+  <div class="p-track">
+    <div class="p-disc" id="pDisc"><div class="disc-hole"></div></div>
+    <div>
+      <div class="p-nm" id="pNm">ניגון דבקות – בעש"ט</div>
+      <div class="p-sty" id="pSty">חופה רגש</div>
+    </div>
+  </div>
+
+  <div class="p-ctrl">
+    <div class="p-btns">
+      <button class="pbtn" onclick="prevT()" aria-label="שיר קודם">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="pbtn play-btn" id="pPlayBtn" onclick="togglePlay()" aria-label="נגן/עצור">
+        <svg id="pPlayIco" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pPauseIco" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <button class="pbtn" onclick="nextT()" aria-label="שיר הבא">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 5.5 3.86L8 17.14V9.86zM16 6h2v12h-2z"/></svg>
+      </button>
+    </div>
+    <div class="p-prog-wrap">
+      <span class="ptime" id="pCur">0:00</span>
+      <div class="p-prog" id="pBar" onclick="seekTo(event)" role="slider" aria-label="מיקום שמע">
+        <div class="p-prog-bar" id="pFill"></div>
+      </div>
+      <span class="ptime" id="pDur">0:00</span>
+    </div>
+  </div>
+
+  <div class="p-right">
+    <button class="sty-btn" onclick="switchT(0)">חופה רגש</button>
+    <button class="sty-btn on" id="sb1" onclick="switchT(1)">אנרגיה</button>
+    <button class="sty-btn" onclick="switchT(2)">טראק ריקודים</button>
+    <div class="p-vol">
+      <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+      <input type="range" class="vol-sl" id="pVol" min="0" max="1" step="0.02" value="0.8" oninput="setVol(this.value)" aria-label="עוצמת קול">
+    </div>
+  </div>
+</div>
+
+<!-- ══════ FLOAT HUB ══════ -->
+<div class="float-hub" aria-label="כפתורי קשר מהירים">
+  <!-- WhatsApp — number hidden, revealed via JS -->
+  <button class="fbtn fbtn-wa"
+    onclick="waUs()"
+    data-tip="לסגירה מהירה בוואטסאפ" aria-label="וואטסאפ">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </button>
+  <!-- Phone — masked, revealed on click -->
+  <button class="fbtn fbtn-ph"
+    onclick="callUs()"
+    data-tip="לחצו לחיוג ישיר" aria-label="טלפון">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#050505"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+  </button>
+  <!-- Email -->
+  <button class="fbtn fbtn-em"
+    onclick="emailUs()"
+    data-tip="הצעת מחיר במייל" aria-label="אימייל">
+    <i class="fas fa-envelope" style="font-size:1.1rem"></i>
+  </button>
+</div>
+
+<!-- ══════ FOMO (60s interval) ══════ -->
+<div id="fomo" role="alert" aria-live="polite">
+  <div class="fomo-dot"></div>
+  <span id="fomo-text"></span>
+  <button class="fomo-x" onclick="dismissFomo()" aria-label="סגור">✕</button>
+</div>
+
+<!-- ══════ TOAST ══════ -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- ══════ SCRIPTS ══════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/he.js"></script>
+<script>
+/* ════════════════════════════════════════════════
+   SOLTON V31 – JAVASCRIPT ENGINE
+════════════════════════════════════════════════ */
+
+/* ─── PRIVACY: Phone number is Base64-encoded ─── */
+/* NEVER hardcode the phone in plain text in JS or HTML */
+const contactPhone = atob('MDU1NTcwMzYwMA==');
+function getPhone()  { return contactPhone; }
+function getWaBase() { return 'https://wa.me/972' + contactPhone.slice(1); }
+
+function callUs()  { window.location.href = 'tel:+972' + getPhone().slice(1); }
+function waUs(msg) {
+  const m = msg || 'שלום סולטון, הגעתי מהאתר ואני מעוניין לברר על הפקה מוזיקלית.';
+  window.open(getWaBase() + '?text=' + encodeURIComponent(m), '_blank');
+}
+function emailUs() {
+  window.location.href = 'mailto:info@solton.co.il?subject=' + encodeURIComponent('בקשת הצעת מחיר') + '&body=' + encodeURIComponent('שלום צוות סולטון,\n\nאשמח לקבל הצעת מחיר.\n\nסוג האירוע:\nתאריך:\nשם:\n');
+}
+function revealContact() {
+  const box = document.getElementById('contact-reveal-box');
+  box.style.display = 'block';
+  box.innerHTML = '<i class="fas fa-phone" style="margin-left:6px"></i>' + getPhone().replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+  setTimeout(() => { box.style.display = 'none'; }, 8000);
+}
+
+/* ─── NAV ─── */
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => navEl.classList.toggle('scrolled', scrollY > 60), { passive: true });
+
+const ham = document.getElementById('ham');
+const mobNav = document.getElementById('mob-nav');
+function closeMob() {
+  ham.classList.remove('open'); mobNav.classList.remove('open');
+  ham.setAttribute('aria-expanded', 'false'); document.body.style.overflow = '';
+}
+ham.addEventListener('click', () => {
+  const o = mobNav.classList.toggle('open');
+  ham.classList.toggle('open', o);
+  ham.setAttribute('aria-expanded', o ? 'true' : 'false');
+  document.body.style.overflow = o ? 'hidden' : '';
+});
+document.getElementById('mob-x').addEventListener('click', closeMob);
+document.querySelectorAll('#mob-nav a').forEach(a => a.addEventListener('click', closeMob));
+
+/* ─── MODAL ─── */
+function openModal()  { document.getElementById('modal-overlay').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow = ''; }
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === document.getElementById('modal-overlay')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ─── MUTE BUTTON ─── */
+let globalMuted = false;
+function toggleMute() {
+  globalMuted = !globalMuted;
+  audio.muted = globalMuted;
+  document.getElementById('muteIco').className = globalMuted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
+  document.getElementById('muteBtn').classList.toggle('active', globalMuted);
+}
+
+/* ─── TOAST ─── */
+function showToast(html) {
+  const t = document.getElementById('toast');
+  t.innerHTML = html; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+/* ─── SCROLL REVEAL ─── */
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const d = parseInt(e.target.dataset.d) || 0;
+      setTimeout(() => e.target.classList.add('in'), d);
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: .08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+const testiRo = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('in'), i * 130); });
+}, { threshold: .1 });
+document.querySelectorAll('.testi-card').forEach(el => testiRo.observe(el));
+
+/* ─── HEBREW CALENDAR ENGINE (V30) ─── */
+/*
+  Self-contained JS Hebrew date converter.
+  Does NOT rely on external Hebcal CDN (which may not load).
+  Uses algorithmic conversion based on the Hebrew calendar rules.
+*/
+
+// Hebrew month names
+const HEB_MONTHS = ['', 'ניסן', 'אייר', 'סיון', 'תמוז', 'אב', 'אלול', 'תשרי', 'חשון', 'כסלו', 'טבת', 'שבט', 'אדר', 'אדר ב'];
+const HEB_DAYS   = ['', 'א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ז', 'ח', 'ט', 'י', 'י"א', 'י"ב', 'י"ג', 'י"ד', 'ט"ו', 'ט"ז', 'י"ז', 'י"ח', 'י"ט', 'כ', 'כ"א', 'כ"ב', 'כ"ג', 'כ"ד', 'כ"ה', 'כ"ו', 'כ"ז', 'כ"ח', 'כ"ט', 'ל'];
+
+function isHebLeap(year) { return (7 * year + 1) % 19 < 7; }
+function hebMonthsInYear(year) { return isHebLeap(year) ? 13 : 12; }
+function hebElapsedDays(year) {
+  const monthsElapsed = Math.floor((235 * year - 234) / 19);
+  const parts = 12084 + 13753 * monthsElapsed;
+  let day = monthsElapsed * 29 + Math.floor(parts / 25920);
+  if ((3 * (day + 1)) % 7 < 3) day++;
+  return day;
+}
+function hebYearDays(year) { return hebElapsedDays(year + 1) - hebElapsedDays(year); }
+function hebDaysInMonth(month, year) {
+  if ([1,3,5,7,11,13].includes(month)) return 30;
+  if ([4,8,10,12].includes(month)) return 29;
+  if (month === 6) return 29;
+  if (month === 9) {
+    const d = hebYearDays(year);
+    return (d === 355 || d === 385) ? 30 : 29;
+  }
+  if (month === 2) {
+    const d = hebYearDays(year);
+    return (d === 353 || d === 383) ? 29 : 30;
+  }
+  return 29;
+}
+
+function gregorianToHebrew(gYear, gMonth, gDay) {
+  // Julian day number from Gregorian
+  const a = Math.floor((14 - gMonth) / 12);
+  const y = gYear + 4800 - a;
+  const m = gMonth + 12 * a - 3;
+  const jd = gDay + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+
+  // Hebrew year from JD
+  let hYear = Math.floor((jd - 347997) / 365.25) + 1;
+  while (hebElapsedDays(hYear + 1) + 6 <= jd - 347997 + 1) hYear++;
+  if (hebElapsedDays(hYear) + 6 > jd - 347997 + 1) hYear--;
+
+  const hebEpoch = jd - (hebElapsedDays(hYear) + 6 - 347997) - 1;
+  let hMonth = 1, hDay = hebEpoch + 1;
+  while (hDay > hebDaysInMonth(hMonth, hYear)) {
+    hDay -= hebDaysInMonth(hMonth, hYear);
+    hMonth++;
+    if (hMonth > hebMonthsInYear(hYear)) hMonth = 1;
+  }
+  return { d: hDay, m: hMonth, y: hYear };
+}
+
+function formatHebDate(date) {
+  const h = gregorianToHebrew(date.getFullYear(), date.getMonth() + 1, date.getDate());
+  const mn = isHebLeap(h.y) && h.m === 12 ? 'אדר א' : HEB_MONTHS[h.m];
+  return HEB_DAYS[h.d] + ' ' + mn;
+}
+
+// Blocked date ranges: Sefirat HaOmer and 3 Weeks
+// Returns true if a JS Date falls in a blocked period
+function isBlockedDate(date) {
+  const y = date.getFullYear();
+  const h = gregorianToHebrew(y, date.getMonth() + 1, date.getDate());
+
+  // Sefirat HaOmer: 2 Iyar (day after Pesach ends) through 32 Omer (Lag BaOmer - 18 Iyar)
+  // Blocked: 16 Nissan to 17 Iyar (Lag BaOmer is 18 Iyar = permitted)
+  // Strict Ashkenaz: block 1 Iyar – 17 Iyar (before Lag BaOmer)
+  const isOmer = (h.m === 1 && h.d >= 16) || // 16-30 Nissan
+                 (h.m === 2 && h.d <= 17);    // 1-17 Iyar (before Lag BaOmer)
+
+  // Three Weeks: 17 Tammuz – 9 Av
+  const is3Weeks = (h.m === 4 && h.d >= 17) || // 17 Tammuz onwards
+                   (h.m === 5 && h.d <= 9);     // until 9 Av
+
+  return isOmer || is3Weeks;
+}
+
+/* ─── FLATPICKR CALENDARS WITH HEBREW DATES ─── */
+const today = new Date();
+const maxDate = new Date(2031, 11, 31); // Through end of 2031
+
+function buildHebCalConfig(extraOpts) {
+  return Object.assign({
+    locale: 'he',
+    minDate: today,
+    maxDate: maxDate,
+    dateFormat: 'd/m/Y',
+    disable: [isBlockedDate],
+    onDayCreate(dObj, dStr, fp, dayElem) {
+      try {
+        const d = dayElem.dateObj;
+        if (!d) return;
+        const hebStr = formatHebDate(d);
+        const span = document.createElement('span');
+        span.className = 'heb-date';
+        span.textContent = hebStr;
+        dayElem.appendChild(span);
+        if (isBlockedDate(d)) dayElem.classList.add('heb-blocked');
+      } catch(e) {}
+    }
+  }, extraOpts);
+}
+
+// Inline booking calendar
+flatpickr('#cal-widget', buildHebCalConfig({
+  inline: true,
+  onChange(dates, str) {
+    selectedDate = str;
+    const d = dates[0];
+    const hebStr = d ? formatHebDate(d) : '';
+    document.getElementById('cal-display').textContent = '📅 ' + str + (hebStr ? '  |  ' + hebStr : '');
+    document.getElementById('avail-res').classList.remove('show');
+    document.getElementById('spinner').classList.remove('show');
+  }
+}));
+// Modal date picker
+flatpickr('#m-date', buildHebCalConfig({}));
+// Form date picker
+flatpickr('#f-date', buildHebCalConfig({}));
+
+let selectedDate = null;
+
+/* ─── AVAILABILITY CHECKER ─── */
+function checkAvail() {
+  const dt = selectedDate;
+  const etype = document.getElementById('cal-etype').value || 'אירוע';
+  const name  = document.getElementById('cal-name').value.trim();
+
+  if (!dt) {
+    showToast('⚠ <strong>נא לבחור תאריך</strong> מהיומן לפני הבדיקה.');
+    return;
+  }
+
+  // Reset states
+  document.getElementById('avail-res').classList.remove('show');
+  const spinner = document.getElementById('spinner');
+  spinner.classList.add('show');
+
+  setTimeout(() => {
+    spinner.classList.remove('show');
+
+    // Build WA + Email links (privacy: number via JS function)
+    const waMsg = `שלום סולטון! בדקתי זמינות לתאריך ${dt} לאירוע: ${etype}. שמי: ${name || 'לא צוין'}. אשמח לשריין מקום עכשיו.`;
+    const emailSubj = `בקשת שריון – ${etype} – ${dt}`;
+    const emailBody = `שלום צוות סולטון,\n\nבדקתי זמינות לתאריך: ${dt}\nסוג האירוע: ${etype}\nשם: ${name || 'לא צוין'}\n\nמעוניין לשריין ולקבל מחיר נטו ללא עמלות.\n\nתודה`;
+
+    document.getElementById('res-date').textContent = dt;
+    document.getElementById('avail-wa-btn').href = getWaBase() + '?text=' + encodeURIComponent(waMsg);
+    document.getElementById('avail-em-btn').href = 'mailto:info@solton.co.il?subject=' + encodeURIComponent(emailSubj) + '&body=' + encodeURIComponent(emailBody);
+    document.getElementById('avail-res').classList.add('show');
+
+  }, 2500);
+}
+
+/* ─── FORM WA SENDERS ─── */
+function buildWAMsg(name, phone, yeshiva, event, date) {
+  return `שלום סולטון, הגעתי מהאתר.\nשם: ${name}\nטלפון: ${phone}\nישיבה/קהילה: ${yeshiva}\nסוג אירוע: ${event}\nתאריך: ${date}`;
+}
+function sendFormWA() {
+  const n = document.getElementById('f-name').value   || 'לא צוין';
+  const p = document.getElementById('f-phone').value  || 'לא צוין';
+  const y = document.getElementById('f-yeshiva').value || 'לא צוין';
+  const e = document.getElementById('f-event').value  || 'לא צוין';
+  const d = document.getElementById('f-date').value   || 'לא צוין';
+  waUs(buildWAMsg(n,p,y,e,d));
+  showToast('✅ <strong>פתיחת וואטסאפ...</strong><br>הודעתך נשלחת.');
+}
+function sendModalWA() {
+  const n = document.getElementById('m-name').value   || 'לא צוין';
+  const p = document.getElementById('m-phone').value  || 'לא צוין';
+  const y = document.getElementById('m-yeshiva').value || 'לא צוין';
+  const e = document.getElementById('m-event').value  || 'לא צוין';
+  const d = document.getElementById('m-date').value   || 'לא צוין';
+  waUs(buildWAMsg(n,p,y,e,d));
+  closeModal();
+  showToast('✅ <strong>תודה!</strong><br>נחזור אליך בהקדם.');
+}
+
+/* ─── FOMO (60-second intervals per spec) ─── */
+const fomoMsgs = [
+  '✅ נסגר: תזמורת Brass מלאה לישיבת עטרת שלמה – אולמי וולף.',
+  '🔥 שריון: חופה אקוסטית (מיתרים ופסנתר) – אולמי כתר הרימון.',
+  '✅ נסגר: קלידן פרימיום וזמר לישיבת מיר – אולמי קונקורד.',
+  '⚠ יומן פורים ובין הזמנים – המקומות אוזלים מהר.',
+  '✅ נסגר: הפקה חסידית יוקרתית לדינר מוסדות התורה.',
+  '🔥 ל"ג בעומר ומירון: הרכבי הבמות נסגרים – שריינו היום.',
+];
+let fI = 0, fOff = false, fTimer = null;
+function showFomo() {
+  if (fOff) return;
+  document.getElementById('fomo-text').textContent = fomoMsgs[fI++ % fomoMsgs.length];
+  document.getElementById('fomo').classList.add('show');
+  if (fTimer) clearTimeout(fTimer);
+  fTimer = setTimeout(hideFomo, 5500);
+}
+function hideFomo()    { document.getElementById('fomo').classList.remove('show'); }
+function dismissFomo() { fOff = true; hideFomo(); }
+// First popup after 5s, then every 60s (spec: high-end event update, not spammy)
+setTimeout(showFomo, 5000);
+setInterval(showFomo, 60000);
+
+/* ─── AUDIO PLAYER ─── */
+/* הערה למתכנתת: קבצי ה-MP3 יסופקו ע"י הלקוח ויונחו בתיקיית audio/ */
+const tracks = [
+  { url: './audio/nigun_baal_shem_tov.mp3', name: 'ניגון דבקות – בעש"ט',        style: 'חופה רגש' },
+  { url: './audio/od_yishama_dance.mp3',    name: 'עוד ישמע – לייב מקפיץ',      style: 'אנרגיה' },
+  { url: './audio/yeshiva_line_132bpm.mp3', name: 'ליין ישיבתי סוער – 132 BPM', style: 'טראק ריקודים' },
+];
+let cT = 1, playing = false;
+const audio = new Audio();
+audio.volume = 0.8;
+
+function loadT(i) {
+  cT = i;
+  const t = tracks[i];
+  audio.src = t.url;
+  document.getElementById('pNm').textContent  = t.name;
+  document.getElementById('pSty').textContent = t.style;
+  document.querySelectorAll('.sty-btn').forEach((b, j) => b.classList.toggle('on', j === i));
+}
+function togglePlay() {
+  if (!audio.src) loadT(cT);
+  if (playing) {
+    audio.pause(); playing = false;
+    document.getElementById('pPlayIco').style.display  = '';
+    document.getElementById('pPauseIco').style.display = 'none';
+    document.getElementById('pDisc').classList.remove('spin');
+  } else {
+    audio.play().catch(() => {});
+    playing = true;
+    document.getElementById('pPlayIco').style.display  = 'none';
+    document.getElementById('pPauseIco').style.display = '';
+    document.getElementById('pDisc').classList.add('spin');
+  }
+}
+function switchT(i) {
+  const was = playing; audio.pause(); playing = false;
+  loadT(i); if (was) togglePlay();
+}
+function nextT() { switchT((cT + 1) % tracks.length); }
+function prevT() { switchT((cT - 1 + tracks.length) % tracks.length); }
+function setVol(v) { audio.volume = parseFloat(v); }
+function seekTo(e) {
+  const r = document.getElementById('pBar').getBoundingClientRect();
+  if (audio.duration) audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+}
+function fmtT(s) { s = Math.floor(s || 0); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  document.getElementById('pFill').style.width = (audio.currentTime / audio.duration * 100) + '%';
+  document.getElementById('pCur').textContent = fmtT(audio.currentTime);
+  document.getElementById('pDur').textContent = fmtT(audio.duration);
+});
+audio.addEventListener('ended', nextT);
+</script>
+</body>
+</html>
+aud
