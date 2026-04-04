@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>גלריית אמני סולטון | כל תעשיית המוזיקה במקום אחד</title>
+<meta name="description" content="גלריית אמני סולטון הפקות – זמרים, קלידנים, תזמורות מלאות. 0% עמלות תיווך.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Frank+Ruhl+Libre:wght@300;400;700;900&family=Heebo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ================================================================
+   SOLTON ARTISTS GALLERY — Production v3
+   Black & Gold · Glassmorphism · 2026 Standard
+================================================================ */
+:root {
+  --bg:        #0C0C0C;
+  --bg-card:   #111111;
+  --bg-glass:  rgba(16,14,6,0.72);
+  --bg-deep:   #080600;
+  --gold:      #C9A84C;
+  --gold-l:    #E8C96B;
+  --gold-b:    #F5D878;
+  --gold-d:    #7A6028;
+  --gold-glow: rgba(201,168,76,0.28);
+  --pearl:     #F0EAD8;
+  --muted:     rgba(240,234,216,0.50);
+  --muted2:    rgba(240,234,216,0.24);
+  --border:    rgba(201,168,76,0.15);
+  --border2:   rgba(201,168,76,0.32);
+  --green-wa:  #25D366;
+  --nav-h:     68px;
+  --flogo:     "Cinzel", serif;
+  --fheb:      "Frank Ruhl Libre", serif;
+  --fbody:     "Heebo", sans-serif;
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+  --spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--pearl);
+  font-family: var(--fbody);
+  direction: rtl;
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--fbody); cursor: pointer; border: none; background: none; }
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold-d); border-radius: 2px; }
+
+/* ── NAV ── */
+#nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 800;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  background: rgba(12,12,12,0.94);
+  backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--flogo); font-size: 1.48rem; font-weight: 900;
+  letter-spacing: 7px; direction: ltr !important;
+  background: linear-gradient(90deg,
+    var(--gold-d) 0%, var(--gold) 22%, var(--gold-b) 45%,
+    var(--gold) 68%, var(--gold-d) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: logoShimmer 4s linear infinite;
+}
+@keyframes logoShimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+.nav-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .78rem; color: var(--muted);
+  border: 1px solid var(--border); padding: 7px 18px; border-radius: 2px;
+  transition: all .25s;
+}
+.nav-back:hover { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,.06); }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  min-height: 44vh;
+  padding: var(--nav-h) 0 72px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden; text-align: center;
+  background: radial-gradient(ellipse 78% 68% at 50% 48%, #1e1600 0%, #0C0C0C 66%);
+}
+.hdr-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(201,168,76,.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,.016) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 74% 70% at 50% 50%, black 18%, transparent 72%);
+}
+.hdr-orb {
+  position: absolute; width: 580px; height: 580px; pointer-events: none;
+  background: radial-gradient(circle, rgba(201,168,76,.055) 0%, transparent 66%);
+  top: 50%; left: 50%; transform: translate(-50%,-54%);
+  animation: orbBreath 6.5s ease-in-out infinite;
+}
+@keyframes orbBreath {
+  0%,100% { opacity: .48; transform: translate(-50%,-54%) scale(1);   }
+  50%      { opacity: 1;   transform: translate(-50%,-54%) scale(1.2); }
+}
+.hdr-inner { position: relative; z-index: 2; padding: 0 28px; max-width: 880px; }
+
+.hdr-eye {
+  font-size: .6rem; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 16px; display: block;
+  animation: fadeUp .8s var(--ease) .1s both;
+}
+.hdr-title {
+  font-family: var(--fheb);
+  font-size: clamp(2rem, 5.5vw, 3.3rem);
+  font-weight: 900; line-height: 1.15; margin-bottom: 14px;
+  animation: fadeUp .8s var(--ease) .25s both;
+}
+.hdr-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--gold-l), var(--gold));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hdr-sub {
+  font-size: .92rem; color: var(--muted); max-width: 580px; margin: 0 auto 28px;
+  animation: fadeUp .8s var(--ease) .4s both;
+}
+.hdr-stats {
+  display: flex; gap: 40px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp .8s var(--ease) .55s both;
+}
+.stat { text-align: center; }
+.stat-n { font-family: var(--fheb); font-size: 1.65rem; font-weight: 900; color: var(--gold-l); line-height: 1; }
+.stat-l { font-size: .62rem; letter-spacing: 1.8px; color: var(--muted2); text-transform: uppercase; margin-top: 4px; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── FILTER & SEARCH BAR ── */
+.filter-bar {
+  position: sticky; top: var(--nav-h); z-index: 600;
+  background: rgba(10,10,8,0.95);
+  backdrop-filter: blur(26px); -webkit-backdrop-filter: blur(26px);
+  border-bottom: 1px solid var(--border);
+}
+.filter-inner {
+  max-width: 1180px; margin: 0 auto; padding: 13px 36px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.fl-label { font-size: .6rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted2); margin-left: 2px; white-space: nowrap; }
+.fl-btn {
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  color: var(--muted); padding: 7px 16px; border-radius: 2px;
+  font-family: var(--fbody); font-size: .79rem; font-weight: 500;
+  transition: all .22s; white-space: nowrap; cursor: pointer;
+}
+.fl-btn:hover  { background: rgba(201,168,76,.08); border-color: rgba(201,168,76,.35); color: var(--gold-l); }
+.fl-btn.active { background: rgba(201,168,76,.14); border-color: var(--gold); color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,.16); }
+
+/* Search */
+.search-wrap { display: flex; align-items: center; gap: 9px; margin-right: auto; }
+.search-box  { position: relative; }
+.search-inp {
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-radius: 2px; padding: 8px 34px 8px 14px;
+  color: var(--pearl); font-family: var(--fbody); font-size: .83rem;
+  width: 220px; outline: none; direction: rtl;
+  transition: border-color .25s, width .3s var(--ease);
+}
+.search-inp::placeholder { color: var(--muted2); }
+.search-inp:focus { border-color: var(--gold); width: 270px; }
+.search-ico {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  font-size: .78rem; color: var(--muted2); pointer-events: none; transition: color .25s;
+}
+.search-inp:focus ~ .search-ico { color: var(--gold); }
+.clear-btn { font-size: .73rem; color: var(--muted2); padding: 4px 9px; border: 1px solid transparent; border-radius: 2px; transition: all .2s; display: none; }
+.clear-btn.on { display: inline-flex; align-items: center; gap: 4px; }
+.clear-btn:hover { color: var(--gold); border-color: var(--border); }
+.res-count { font-size: .7rem; color: var(--muted2); white-space: nowrap; }
+.res-count b { color: var(--gold); }
+
+/* ── GALLERY SECTION ── */
+.gallery-sec { padding: 52px 0 100px; }
+.gallery-wrap { max-width: 1180px; margin: 0 auto; padding: 0 36px; }
+
+/* Error / empty banner */
+.err-banner {
+  display: none;
+  text-align: center; padding: 90px 20px;
+  animation: fadeUp .5s var(--ease) both;
+}
+.err-banner.show { display: block; }
+.err-ico  { font-size: 2.6rem; color: var(--gold-d); margin-bottom: 18px; }
+.err-title{ font-family: var(--fheb); font-size: 1.45rem; font-weight: 900; margin-bottom: 10px; }
+.err-sub  { font-size: .88rem; color: var(--muted); line-height: 1.8; max-width: 440px; margin: 0 auto 22px; }
+.err-cta  {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); color: #060400;
+  padding: 11px 26px; border-radius: 2px;
+  font-family: var(--fbody); font-weight: 700; font-size: .88rem;
+  transition: all .25s; cursor: pointer;
+}
+.err-cta:hover { background: var(--gold-l); transform: translateY(-1px); }
+
+/* No results */
+.no-res { display: none; text-align: center; padding: 72px 20px; }
+.no-res.on { display: block; }
+.no-res p { font-size: .9rem; color: var(--muted); margin-top: 14px; }
+
+/* ── SKELETON LOADER ── */
+.skel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 26px; }
+.skel-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.skel-thumb { width: 100%; aspect-ratio: 16/9; background: #141414; }
+.skel-body  { padding: 18px 20px 20px; }
+.skel-line {
+  height: 12px; border-radius: 2px; margin-bottom: 10px;
+  background: linear-gradient(90deg, #181818 25%, #232323 50%, #181818 75%);
+  background-size: 200% 100%;
+  animation: skelPulse 1.6s ease infinite;
+}
+.skel-line.sm  { width: 54%; }
+.skel-line.btn { height: 38px; width: 100%; margin-top: 14px; }
+@keyframes skelPulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── GALLERY GRID ── */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 26px; }
+
+/* ── ARTIST CARD (Glassmorphism) ── */
+.artist-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 4px; overflow: hidden;
+  position: relative; will-change: transform, opacity;
+  opacity: 0; transform: translateY(30px);
+}
+.artist-card.in {
+  opacity: 1; transform: translateY(0);
+  transition:
+    opacity .55s var(--ease),
+    transform .55s var(--ease),
+    border-color .3s,
+    box-shadow .3s;
+}
+.artist-card.in:hover {
+  border-color: var(--border2);
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: 0 24px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(201,168,76,.12), 0 0 40px rgba(201,168,76,.06);
+}
+
+/* Thumbnail */
+.card-thumb {
+  position: relative; width: 100%; aspect-ratio: 16/9;
+  background: #0a0800; overflow: hidden; cursor: pointer;
+  flex-shrink: 0;
+}
+.thumb-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(.80) saturate(.82);
+  transition: transform .55s var(--ease), filter .4s;
+}
+.artist-card.in:hover .thumb-img {
+  transform: scale(1.06);
+  filter: brightness(.9) saturate(1.05);
+}
+/* Gradient vignette */
+.card-thumb::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,.05) 55%, transparent 100%);
+  pointer-events: none;
+}
+/* Play button */
+.play-btn {
+  position: absolute; z-index: 2;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 58px; height: 58px; border-radius: 50%;
+  background: rgba(12,10,2,.82);
+  border: 1.5px solid rgba(201,168,76,.48);
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: transform .32s var(--spring), background .25s, border-color .25s, box-shadow .25s;
+}
+.play-btn svg { fill: var(--gold); width: 24px; height: 24px; margin-right: -2px; }
+.artist-card.in:hover .play-btn {
+  transform: translate(-50%, -50%) scale(1.16);
+  background: rgba(201,168,76,.2);
+  border-color: var(--gold);
+  box-shadow: 0 0 28px rgba(201,168,76,.35);
+}
+/* Category badge */
+.cat-badge {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  background: rgba(8,7,2,.88); border: 1px solid var(--border2);
+  color: var(--gold); font-size: .57rem; letter-spacing: 2.2px;
+  text-transform: uppercase; padding: 4px 9px; border-radius: 2px;
+  font-weight: 700; backdrop-filter: blur(12px); pointer-events: none;
+}
+/* No-video placeholder */
+.no-video {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 9px; background: #0a0800;
+}
+.no-video i   { font-size: 2rem; color: var(--gold-d); }
+.no-video span { font-size: .68rem; color: var(--muted2); letter-spacing: 1px; }
+
+/* Card body */
+.card-body { padding: 18px 20px 20px; }
+.card-name {
+  font-family: var(--fheb); font-size: 1.12rem; font-weight: 900;
+  color: var(--pearl); margin-bottom: 4px;
+  transition: color .25s;
+}
+.artist-card.in:hover .card-name { color: var(--gold-l); }
+.card-style {
+  font-size: .66rem; color: var(--gold); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 16px; opacity: .8;
+}
+.card-wa-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  background: linear-gradient(130deg, var(--gold-d) 0%, var(--gold) 100%);
+  color: #050300; padding: 11px 16px; border-radius: 3px;
+  font-family: var(--fbody); font-size: .82rem; font-weight: 700;
+  position: relative; overflow: hidden;
+  transition: transform .24s, box-shadow .24s, background .24s;
+}
+.card-wa-btn::before {
+  content: ""; position: absolute; top: 0; left: -100%; width: 55%; height: 100%;
+  background: rgba(255,255,255,.26); transform: skewX(-20deg); transition: left .4s;
+}
+.card-wa-btn:hover::before { left: 160%; }
+.card-wa-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 24px rgba(201,168,76,.38);
+  background: linear-gradient(130deg, var(--gold) 0%, var(--gold-b) 100%);
+}
+
+/* ── LIGHTBOX ── */
+#lightbox {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  align-items: center; justify-content: center; padding: 18px;
+  background: rgba(0,0,0,.93);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+#lightbox.open { display: flex; animation: lbFadeIn .3s var(--ease) both; }
+@keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.lb-backdrop { position: absolute; inset: 0; cursor: pointer; }
+
+.lb-box {
+  position: relative; width: 100%; max-width: 920px; z-index: 1;
+  animation: lbSlide .38s var(--spring) both;
+}
+@keyframes lbSlide { from { opacity: 0; transform: scale(.86) translateY(28px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.lb-hdr {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 0 2px 13px;
+}
+.lb-artist-name  { font-family: var(--fheb); font-size: 1.32rem; font-weight: 900; color: var(--pearl); }
+.lb-artist-style { font-size: .66rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
+.lb-close {
+  width: 37px; height: 37px; border-radius: 50%;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13);
+  color: var(--muted); display: flex; align-items: center; justify-content: center;
+  font-size: .9rem; flex-shrink: 0; transition: all .25s;
+}
+.lb-close:hover { background: rgba(255,255,255,.15); color: var(--pearl); transform: rotate(90deg); }
+
+.lb-video {
+  position: relative; width: 100%; aspect-ratio: 16/9;
+  background: #000; border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 44px 100px rgba(0,0,0,.92), 0 0 0 1px rgba(201,168,76,.1);
+}
+#lb-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+.lb-ftr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 2px 0; flex-wrap: wrap; gap: 10px;
+}
+.lb-wa {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green-wa); color: #fff;
+  padding: 10px 22px; border-radius: 3px;
+  font-family: var(--fbody); font-size: .83rem; font-weight: 700;
+  transition: transform .25s, box-shadow .25s; cursor: pointer;
+}
+.lb-wa:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,211,102,.3); }
+.lb-hint { font-size: .68rem; color: var(--muted2); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg-deep); border-top: 1px solid var(--border);
+  padding: 34px 0; text-align: center;
+}
+.f-logo {
+  font-family: var(--flogo); font-size: 1.18rem; letter-spacing: 6px;
+  direction: ltr; display: inline-block; margin-bottom: 9px;
+  background: linear-gradient(90deg, var(--gold-d), var(--gold), var(--gold-b));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.f-copy { font-size: .7rem; color: var(--muted2); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  #nav { padding: 0 20px; }
+  .filter-inner, .gallery-wrap { padding: 0 22px; }
+  .gallery-grid, .skel-grid { grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 18px; }
+  .filter-bar { position: static; }
+  .search-inp { width: 180px; }
+  .search-inp:focus { width: 220px; }
+  .hdr-stats { gap: 24px; }
+}
+@media (max-width: 600px) {
+  .gallery-grid, .skel-grid { grid-template-columns: 1fr; }
+  .filter-inner { gap: 7px; }
+  .fl-btn { font-size: .74rem; padding: 6px 11px; }
+  .fl-label { display: none; }
+  .lb-ftr { flex-direction: column; align-items: flex-start; }
+  .search-inp { width: 150px; }
+  .search-inp:focus { width: 190px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header id="nav">
+  <div class="nav-logo" dir="ltr">SOLTON</div>
+  <a href="index.html" class="nav-back">
+    <i class="fas fa-arrow-right" style="font-size:.7rem"></i> חזרה לאתר הראשי
+  </a>
+</header>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="hdr-grid"></div>
+  <div class="hdr-orb"></div>
+  <div class="hdr-inner">
+    <span class="hdr-eye">סולטון הפקות · מאגר אמנים</span>
+    <h1 class="hdr-title">גלריית אמני סולטון –<br><em>כל תעשיית המוזיקה</em> במקום אחד</h1>
+    <p class="hdr-sub">0% עמלות תיווך. ישירות מהאמנים אליכם. זמרים, קלידנים, תזמורות ונגני כלי נשיפה.</p>
+    <div class="hdr-stats">
+      <div class="stat"><div class="stat-n">0%</div><div class="stat-l">עמלות תיווך</div></div>
+      <div class="stat"><div class="stat-n" id="total-count">—</div><div class="stat-l">אמנים במאגר</div></div>
+      <div class="stat"><div class="stat-n">24/6</div><div class="stat-l">זמינות לשאלות</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="fl-label">סנן:</span>
+    <button class="fl-btn active" data-cat="all">הכל</button>
+    <button class="fl-btn" data-cat="זמר">זמרים</button>
+    <button class="fl-btn" data-cat="קלידן">קלידנים</button>
+    <button class="fl-btn" data-cat="תזמורת">תזמורות</button>
+    <button class="fl-btn" data-cat="נשיפה">כלי נשיפה</button>
+    <div class="search-wrap">
+      <div class="search-box">
+        <input class="search-inp" id="s-inp" type="search"
+          placeholder="חיפוש אמן, סגנון..." autocomplete="off" spellcheck="false">
+        <i class="fas fa-magnifying-glass search-ico"></i>
+      </div>
+      <button class="clear-btn" id="s-clear" onclick="clearSearch()">
+        <i class="fas fa-times" style="font-size:.65rem"></i> נקה
+      </button>
+      <span class="res-count">מציג <b id="res-n">0</b> אמנים</span>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-sec">
+  <div class="gallery-wrap">
+
+    <!-- Skeleton (shown while fetching) -->
+    <div class="skel-grid" id="skel">
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line sm"></div><div class="skel-line btn"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line sm"></div><div class="skel-line btn"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line sm"></div><div class="skel-line btn"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line sm"></div><div class="skel-line btn"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line sm"></div><div class="skel-line btn"></div></div></div>
+      <div class="skel-card"><div class="skel-thumb"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line sm"></div><div class="skel-line btn"></div></div></div>
+    </div>
+
+    <!-- Error state -->
+    <div class="err-banner" id="err">
+      <div class="err-ico"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="err-title">לא ניתן לטעון את הגלריה</div>
+      <div class="err-sub">בעיה בחיבור לנתונים. בדקו את החיבור לאינטרנט ונסו שוב.</div>
+      <button class="err-cta" onclick="bootstrap()"><i class="fas fa-rotate-right"></i> נסה שוב</button>
+    </div>
+
+    <!-- No results -->
+    <div class="no-res" id="no-res">
+      <i class="fas fa-magnifying-glass" style="font-size:2rem;color:var(--gold-d)"></i>
+      <p>לא נמצאו אמנים לפי הסינון הנוכחי.</p>
+    </div>
+
+    <!-- Live grid -->
+    <div class="gallery-grid" id="grid"></div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo" dir="ltr">SOLTON</div>
+  <p class="f-copy">© סולטון הפקות · כל הזכויות שמורות · 0% עמלות תיווך</p>
+</footer>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="נגן וידאו">
+  <div class="lb-backdrop" onclick="closeLB()"></div>
+  <div class="lb-box">
+    <div class="lb-hdr">
+      <div>
+        <div class="lb-artist-name"  id="lb-name"></div>
+        <div class="lb-artist-style" id="lb-style"></div>
+      </div>
+      <button class="lb-close" onclick="closeLB()" aria-label="סגור"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="lb-video">
+      <iframe id="lb-iframe" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+    </div>
+    <div class="lb-ftr">
+      <button class="lb-wa" id="lb-wa">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        בדיקת זמינות לאמן זה
+      </button>
+      <span class="lb-hint">ESC או לחיצה מחוץ לחלון לסגירה</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   SOLTON ARTISTS GALLERY — Production v3 JavaScript Engine
+   ── Live Google Sheets  ── Zero mock data
+   ── Fuzzy Search         ── Staggered IO reveal
+   ── Click-to-Play thumb  ── Cinematic Lightbox
+   ── Fault-tolerant CSV   ── localStorage cache (1h TTL)
+================================================================ */
+
+/* ── CONFIG ─────────────────────────────────────────────────── */
+const SHEET_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQetMlIDCqZtOtO7ehRYE_sGiN4ARJJG6l5u10yPOGHnos2ifz0N6_dxjKQ3qhHXnZiVSJg8QZABOMg/pub?output=csv";
+const CACHE_KEY  = "solton_gal_v3";
+const CACHE_TTL  = 60 * 60 * 1000;   /* 1 hour */
+
+/* ── PRIVACY ─────────────────────────────────────────────────── */
+const _p = atob("MDU1NTcwMzYwMA==");
+const waLink = (msg) =>
+  "https://wa.me/972" + _p.slice(1) + "?text=" + encodeURIComponent(msg);
+const waOpen = (msg) => window.open(waLink(msg), "_blank");
+
+/* ── STATE ───────────────────────────────────────────────────── */
+let ALL      = [];      /* full artist array after parse */
+let CAT      = "all";   /* active category filter */
+let SEARCH   = "";      /* current search string */
+const STORE  = {};      /* idx → artist, rebuilt on each render */
+
+/* ================================================================
+   MODULE A — VIDEO PARSER
+   Comprehensive regex handles every YouTube URL variant:
+     youtube.com/watch?v=ID  ·  youtu.be/ID
+     youtube.com/shorts/ID   ·  youtube.com/embed/ID
+     youtube.com/v/ID        ·  m.youtube.com/...
+     youtube-nocookie.com    ·  URLs with &t= &list= etc.
+   Plus Vimeo: vimeo.com/ID  ·  player.vimeo.com/video/ID
+================================================================ */
+function parseVideo(raw) {
+  if (!raw) return null;
+  const s = raw.trim();
+  const yt = s.match(
+    /(?:(?:www\.|m\.)?youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#&\s]*&)*v=|embed\/|shorts\/|v\/)|youtu\.be\/)([A-Za-z0-9_\-]{11})/
+  );
+  if (yt) return { src: "yt", id: yt[1] };
+  const vi = s.match(/vimeo\.com\/(?:video\/)?(\d{5,12})/);
+  if (vi) return { src: "vi", id: vi[1] };
+  return null;
+}
+function thumbOf(v) {
+  if (!v) return null;
+  if (v.src === "yt") return "https://img.youtube.com/vi/" + v.id + "/hqdefault.jpg";
+  return null;
+}
+function embedOf(v, ap) {
+  if (!v) return null;
+  if (v.src === "yt") return "https://www.youtube.com/embed/" + v.id + "?autoplay=" + (ap?1:0) + "&rel=0&modestbranding=1";
+  if (v.src === "vi") return "https://player.vimeo.com/video/" + v.id + "?autoplay=" + (ap?1:0) + "&dnt=1";
+  return null;
+}
+
+/* ================================================================
+   MODULE B — FAULT-TOLERANT CSV PARSER
+   • RFC-4180 quoted fields (commas & escaped "" inside quotes)
+   • Strips BOM, normalises CRLF / CR
+   • Per-row try/catch: broken rows skipped silently
+================================================================ */
+function splitRow(line) {
+  const cols = []; let cur = "", inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === "," && !inQ) {
+      cols.push(cur.trim()); cur = "";
+    } else cur += c;
+  }
+  cols.push(cur.trim());
+  return cols;
+}
+function parseCSV(raw) {
+  const lines = raw
+    .replace(/^\uFEFF/, "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .trim().split("\n");
+  const out = [];
+  for (let i = 1; i < lines.length; i++) {   /* row 0 = header */
+    try {
+      const row = lines[i].trim();
+      if (!row) continue;
+      const c    = splitRow(row);
+      const name = (c[1] || "").trim();
+      if (!name) continue;
+      const vid  = parseVideo(c[3]);
+      out.push({
+        cat:   (c[0] || "כללי").trim(),
+        name,
+        style: (c[2] || "").trim(),
+        vid,
+      });
+    } catch (e) { console.warn("[Gallery] skipped row", i, e); }
+  }
+  return out;
+}
+
+/* ================================================================
+   MODULE C — localStorage CACHE (1h TTL)
+================================================================ */
+function cacheRead() {
+  try {
+    const r = localStorage.getItem(CACHE_KEY);
+    if (!r) return null;
+    const { d, t } = JSON.parse(r);
+    if (Date.now() - t > CACHE_TTL) return null;
+    return d;
+  } catch { return null; }
+}
+function cacheWrite(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ d: data, t: Date.now() })); }
+  catch { /* silent – quota or private mode */ }
+}
+
+/* ================================================================
+   MODULE D — FUZZY SEARCH (Hebrew-aware)
+   Strips: spaces · apostrophes · geresh (׳) · gershayim (״)
+   Maps Hebrew sofit letters to their base form.
+================================================================ */
+const SOFIT = { "ך":"כ","ם":"מ","ן":"נ","ף":"פ","ץ":"צ" };
+function norm(s) {
+  if (!s) return "";
+  return s.toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/[''׳`"״«»]/g, "")
+    .replace(/[ךםןףץ]/g, c => SOFIT[c] || c);
+}
+function fuzzy(hay, needle) {
+  return !needle || norm(hay).includes(norm(needle));
+}
+
+/* ================================================================
+   MODULE E — CARD BUILDER
+   Renders a lightweight thumbnail image — NO iframe on load.
+   Clicking the thumb calls openLB() which injects the iframe.
+================================================================ */
+const WA_SVG = `<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+function safeAttr(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function buildCard(artist, idx) {
+  STORE[idx] = artist;
+  const { vid, name, style, cat } = artist;
+  const thumb = thumbOf(vid);
+  const embed = embedOf(vid, true);
+  const waMsg = "שלום סולטון, צפיתי בגלריה, אשמח לבדוק זמינות עבור " + name;
+
+  let thumbHTML;
+  if (thumb && embed) {
+    thumbHTML = `
+      <div class="card-thumb" onclick="openLB(${idx})" role="button" tabindex="0" aria-label="הפעל סרטון של ${safeAttr(name)}">
+        <img src="${thumb}" alt="${safeAttr(name)}" class="thumb-img" loading="lazy" onerror="this.style.display='none'">
+        <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="cat-badge">${safeAttr(cat)}</div>
+      </div>`;
+  } else if (embed) {
+    thumbHTML = `
+      <div class="card-thumb" onclick="openLB(${idx})" role="button" tabindex="0" style="cursor:pointer">
+        <div class="no-video"><i class="fas fa-play-circle" style="font-size:2.2rem;color:var(--gold-d)"></i><span>לחץ לצפייה</span></div>
+        <div class="cat-badge">${safeAttr(cat)}</div>
+      </div>`;
+  } else {
+    thumbHTML = `
+      <div class="card-thumb">
+        <div class="no-video"><i class="fas fa-music"></i><span>וידאו בקרוב</span></div>
+        <div class="cat-badge">${safeAttr(cat)}</div>
+      </div>`;
+  }
+
+  return `
+    <div class="artist-card" data-cat="${safeAttr(cat)}" data-name="${safeAttr(name)}">
+      ${thumbHTML}
+      <div class="card-body">
+        <div class="card-name">${safeAttr(name)}</div>
+        <div class="card-style">${safeAttr(style)}</div>
+        <button class="card-wa-btn" onclick='waOpen(${JSON.stringify(waMsg)})'>
+          ${WA_SVG} בדיקת זמינות לאמן זה
+        </button>
+      </div>
+    </div>`;
+}
+
+/* ================================================================
+   MODULE F — STAGGERED INTERSECTION OBSERVER REVEAL
+   Cards animate in with column-position stagger delay.
+================================================================ */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const card  = e.target;
+    const sibs  = Array.from(card.parentElement.children);
+    const col   = sibs.indexOf(card) % 3;
+    card.style.transitionDelay = (col * 72) + "ms";
+    card.classList.add("in");
+    io.unobserve(card);
+  });
+}, { threshold: 0.06, rootMargin: "0px 0px -20px 0px" });
+
+function observeCards() {
+  document.querySelectorAll(".artist-card:not(.in)").forEach(c => io.observe(c));
+}
+
+/* ================================================================
+   MODULE G — FILTER + FUZZY SEARCH (combined, instant DOM update)
+================================================================ */
+function render() {
+  const grid  = document.getElementById("grid");
+  const noRes = document.getElementById("no-res");
+  const count = document.getElementById("res-n");
+  const clear = document.getElementById("s-clear");
+
+  clear.classList.toggle("on", SEARCH.length > 0);
+  Object.keys(STORE).forEach(k => delete STORE[k]);
+
+  const filtered = ALL.filter(a => {
+    const catOk  = CAT === "all" || a.cat === CAT;
+    const srchOk = fuzzy(a.name, SEARCH) || fuzzy(a.style, SEARCH) || fuzzy(a.cat, SEARCH);
+    return catOk && srchOk;
+  });
+
+  count.textContent = filtered.length;
+
+  if (!filtered.length) {
+    grid.innerHTML = "";
+    noRes.classList.add("on");
+    return;
+  }
+  noRes.classList.remove("on");
+  grid.innerHTML = filtered.map((a, i) => buildCard(a, i)).join("");
+  observeCards();
+}
+
+/* Search (130ms debounce) */
+let _st = null;
+document.getElementById("s-inp").addEventListener("input", e => {
+  clearTimeout(_st);
+  SEARCH = e.target.value;
+  _st = setTimeout(render, 130);
+});
+function clearSearch() {
+  const inp = document.getElementById("s-inp");
+  inp.value = ""; SEARCH = "";
+  render(); inp.focus();
+}
+
+/* Category filter buttons */
+document.querySelectorAll(".fl-btn").forEach(btn =>
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".fl-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    CAT = btn.dataset.cat;
+    render();
+  })
+);
+
+/* ================================================================
+   MODULE H — CINEMATIC LIGHTBOX
+   iframe injected on click → zero preload.
+   ESC + backdrop-click both stop the video and close.
+================================================================ */
+function openLB(idx) {
+  const a = STORE[idx];
+  if (!a) return;
+  const url = embedOf(a.vid, true);
+  if (!url) return;
+  document.getElementById("lb-name").textContent  = a.name;
+  document.getElementById("lb-style").textContent = a.style || "";
+  document.getElementById("lb-iframe").src = url;
+  document.getElementById("lb-wa").onclick = () => waOpen("שלום סולטון, צפיתי בגלריה, אשמח לבדוק זמינות עבור " + a.name);
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeLB() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.getElementById("lb-iframe").src = "";   /* stop playback */
+  document.body.style.overflow = "";
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLB(); });
+
+/* ================================================================
+   MODULE I — DATA LOADING
+   Flow: cache hit → instant render
+         cache miss → fetch Sheet → parse → cache → render
+         fetch error → show retry UI
+================================================================ */
+async function bootstrap() {
+  const skel = document.getElementById("skel");
+  const err  = document.getElementById("err");
+
+  /* Reset */
+  skel.style.display = "";
+  err.classList.remove("show");
+  document.getElementById("grid").innerHTML = "";
+  document.getElementById("no-res").classList.remove("on");
+
+  /* Cache hit → instant */
+  const cached = cacheRead();
+  if (cached && cached.length) {
+    console.info("[Gallery] Cache hit ✓", cached.length, "artists");
+    ALL = cached;
+    skel.style.display = "none";
+    document.getElementById("total-count").textContent = ALL.length;
+    render();
+    return;
+  }
+
+  /* Fetch live */
+  try {
+    const res = await fetch(SHEET_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    const data = parseCSV(text);
+    if (!data.length) throw new Error("Empty sheet");
+    ALL = data;
+    cacheWrite(ALL);
+    console.info("[Gallery] Fetched", ALL.length, "artists ✓");
+    skel.style.display = "none";
+    document.getElementById("total-count").textContent = ALL.length;
+    render();
+  } catch (e) {
+    console.error("[Gallery] Fetch failed:", e);
+    skel.style.display = "none";
+    err.classList.add("show");
+  }
+}
+
+bootstrap();
+</script>
+</body>
+</html>
